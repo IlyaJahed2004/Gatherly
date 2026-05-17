@@ -11,13 +11,24 @@ builder.Services.AddControllers();
 // 1. Motor: Use the SQLite provider.
 // 2. Configuration: Retrieve the Connection String from 'appsettings.json'.
 // 3. Lifecycle: Managed as a 'Scoped' service (created/destroyed per request).
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<GatherlyDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 

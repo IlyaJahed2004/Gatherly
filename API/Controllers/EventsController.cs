@@ -1,12 +1,14 @@
 using System;
+using Application.Events.Commands;
 using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace API.Controllers;
 
-public class EventsController(GatherlyDbContext context) : BaseApiController
+public class EventsController(GatherlyDbContext context, IMediator mediator) : BaseApiController
 {
     // private readonly GatherlyDbContext Context;
     // public EventsController(GatherlyDbContext context)
@@ -31,5 +33,11 @@ public class EventsController(GatherlyDbContext context) : BaseApiController
         if (specificevent == null)
             return NotFound();
         return specificevent;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<string>> CreateEvent(Event newEvent)
+    {
+        return await mediator.Send(new CreateEvent.Command() { Event = newEvent }); 
     }
 }

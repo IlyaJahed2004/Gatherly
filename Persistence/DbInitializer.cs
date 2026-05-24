@@ -1,4 +1,4 @@
-using System;
+using Domain;
 
 namespace Persistence;
 
@@ -6,120 +6,124 @@ public class DbInitializer
 {
     public static async Task SeedData(GatherlyDbContext context)
     {
-        // 1. Check if the database already contains any events.
-        // If it's not empty, we skip the seeding process to prevent duplicate data.
         if (context.Events.Any())
             return;
 
-        // 2. Create a list of sample events (Seed Data).
-        // These will be used to populate the UI in our React application.
-        var events = new List<Domain.Event>
+        var utcNow = DateTime.UtcNow;
+
+        var events = new List<Event>
         {
-            new Domain.Event
+            // Past Events
+            new Event
             {
-                Title = "Past Event 1",
-                Date = DateTime.Now.AddMonths(-2),
-                Description = "Event 2 months ago",
-                Category = "drinks",
+                Title = "Future of AI Conference 2026",
+                StartDate = utcNow.AddMonths(-3),
+                EndDate = utcNow.AddMonths(-3).AddDays(2),
+                Description =
+                    "Exploring the latest trends in Artificial Intelligence and Machine Learning.",
+                Category = "Technology",
                 City = "London",
-                Venue = "Pub",
+                Venue = "ExCeL London",
                 Latitude = 51.5074,
                 Longitude = -0.1278,
+                isCancelled = false,
             },
-            new Domain.Event
+            new Event
             {
-                Title = "Past Event 2",
-                Date = DateTime.Now.AddMonths(-1),
-                Description = "Event 1 month ago",
-                Category = "culture",
+                Title = "Summer Jazz Festival",
+                StartDate = utcNow.AddMonths(-1),
+                EndDate = utcNow.AddMonths(-1).AddHours(5),
+                Description = "Live jazz performances featuring world-class musicians.",
+                Category = "Music",
                 City = "Paris",
-                Venue = "Louvre",
-                Latitude = 48.8566,
-                Longitude = 2.3522,
+                Venue = "Luxembourg Gardens",
+                Latitude = 48.8462,
+                Longitude = 2.3372,
+                isCancelled = false,
             },
-            new Domain.Event
+            // Current / Near Future Events
+            new Event
             {
-                Title = "Future Event 1",
-                Date = DateTime.Now.AddMonths(1),
-                Description = "Event in 1 month",
-                Category = "music",
+                Title = "Charity Marathon",
+                StartDate = utcNow.AddMonths(1),
+                EndDate = utcNow.AddMonths(1).AddHours(6),
+                Description = "Running to support local children's hospitals.",
+                Category = "Sports",
+                City = "Berlin",
+                Venue = "Tiergarten",
+                Latitude = 52.5145,
+                Longitude = 13.3501,
+                isCancelled = false,
+            },
+            new Event
+            {
+                Title = "Modern Art Exhibition",
+                StartDate = utcNow.AddMonths(2),
+                EndDate = utcNow.AddMonths(2).AddDays(7),
+                Description = "Showcasing works from upcoming minimalist artists.",
+                Category = "Art",
                 City = "New York",
-                Venue = "Madison Square Garden",
-                Latitude = 40.7128,
-                Longitude = -74.0060,
+                Venue = "MoMA",
+                Latitude = 40.7614,
+                Longitude = -73.9776,
+                isCancelled = true, // Example of cancelled event
             },
-            new Domain.Event
+            // Far Future Events
+            new Event
             {
-                Title = "Future Event 2",
-                Date = DateTime.Now.AddMonths(2),
-                Description = "Event in 2 months",
-                Category = "food",
-                City = "Rome",
-                Venue = "Trattoria da Enzo",
-                Latitude = 41.9028,
-                Longitude = 12.4964,
+                Title = "Startup Weekend: Product Sprint",
+                StartDate = utcNow.AddMonths(4),
+                EndDate = utcNow.AddMonths(4).AddDays(3),
+                Description = "Intensive workshop for budding entrepreneurs.",
+                Category = "Business",
+                City = "San Francisco",
+                Venue = "Tech Hub",
+                Latitude = 37.7749,
+                Longitude = -122.4194,
+                isCancelled = false,
             },
-            new Domain.Event
+            new Event
             {
-                Title = "Future Event 3",
-                Date = DateTime.Now.AddMonths(3),
-                Description = "Event in 3 months",
-                Category = "travel",
+                Title = "World Food Expo",
+                StartDate = utcNow.AddMonths(5),
+                EndDate = utcNow.AddMonths(5).AddDays(2),
+                Description = "Tasting cuisines from over 50 countries.",
+                Category = "Food",
                 City = "Tokyo",
-                Venue = "Shibuya Crossing",
-                Latitude = 35.6895,
-                Longitude = 139.6917,
+                Venue = "Tokyo Big Sight",
+                Latitude = 35.6300,
+                Longitude = 139.7950,
+                isCancelled = false,
             },
-            new Domain.Event
+            new Event
             {
-                Title = "Future Event 4",
-                Date = DateTime.Now.AddMonths(4),
-                Description = "Event in 4 months",
-                Category = "sports",
+                Title = "Historical Documentary Screening",
+                StartDate = utcNow.AddMonths(6),
+                EndDate = utcNow.AddMonths(6).AddHours(2),
+                Description = "An in-depth look at the Industrial Revolution.",
+                Category = "Culture",
+                City = "Rome",
+                Venue = "Colosseum Area",
+                Latitude = 41.8902,
+                Longitude = 12.4922,
+                isCancelled = false,
+            },
+            new Event
+            {
+                Title = "Extreme Sports Championship",
+                StartDate = utcNow.AddMonths(7),
+                EndDate = utcNow.AddMonths(7).AddDays(4),
+                Description = "Skateboarding, BMX, and Parkour showdown.",
+                Category = "Sports",
                 City = "Barcelona",
-                Venue = "Camp Nou",
-                Latitude = 41.3809,
-                Longitude = 2.1228,
-            },
-            new Domain.Event
-            {
-                Title = "Future Event 5",
-                Date = DateTime.Now.AddMonths(5),
-                Description = "Event in 5 months",
-                Category = "theatre",
-                City = "London",
-                Venue = "West End",
-                Latitude = 51.5074,
-                Longitude = -0.1278,
-            },
-            new Domain.Event
-            {
-                Title = "Future Event 6",
-                Date = DateTime.Now.AddMonths(6),
-                Description = "Event in 6 months",
-                Category = "comedy",
-                City = "Chicago",
-                Venue = "Second City",
-                Latitude = 41.8781,
-                Longitude = -87.6298,
-            },
-            new Domain.Event
-            {
-                Title = "Future Event 7",
-                Date = DateTime.Now.AddMonths(7),
-                Description = "Event in 7 months",
-                Category = "art",
-                City = "Amsterdam",
-                Venue = "Rijksmuseum",
-                Latitude = 52.3676,
-                Longitude = 4.9041,
+                Venue = "Parc del Forum",
+                Latitude = 41.4116,
+                Longitude = 2.2223,
+                isCancelled = false,
             },
         };
 
-        // 3. Add the entire list to the database context tracked by EF Core.
         await context.Events.AddRangeAsync(events);
-
-        // 4. Push the changes to the physical SQLite database file.
         await context.SaveChangesAsync();
     }
 }

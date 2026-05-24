@@ -1,3 +1,5 @@
+using Application.Core;
+using Application.Events.Commands;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -11,6 +13,10 @@ builder.Services.AddControllers();
 // 1. Motor: Use the SQLite provider.
 // 2. Configuration: Retrieve the Connection String from 'appsettings.json'.
 // 3. Lifecycle: Managed as a 'Scoped' service (created/destroyed per request).
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<GatherlyDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -21,13 +27,18 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
 // and register all IRequestHandler implementations into the Dependency Injection container.
 // This enables the message-driven pattern, allowing the controller to dispatch requests
 // to their corresponding handlers without explicit instantiation.
-builder.Services.AddMediatR(x =>
-    x.RegisterServicesFromAssemblyContaining<Application.Events.Queries.GetEventList>()
-);
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>());
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 

@@ -1,35 +1,34 @@
 using System;
+using Application.Events.Queries;
 using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Controllers;
 
-public class EventsController(GatherlyDbContext context) : BaseApiController
+public class EventsController(IMediator mediator) : BaseApiController
 {
-    // private readonly GatherlyDbContext Context;
-    // public EventsController(GatherlyDbContext context)
-    // {
-    //     this.Context = context;
-    // }
-
+    /// <summary>
+    /// Fetches all events from the system.
+    /// </summary>
+    /// <returns>An HTTP response containing the list of events.</returns>
     [HttpGet]
     public async Task<ActionResult<List<Event>>> GetEvents()
     {
-        // 1. Retrieve all Events from the database asynchronously.
-        // 2. Convert the result to a List and return it as an HTTP response.
-        return await context.Events.ToListAsync();
+        // 2. TRADITIONAL APPROACH (TIED TO INFRASTRUCTURE)
+        // return await context.Events.ToListAsync();
+        // In the old way, the API directly managed database queries, breaking Clean Architecture boundaries.
+
+        // 3. MEDIATR PIPELINE APPROACH (MESSAGE-DRIVEN)
+        // The controller now serves as a thin delivery mechanism.
+        // It dispatches a contract message ('GetEventList.Query') into the MediatR pipeline.
+        // This safely forwards execution to the Application layer without exposing HOW the data is retrieved.
+        return await mediator.Send(new Application.Events.Queries.GetEventList.Query());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Domain.Event>> GetEvent(string id)
     {
-        // 1. Retrieve a single event by its unique identifier (id).
-        // 2. If found, return the event; if not, return a 404 Not Found response.
-        var specificevent = await context.Events.FindAsync(id);
-        if (specificevent == null)
-            return NotFound();
-        return specificevent;
+        return await mediator.Send(new GetEventDetails.Query { Id = id });
     }
 }

@@ -15,6 +15,16 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// 2. MEDIATR REGISTRATION (CQRS PIPELINE)
+// Scans the specified assembly (where 'GetEventList' is defined) to automatically discover
+// and register all IRequestHandler implementations into the Dependency Injection container.
+// This enables the message-driven pattern, allowing the controller to dispatch requests
+// to their corresponding handlers without explicit instantiation.
+builder.Services.AddMediatR(x =>
+    x.RegisterServicesFromAssemblyContaining<Application.Events.Queries.GetEventList>()
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

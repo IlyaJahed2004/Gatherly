@@ -487,3 +487,4 @@ API/Gatherly.db
 API/Gatherly.db-shm
 API/Gatherly.db-wal
 .postman/config.json
+*.lscache

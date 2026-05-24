@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Events.Commands;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
 });
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>());
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 

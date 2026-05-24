@@ -41,6 +41,14 @@ public class EventsController(GatherlyDbContext context, IMediator mediator) : B
         return await mediator.Send(new CreateEvent.Command() { Event = newEvent }); 
     }
 
+    [HttpPut]
+    public async Task<ActionResult> UpdateEvent(Event newEvent)
+    {
+        await mediator.Send(new UpdateEvent.Command() { Event = newEvent });
+    
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteEvent(string id)
     {

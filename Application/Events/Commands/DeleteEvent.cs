@@ -14,7 +14,8 @@ public class DeleteEvent
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
-            var targetEvent = await dbContext.Events.FindAsync(request.Id, cancellationToken)
+            var targetEvent =
+                await dbContext.Events.FindAsync(request.Id, cancellationToken)
                 ?? throw new Exception("Event not found.");
 
             dbContext.Remove(targetEvent);

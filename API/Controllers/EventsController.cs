@@ -1,6 +1,6 @@
 using System;
-using Application.Events.Queries;
 using Application.Events.Commands;
+using Application.Events.Queries;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,14 +36,14 @@ public class EventsController(IMediator mediator) : BaseApiController
     [HttpPost]
     public async Task<ActionResult<string>> CreateEvent(Event newEvent)
     {
-        return await mediator.Send(new CreateEvent.Command() { Event = newEvent }); 
+        return await mediator.Send(new CreateEvent.Command() { Event = newEvent });
     }
 
     [HttpPut]
     public async Task<ActionResult> UpdateEvent(Event newEvent)
     {
         await mediator.Send(new UpdateEvent.Command() { Event = newEvent });
-    
+
         return NoContent();
     }
 

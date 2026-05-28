@@ -42,8 +42,6 @@ builder.Services.AddMediatR(x =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
-builder.Services.AddValidatorsFromAssemblyContaining<CreateEventValidator>();
-
 // Register ExceptionMiddleware as a transient service.
 // Transient = a new instance is created per request and disposed after.
 // Must be registered in DI because it implements IMiddleware —

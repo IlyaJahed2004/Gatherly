@@ -36,6 +36,8 @@ public class EventsController(IMediator mediator) : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Event>> GetEvent(string id)
     {
+        //throw new Exception("Server test error");
+
         var result = await mediator.Send(new GetEventDetails.Query { Id = id });
 
         // Handler decided the event does not exist → 404 Not Found

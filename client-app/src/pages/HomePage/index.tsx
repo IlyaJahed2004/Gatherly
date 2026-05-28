@@ -1,5 +1,6 @@
 import React from 'react';
 import EventCard from '../../components/EventCard';
+import CalendarWidget from '../../components/CalendarWidget';
 
 const dummyEvents = [
   {
@@ -96,9 +97,9 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* باکس تقویم (فعلاً یک نگهدارنده/Placeholder) */}
-          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm min-h-[250px] flex items-center justify-center">
-            <span className="text-gray-400 text-sm font-medium">Calendar Widget</span>
+          {/* کامپوننت تقویم */}
+          <div className="flex justify-center">
+            <CalendarWidget />
           </div>
 
         </div>

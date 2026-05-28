@@ -12,9 +12,11 @@ namespace Application.Events.Commands;
 /// Follows the MediatR pattern: Command defines the request,
 /// Handler contains the business logic.
 ///
-/// Validation is handled in the Application layer (not API) via FluentValidation,
+/// Validation is handled in the Application layer via FluentValidation,
 /// because validation is business logic — the API layer just forwards the request.
-/// The validator for this command lives in: Validators/CreateEventValidator.cs
+/// Validation runs automatically via ValidationBehavior pipeline before this
+/// handler is ever called — see Application/Core/ValidationBehavior.cs
+/// and Validators/CreateEventValidator.cs.
 /// </summary>
 public class CreateEvent
 {
@@ -37,27 +39,19 @@ public class CreateEvent
     /// <summary>
     /// Handles the CreateEvent command.
     /// Dependencies are injected via primary constructor (C# 12).
-    ///
-    /// IValidator&lt;Command&gt; is injected by the DI container and resolved to
-    /// CreateEventValidator automatically — registered via
-    /// AddValidatorsFromAssemblyContaining in Program.cs.
+    /// No validator injected here — validation is handled upstream
+    /// by ValidationBehavior in the MediatR pipeline automatically.
     /// </summary>
-    public class Handler(GatherlyDbContext dbContext, IMapper mapper, IValidator<Command> validator)
+    public class Handler(GatherlyDbContext dbContext, IMapper mapper)
         : IRequestHandler<Command, string>
     {
         /// <summary>
-        /// Validates the command, maps the DTO to a domain entity,
+        /// Maps the incoming DTO to a domain entity,
         /// persists it to the database, and returns the new Id.
+        /// By the time this runs, validation has already passed.
         /// </summary>
         public async Task<string> Handle(Command request, CancellationToken cancellationToken)
         {
-            // Run FluentValidation rules defined in CreateEventValidator.
-            // ValidateAndThrowAsync automatically throws a ValidationException
-            // if any rule fails — execution stops here and never reaches the db.
-            // Note: in a Pipeline Behaviour approach this call moves to a central
-            // ValidationBehaviour and is removed from the handler entirely.
-            await validator.ValidateAndThrowAsync(request, cancellationToken);
-
             // Map CreateEventDto → Event entity.
             // AutoMapper fills in all matching properties automatically.
             // Server-managed fields (Id, etc.) are handled separately.

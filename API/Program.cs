@@ -24,12 +24,20 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// 2. MEDIATR REGISTRATION (CQRS PIPELINE)
-// Scans the specified assembly (where 'GetEventList' is defined) to automatically discover
-// and register all IRequestHandler implementations into the Dependency Injection container.
-// This enables the message-driven pattern, allowing the controller to dispatch requests
-// to their corresponding handlers without explicit instantiation.
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>());
+// Scans the assembly containing CreateEventValidator and registers
+// ALL validators found there automatically with the DI container.
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEventValidator>();
+
+// MediatR registration — scans for all IRequestHandler implementations
+// and registers the ValidationBehavior as an open generic pipeline behaviour.
+// AddOpenBehavior plugs ValidationBehavior<TRequest, TResponse> into the
+// MediatR pipeline so it intercepts every Command and Query automatically —
+// no changes needed in individual handlers.
+builder.Services.AddMediatR(x =>
+{
+    x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>();
+    x.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 

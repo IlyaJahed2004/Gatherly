@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application.Core;
 using Application.Events.Commands;
 using Application.Events.Validators;
@@ -43,9 +44,22 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEventValidator>();
 
+// Register ExceptionMiddleware as a transient service.
+// Transient = a new instance is created per request and disposed after.
+// Must be registered in DI because it implements IMiddleware —
+// ASP.NET Core resolves it from the container when the pipeline runs.
+builder.Services.AddTransient<ExceptionMiddleware>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+
+// MUST be registered FIRST — before all other middleware.
+// Middleware runs in registration order. ExceptionMiddleware wraps
+// everything below it in a try/catch. If registered later, exceptions
+// thrown in earlier middleware would never be caught.
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

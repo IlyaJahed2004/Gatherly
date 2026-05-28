@@ -64,21 +64,38 @@ public class EventsController(IMediator mediator) : BaseApiController
         // Wrap the DTO in a MediatR Command and dispatch it.
         // The handler in the Application layer takes care of mapping,
         // persistence, and returning the new Id.
-        return await mediator.Send(new CreateEvent.Command { EventDto = newEventDto });
+        var result = await mediator.Send(new CreateEvent.Command { EventDto = newEventDto });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return result.Value;
+
+        return BadRequest(result.Error);
     }
 
     [HttpPut]
     public async Task<ActionResult> UpdateEvent(Event newEvent)
     {
-        await mediator.Send(new UpdateEvent.Command() { Event = newEvent });
+        var result = await mediator.Send(new UpdateEvent.Command() { Event = newEvent });
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
 
-        return NoContent();
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteEvent(string id)
     {
-        await mediator.Send(new DeleteEvent.Command() { Id = id });
-        return Ok();
+        var result = await mediator.Send(new DeleteEvent.Command() { Id = id });
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+        return BadRequest(result.Error);
     }
 }

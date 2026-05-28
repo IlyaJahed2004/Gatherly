@@ -1,7 +1,7 @@
-﻿using Application.Events.DTOs;
+﻿using Application.Core;
+using Application.Events.DTOs;
 using AutoMapper;
 using Domain;
-using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -17,15 +17,19 @@ namespace Application.Events.Commands;
 /// Validation runs automatically via ValidationBehavior pipeline before this
 /// handler is ever called — see Application/Core/ValidationBehavior.cs
 /// and Validators/CreateEventValidator.cs.
+///
+/// Returns Result<string> instead of throwing — the handler explicitly signals
+/// success (with the new Event Id) or failure (with an error message and status code).
 /// </summary>
 public class CreateEvent
 {
     /// <summary>
     /// The MediatR request object.
     /// Carries the CreateEventDto from the API layer into the handler.
-    /// Returns the newly created Event's Id as a string.
+    /// Returns Result<string> — wraps the new Event Id on success,
+    /// or an error message + status code on failure.
     /// </summary>
-    public class Command : IRequest<string>
+    public class Command : IRequest<Result<string>>
     {
         /// <summary>
         /// The DTO received from the client.
@@ -43,14 +47,19 @@ public class CreateEvent
     /// by ValidationBehavior in the MediatR pipeline automatically.
     /// </summary>
     public class Handler(GatherlyDbContext dbContext, IMapper mapper)
-        : IRequestHandler<Command, string>
+        : IRequestHandler<Command, Result<string>>
     {
         /// <summary>
-        /// Maps the incoming DTO to a domain entity,
-        /// persists it to the database, and returns the new Id.
-        /// By the time this runs, validation has already passed.
+        /// Maps the incoming DTO to a domain entity, persists it to the database,
+        /// and returns a Result wrapping the new Event Id.
+        /// By the time this runs, validation has already passed via the pipeline.
+        /// Returns Result.Failure if the database did not confirm the write.
+        /// Returns Result.Success with the new Id if the write was confirmed.
         /// </summary>
-        public async Task<string> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(
+            Command request,
+            CancellationToken cancellationToken
+        )
         {
             // Map CreateEventDto → Event entity.
             // AutoMapper fills in all matching properties automatically.
@@ -60,11 +69,19 @@ public class CreateEvent
             // Stage the new entity for insertion
             dbContext.Events.Add(eventEntity);
 
-            // Commit to the database
-            await dbContext.SaveChangesAsync(cancellationToken);
+            // SaveChangesAsync returns the number of rows affected.
+            // If greater than 0, the write was confirmed by the database.
+            var success = await dbContext.SaveChangesAsync(cancellationToken) > 0;
 
-            // Return the generated Id so the client knows where to find the new resource
-            return eventEntity.Id;
+            // Database did not confirm the write — no rows were affected.
+            // This is an unexpected failure at the persistence level, not a
+            // business rule violation, so we signal it via Result.Failure.
+            if (!success)
+                return Result<string>.Failure("Failed to create the event", 400);
+
+            // Write confirmed — return the generated Id so the client
+            // knows where to find the newly created resource.
+            return Result<string>.Success(eventEntity.Id);
         }
     }
 }

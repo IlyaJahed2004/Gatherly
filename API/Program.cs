@@ -1,5 +1,7 @@
 using Application.Core;
 using Application.Events.Commands;
+using Application.Events.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -28,7 +30,10 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
 // This enables the message-driven pattern, allowing the controller to dispatch requests
 // to their corresponding handlers without explicit instantiation.
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>());
+
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEventValidator>();
 
 var app = builder.Build();
 

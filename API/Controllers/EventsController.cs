@@ -28,10 +28,26 @@ public class EventsController(IMediator mediator) : BaseApiController
         return await mediator.Send(new GetEventList.Query());
     }
 
+    /// <summary>
+    /// The controller's only job is to translate the Result into an HTTP response.
+    /// All business decisions (found/not found) were made in the Application layer.
+    /// The controller just reads the Result and maps it to the right status code.
+    /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<Domain.Event>> GetEvent(string id)
+    public async Task<ActionResult<Event>> GetEvent(string id)
     {
-        return await mediator.Send(new GetEventDetails.Query { Id = id });
+        var result = await mediator.Send(new GetEventDetails.Query { Id = id });
+
+        // Handler decided the event does not exist → 404 Not Found
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        // Handler succeeded and returned a value → 200 OK with the event
+        if (result.IsSuccess && result.Value != null)
+            return result.Value;
+
+        // Any other failure (unexpected) → 400 Bad Request with the error message
+        return BadRequest(result.Error);
     }
 
     /// <summary>

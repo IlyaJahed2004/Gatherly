@@ -78,9 +78,9 @@ public class EventsController(IMediator mediator) : BaseApiController
     }
 
     [HttpPut]
-    public async Task<ActionResult> UpdateEvent(Event newEvent)
+    public async Task<ActionResult> UpdateEvent(EditEventDto newEvent)
     {
-        var result = await mediator.Send(new UpdateEvent.Command() { Event = newEvent });
+        var result = await mediator.Send(new UpdateEvent.Command() { EventDto = newEvent });
         if (!result.IsSuccess && result.Code == 404)
             return NotFound();
 

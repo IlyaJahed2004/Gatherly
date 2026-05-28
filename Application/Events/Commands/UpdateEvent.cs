@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Events.DTOs;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -10,7 +11,7 @@ public class UpdateEvent
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public required Event Event { get; set; }
+        public required EditEventDto EventDto { get; set; }
     }
 
     public class Handler(GatherlyDbContext dbContext, IMapper mapper)
@@ -19,14 +20,14 @@ public class UpdateEvent
         public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
         {
             var existingEvent = await dbContext.Events.FindAsync(
-                command.Event.Id,
+                command.EventDto.Id,
                 cancellationToken
             );
 
             if (existingEvent == null)
                 return Result<Unit>.Failure("Event not found", 404);
 
-            mapper.Map(command.Event, existingEvent);
+            mapper.Map(command.EventDto, existingEvent);
 
             var result = await dbContext.SaveChangesAsync() > 0;
 

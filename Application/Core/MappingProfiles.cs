@@ -20,5 +20,9 @@ public class MappingProfiles : Profile
         // Used in CreateEvent — converts the incoming CreateEventDto
         // into a full Event domain entity before saving to the database
         CreateMap<CreateEventDto, Event>();
+
+        // Used in UpdateEvent — converts the incoming EditEventDto
+        // into a full Event domain entity before saving to the database
+        CreateMap<EditEventDto, Event>();
     }
 }

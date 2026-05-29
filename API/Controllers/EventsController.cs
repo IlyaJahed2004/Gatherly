@@ -1,4 +1,5 @@
 using System;
+using Application.Core;
 using Application.Events.Commands;
 using Application.Events.DTOs;
 using Application.Events.Queries;
@@ -15,7 +16,7 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// </summary>
     /// <returns>An HTTP response containing the list of events.</returns>
     [HttpGet]
-    public async Task<ActionResult<List<Event>>> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+    public async Task<ActionResult<PagedList<Event>>> GetEvents([FromQuery]GetEventsParams getEventsParams)
     {
         // 2. TRADITIONAL APPROACH (TIED TO INFRASTRUCTURE)
         // return await context.Events.ToListAsync();
@@ -27,8 +28,7 @@ public class EventsController(IMediator mediator) : BaseApiController
         // This safely forwards execution to the Application layer without exposing HOW the data is retrieved.
         var result = await mediator.Send(new GetEventList.Query
         {
-            PageNumber = pageNumber,
-            PageSize = pageSize
+            Params = getEventsParams
         });
 
         return Ok(result.Value);

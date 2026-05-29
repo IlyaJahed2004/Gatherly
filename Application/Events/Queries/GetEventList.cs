@@ -12,22 +12,13 @@ namespace Application.Events.Queries
     /// </summary>
     public class GetEventList
     {
-        private const int MaxPageSize = 50;
-
         // 1. THE CQRS QUERY (The Read Message Contract)
         // Implements 'IRequest<TResponse>' to define this class as a MediatR message.
         // It holds no behavior or state, serving purely as a data transfer contract.
         // The generic argument specifies that the mediator must return a 'List<Domain.Event>' upon execution.
         public class Query : IRequest<Result<PagedList<Event>>>
         {
-            public int PageNumber { get; set; } = 1;
-            private int _pageSize = 5;
-
-            public int PageSize
-            {
-                get => _pageSize;
-                set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
-            }
+            public GetEventsParams Params { get; set; }
         }
 
         // 2. THE CQRS HANDLER (The Use Case Processor)
@@ -48,22 +39,31 @@ namespace Application.Events.Queries
             {
                 // Executes an asynchronous, non-blocking fetch operation against the database infrastructure.
                 // The API controller remains completely decoupled from this underlying EF Core data access logic.
-                var query = context.Events
-                    .OrderBy(x => x.StartDate)
-                    .AsQueryable();
+                var query = context.Events.AsQueryable();
+
+                var filterDate = request.Params.StartDate ?? DateTime.UtcNow;
+                query = query.Where(x => x.StartDate >= filterDate);
+
+                if (request.Params.Category != EventCategoryParam.None)
+                {
+                    var categoryName = request.Params.Category.ToString();
+                    query = query.Where(x => x.Category == categoryName);
+                }
+
+                query = query.OrderBy(x => x.StartDate);
 
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var events = await query
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
+                    .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
+                    .Take(request.Params.PageSize)
                     .ToListAsync(cancellationToken);
 
                 var pagedList = new PagedList<Event>
                 {
                     Items = events,
-                    PageNumber = request.PageNumber,
-                    PageSize = request.PageSize,
+                    PageNumber = request.Params.PageNumber,
+                    PageSize = request.Params.PageSize,
                     TotalCount = totalCount
                 };
 

@@ -21,9 +21,15 @@ public class BaseEventValidator<T, TDto> : AbstractValidator<T> where TDto : Bas
         RuleFor(x => selector(x).StartDate)
             .GreaterThan(DateTime.UtcNow).WithMessage("Date must be in the future");
 
+        // Validates the EndDate inside the nested EventDto
+        RuleFor(x => selector(x).EndDate)
+           .GreaterThan(x => selector(x).StartDate)
+           .WithMessage("EndDate must be after StartDate");
+
         // Validates the Category inside the nested EventDto
         RuleFor(x => selector(x).Category)
-            .NotEmpty().WithMessage("Category is required");
+            .NotNull().WithMessage("Category is required")
+            .IsInEnum().WithMessage("Category must be one of: Sports, Science, Leisure, Other");
 
         // Validates the City inside the nested EventDto
         RuleFor(x => selector(x).City)

@@ -1,21 +1,24 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
-import HomePage from './pages/HomePage';
-import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
+import { layoutRoutes, standaloneRoutes } from './routes';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Main layout wrapper for routes that need Navbar */}
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<HomePage />} />
+          {layoutRoutes.map((r) =>
+            r.index ? (
+              <Route key="index" index element={r.element} />
+            ) : (
+              <Route key={r.path} path={r.path} element={r.element} />
+            )
+          )}
         </Route>
 
-        {/* Authentication routes (No Navbar) */}
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        {standaloneRoutes.map((r) => (
+          <Route key={r.path} path={r.path} element={r.element} />
+        ))}
       </Routes>
     </BrowserRouter>
   );

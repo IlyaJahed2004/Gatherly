@@ -1,62 +1,60 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Mail, User, Lock } from 'lucide-react';
 import { FaUsers } from 'react-icons/fa';
-import { FiMail, FiUser, FiLock } from 'react-icons/fi';
-// Import the shared Input component
-import Input from '../../components/Input'; 
+import { Link } from 'react-router-dom';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
-const SignUp: React.FC = () => {
+export default function SignUp() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      {/* Main Card Container */}
-      <div className="w-full max-w-[450px] bg-white rounded-[16px] py-[48px] px-[16px] sm:px-[32px] flex flex-col items-center shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-        
-        {/* Header Section */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3 text-[#078C80]">
-            <FaUsers className="text-4xl" />
-            <h1 className="text-4xl font-semibold text-[#17252A]">Gatherly</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-[450px] bg-white rounded-[16px] shadow-[8px_8px_8px_0px_rgba(0,0,0,0.15)] pt-[48px] pb-[48px] px-[32px] flex flex-col gap-[32px]">
+
+        {/* Logo and Title */}
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-3 mb-4">
+            <FaUsers className="text-[#078C80] text-[42px]" />
+            <span className="text-[#1F2937] text-[32px] font-inter font-semibold">
+              Gatherly
+            </span>
           </div>
-          <h2 className="text-2xl font-medium text-[#17252A]">
+          <h1 className="text-[#1F2937] text-[24px] font-inter font-medium">
             Create your Account
-          </h2>
+          </h1>
         </div>
 
-        {/* Inputs Section */}
-        <div className="w-full flex flex-col gap-[32px] mt-[40px] mb-[36px]">
-          <Input 
-            type="email" 
-            placeholder="Email" 
-            icon={<FiMail className="text-xl" />} 
+        {/* Form */}
+        <form className="w-full flex flex-col gap-[24px]" onSubmit={(e) => e.preventDefault()}>
+          <Input
+            type="email"
+            placeholder="Email"
+            icon={<Mail size={22} className="text-gray-400" />}
           />
-          <Input 
-            type="text" 
-            placeholder="Display Name" 
-            icon={<FiUser className="text-xl" />} 
+          <Input
+            type="text"
+            placeholder="Display Name"
+            icon={<User size={22} className="text-gray-400" />}
           />
-          <Input 
-            type="password" 
-            placeholder="Password" 
-            icon={<FiLock className="text-xl" />} 
+          <Input
+            type="password"
+            placeholder="Password"
+            icon={<Lock size={22} className="text-gray-400" />}
           />
-        </div>
+          <Button className="w-full text-white font-inter font-medium text-[18px] tracking-wide rounded-[16px] py-4 bg-[#078C80] hover:bg-[#067A6F] transition-colors">
+            REGISTER
+          </Button>
+        </form>
 
-        {/* Submit Button */}
-        <button className="w-full h-[72px] bg-[#078C80] text-white rounded-[16px] text-[20px] font-medium shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:bg-[#067A6F] transition-colors">
-          REGISTER
-        </button>
-
-        {/* Footer Link */}
-        <div className="text-[20px] text-[#17252A] mt-[32px]">
-          Already have an account?{' '}
-          <Link to="/signin" className="text-[#4F46E5] hover:text-[#3b2ddb] transition-colors">
-            Sign in
-          </Link>
+        {/* Bottom Section: Link */}
+        <div className="w-full flex flex-col items-center gap-3">
+          <div className="text-[#1F2937] text-[20px] font-inter font-normal">
+            Already have an account?{' '}
+            <Link to="/signin" className="text-[#4F46E5] hover:underline">
+              Sign in
+            </Link>
+          </div>
         </div>
 
       </div>
     </div>
   );
-};
-
-export default SignUp;
+}

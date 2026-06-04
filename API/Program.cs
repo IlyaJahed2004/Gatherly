@@ -2,7 +2,9 @@ using API.Middleware;
 using Application.Core;
 using Application.Events.Commands;
 using Application.Events.Validators;
+using Domain;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -48,10 +50,20 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 // ASP.NET Core resolves it from the container when the pipeline runs.
 builder.Services.AddTransient<ExceptionMiddleware>();
 
+builder.Services.AddIdentityApiEndpoints<User>(opt =>
+{
+    //Unique Username is enforced by default
+    opt.User.RequireUniqueEmail = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<GatherlyDbContext>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 // MUST be registered FIRST — before all other middleware.
 // Middleware runs in registration order. ExceptionMiddleware wraps
@@ -67,6 +79,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+app.MapGroup("api").MapIdentityApi<User>(); //api/login
 
 // --- DATABASE INITIALIZATION & SEEDING PHASE ---
 

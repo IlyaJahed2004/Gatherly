@@ -1,4 +1,5 @@
-using System;
+using Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
@@ -7,7 +8,7 @@ namespace Persistence;
 /// This class acts as the bridge between our C# code and the SQLite database.
 /// It uses Dependency Injection (DI) to receive configuration settings from the API project.
 /// </summary>
-public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options) : DbContext(options)
+public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options) : IdentityDbContext<User>(options)
 {
     /*
        SQLITE DEVELOPMENT NOTES:

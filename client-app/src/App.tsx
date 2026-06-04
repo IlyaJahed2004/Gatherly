@@ -6,18 +6,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Routes with MainLayout (Navbar) */}
         <Route path="/" element={<MainLayout />}>
-          {layoutRoutes.map((r) =>
-            r.index ? (
-              <Route key="index" index element={r.element} />
-            ) : (
-              <Route key={r.path} path={r.path} element={r.element} />
-            )
-          )}
+          {layoutRoutes.map((r) => (
+            <Route 
+              key={r.path || 'index'} 
+              path={r.path} 
+              index={r.index} 
+              element={r.element} 
+            />
+          ))}
         </Route>
 
+        {/* Standalone routes (no Navbar) */}
         {standaloneRoutes.map((r) => (
-          <Route key={r.path} path={r.path} element={r.element} />
+          <Route 
+            key={r.path} 
+            path={r.path} 
+            element={r.element} 
+          />
         ))}
       </Routes>
     </BrowserRouter>

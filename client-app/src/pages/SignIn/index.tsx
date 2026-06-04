@@ -1,10 +1,31 @@
 import { Mail, Lock } from 'lucide-react';
 import { FaUsers } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { observer } from 'mobx-react-lite';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useStore } from '../../stores/rootStore';
+import type { LoginRequest } from '../../types/auth';
 
-export default function SignIn() {
+function SignIn() {
+  const { authStore } = useStore();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginRequest>();
+
+  const onSubmit = async (data: LoginRequest) => {
+    try {
+      await authStore.login(data);
+      navigate('/');
+    } catch {
+      // server error is stored in authStore.error and shown below
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-[450px] bg-white rounded-[16px] shadow-[8px_8px_8px_0px_rgba(0,0,0,0.15)] pt-[48px] pb-[48px] px-[32px] flex flex-col gap-[32px]">
@@ -23,19 +44,48 @@ export default function SignIn() {
         </div>
 
         {/* Form */}
-        <form className="w-full flex flex-col gap-[24px]" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="w-full flex flex-col gap-[24px]"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
+          {authStore.error && (
+            <p className="text-red-500 text-[14px] font-inter text-center -mb-2">
+              {authStore.error.message}
+            </p>
+          )}
           <Input
             type="email"
             placeholder="Email"
             icon={<Mail size={22} className="text-gray-400" />}
+            error={errors.email?.message}
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Enter a valid email address',
+              },
+            })}
           />
           <Input
             type="password"
             placeholder="Password"
             icon={<Lock size={22} className="text-gray-400" />}
+            error={errors.password?.message}
+            {...register('password', {
+              required: 'Password is required',
+              minLength: {
+                value: 8,
+                message: 'Password must be at least 8 characters',
+              },
+            })}
           />
-          <Button className="w-full text-white font-inter font-medium text-[18px] tracking-wide rounded-[16px] py-4 bg-[#078C80] hover:bg-[#067A6F] transition-colors">
-            LOGIN
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full text-white font-inter font-medium text-[18px] tracking-wide rounded-[16px] py-4 bg-[#078C80] hover:bg-[#067A6F] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'LOGGING IN...' : 'LOGIN'}
           </Button>
         </form>
 
@@ -67,3 +117,5 @@ export default function SignIn() {
     </div>
   );
 }
+
+export default observer(SignIn);

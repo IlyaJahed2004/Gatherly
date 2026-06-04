@@ -98,6 +98,7 @@ try
     // 3. Retrieve the GatherlyDbContext instance.
     // .NET follows our blueprint: it builds the Options (SQLite) and injects them into the Constructor.
     var context = services.GetRequiredService<GatherlyDbContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
 
     // 4. Infrastructure Check: Apply any pending migrations.
     // This ensures the SQLite file and tables are ready before the app starts running.
@@ -105,7 +106,7 @@ try
 
     // 5. Data Seeding: Fill the database if it's empty.
     // Our 'if(!context.Activities.Any())' guard inside SeedData prevents duplicate data.
-    await DbInitializer.SeedData(context);
+    await DbInitializer.SeedData(context, userManager);
 }
 catch (Exception ex)
 {

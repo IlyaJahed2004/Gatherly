@@ -1,11 +1,27 @@
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence;
 
 public class DbInitializer
 {
-    public static async Task SeedData(GatherlyDbContext context)
+    public static async Task SeedData(GatherlyDbContext context, UserManager<User> userManager)
     {
+        if (!userManager.Users.Any())
+        {
+            var users = new List<User>()
+            {
+                new User(){DisplayName = "Bob", UserName = "bob@test.com", Email = "bob@test.com"},
+                new User(){DisplayName = "Tom", UserName = "tom@test.com", Email = "tom@test.com"},
+                new User(){DisplayName = "Jane", UserName = "jane@test.com", Email = "jane@test.com"}
+            };
+
+            foreach (var user in users)
+            {
+                await userManager.CreateAsync(user, "Pa$$w0rd"); //Need strong password(contains number, Uppercase and lowercase letters and Special characters like $). Otherwise your user won't be created and will fail silently.
+            }
+        }
+
         if (context.Events.Any())
             return;
 

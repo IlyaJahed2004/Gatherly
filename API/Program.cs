@@ -77,6 +77,13 @@ var app = builder.Build();
 // thrown in earlier middleware would never be caught.
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors(x =>
+    x.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .WithOrigins("http://localhost:3000", "https://localhost:3000")
+);
+
 app.UseAuthentication();
 app.UseAuthorization();
 

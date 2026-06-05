@@ -6,9 +6,9 @@ namespace Application.Events.Validators;
 
 public class EditEventValidator : BaseEventValidator<UpdateEvent.Command, EditEventDto>
 {
-    public EditEventValidator() : base(x => x.EventDto)
+    public EditEventValidator()
+        : base(x => x.EventDto)
     {
-        RuleFor(x => x.EventDto.Id)
-            .NotEmpty().WithMessage("Id is required.");
+        RuleFor(x => x.EventDto.Id).NotEmpty().WithMessage("Id is required.");
     }
 }

@@ -50,26 +50,27 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 // ASP.NET Core resolves it from the container when the pipeline runs.
 builder.Services.AddTransient<ExceptionMiddleware>();
 
-builder.Services.AddIdentityApiEndpoints<User>(opt =>
-{
-    //Unique Username is enforced by default
-    opt.User.RequireUniqueEmail = true;
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<GatherlyDbContext>();
+builder
+    .Services.AddIdentityApiEndpoints<User>(opt =>
+    {
+        //Unique Username is enforced by default
+        opt.User.RequireUniqueEmail = true;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<GatherlyDbContext>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 // MUST be registered FIRST — before all other middleware.
 // Middleware runs in registration order. ExceptionMiddleware wraps
 // everything below it in a try/catch. If registered later, exceptions
 // thrown in earlier middleware would never be caught.
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {

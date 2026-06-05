@@ -17,7 +17,9 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// </summary>
     /// <returns>An HTTP response containing the list of events.</returns>
     [HttpGet]
-    public async Task<ActionResult<PagedList<Event>>> GetEvents([FromQuery]GetEventsParams getEventsParams)
+    public async Task<ActionResult<PagedList<Event>>> GetEvents(
+        [FromQuery] GetEventsParams getEventsParams
+    )
     {
         // 2. TRADITIONAL APPROACH (TIED TO INFRASTRUCTURE)
         // return await context.Events.ToListAsync();
@@ -27,10 +29,7 @@ public class EventsController(IMediator mediator) : BaseApiController
         // The controller now serves as a thin delivery mechanism.
         // It dispatches a contract message ('GetEventList.Query') into the MediatR pipeline.
         // This safely forwards execution to the Application layer without exposing HOW the data is retrieved.
-        var result = await mediator.Send(new GetEventList.Query
-        {
-            Params = getEventsParams
-        });
+        var result = await mediator.Send(new GetEventList.Query { Params = getEventsParams });
 
         return Ok(result.Value);
     }

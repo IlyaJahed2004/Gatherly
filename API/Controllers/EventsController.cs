@@ -1,4 +1,3 @@
-using System;
 using Application.Core;
 using Application.Events.Commands;
 using Application.Events.DTOs;

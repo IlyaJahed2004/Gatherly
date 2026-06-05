@@ -4,14 +4,22 @@ using Application.Events.Commands;
 using Application.Events.Validators;
 using Domain;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Global Authorization Policy: Requires authentication for all endpoints by default.
+    // Individual endpoints can override this with [AllowAnonymous] if needed.
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 
 // Register the GatherlyDbContext with the Dependency Injection (DI) container.
 // This tells .NET how to construct our database context whenever it's needed:

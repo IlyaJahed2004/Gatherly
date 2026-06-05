@@ -16,6 +16,8 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// Fetches all events from the system.
     /// </summary>
     /// <returns>An HTTP response containing the list of events.</returns>
+
+    [AllowAnonymous] // This endpoint is public and does not require authentication.
     [HttpGet]
     public async Task<ActionResult<PagedList<Event>>> GetEvents(
         [FromQuery] GetEventsParams getEventsParams
@@ -39,7 +41,6 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// All business decisions (found/not found) were made in the Application layer.
     /// The controller just reads the Result and maps it to the right status code.
     /// </summary>
-    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Event>> GetEvent(string id)
     {

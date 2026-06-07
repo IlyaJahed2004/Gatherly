@@ -24,15 +24,13 @@ const EventCard: React.FC<EventCardProps> = ({
 }) => {
   return (
     <div className="bg-[#FFFFFF] rounded-[16px] p-[32px] flex flex-col h-full hover:-translate-y-1 transition-transform" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}>
-      {/* Title: 32px, Medium */}
       <h3 className="text-[32px] font-medium text-[#1F2937] leading-tight mb-4 truncate">{title}</h3>
       
-      {/* Image with inner shadow per Figma specs */}
-      <div className="w-full h-[200px] rounded-[16px] overflow-hidden mb-6" style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }}>
+      {/* افزایش ارتفاع عکس به 260px برای لول شدن با ستون کناری */}
+      <div className="w-full h-[260px] rounded-[16px] overflow-hidden mb-6" style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }}>
         <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
       </div>
 
-      {/* Date & Location: 20px, Regular */}
       <div className="flex flex-col gap-3 text-[20px] font-normal text-[#1F2937] mb-6">
         <div className="flex items-center gap-3">
           <div className="w-[24px] h-[24px] flex items-center justify-center text-gray-500">
@@ -48,18 +46,15 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
 
-      {/* Description: 20px, Regular */}
       <p className="text-[20px] font-normal text-[#1F2937] leading-snug line-clamp-3 mb-8 flex-grow">
         {description}
       </p>
 
-      {/* Footer */}
       <div className="flex justify-between items-center mt-auto">
         <div className="flex items-center gap-3">
           <img src={hostAvatarUrl} alt={hostName} className="w-[40px] h-[40px] rounded-full object-cover" />
           <div className="flex flex-col">
             <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
-            {/* Host Name: 20px, Regular, Orange (#F59E0B) */}
             <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
         </div>

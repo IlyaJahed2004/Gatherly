@@ -23,19 +23,18 @@ const EventCard: React.FC<EventCardProps> = ({
   hostAvatarUrl = 'https://placehold.co/100x100/cbd5e1/475569?text=Host',
 }) => {
   return (
-    <div className="bg-[#FFFFFF] rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-shadow">
+    <div className="bg-[#FFFFFF] rounded-[16px] p-[32px] flex flex-col h-full hover:-translate-y-1 transition-transform" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}>
       {/* Title: 32px, Medium */}
       <h3 className="text-[32px] font-medium text-[#1F2937] leading-tight mb-4 truncate">{title}</h3>
       
-      {/* Image */}
-      <div className="w-full h-[200px] rounded-2xl overflow-hidden mb-6">
+      {/* Image with inner shadow per Figma specs */}
+      <div className="w-full h-[200px] rounded-[16px] overflow-hidden mb-6" style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }}>
         <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
       </div>
 
       {/* Date & Location: 20px, Regular */}
       <div className="flex flex-col gap-3 text-[20px] font-normal text-[#1F2937] mb-6">
         <div className="flex items-center gap-3">
-          {/* Icon Frame: 24x24 */}
           <div className="w-[24px] h-[24px] flex items-center justify-center text-gray-500">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
@@ -57,16 +56,14 @@ const EventCard: React.FC<EventCardProps> = ({
       {/* Footer */}
       <div className="flex justify-between items-center mt-auto">
         <div className="flex items-center gap-3">
-          {/* Avatar: 40x40 */}
           <img src={hostAvatarUrl} alt={hostName} className="w-[40px] h-[40px] rounded-full object-cover" />
           <div className="flex flex-col">
             <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
-            {/* Host Name: 20px, Regular, Orange */}
+            {/* Host Name: 20px, Regular, Orange (#F59E0B) */}
             <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
         </div>
-        {/* Button: 20px, Regular */}
-        <Button className="!w-auto !h-auto !py-2 !px-8 !text-[20px] !font-normal !rounded-full !bg-[#0D9488] !text-[#FFFFFF] hover:!bg-teal-700 !border-none !shadow-none">
+        <Button className="!w-[140px] !h-auto !py-2 !text-[20px] !font-normal !rounded-[16px] !bg-[#078C80] !text-[#FFFFFF] hover:!bg-[#06756b] !border-none !shadow-none">
           View
         </Button>
       </div>

@@ -13,14 +13,14 @@ const Navbar = () => {
       </div>
 
       {/* Tabs */}
-      <div className="hidden md:flex items-center gap-24 relative">
+      <div className="hidden md:flex items-center gap-24">
         {/* Active Tab */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex justify-center items-center">
           <a href="/" className="text-[#078C80] text-[24px] font-medium pb-2">
             home
           </a>
-          {/* خط بسیار کشیده‌تر (250px) و دقیقاً وسط‌چین شده */}
-          <div className="absolute -bottom-[1px] w-[250px] left-1/2 -translate-x-1/2 h-[4px] bg-[#078C80]"></div>
+          {/* خط کشیده نوبار - اضافه شدن کلمه transform کلید حل مشکل است */}
+          <div className="absolute top-[100%] left-1/2 transform -translate-x-1/2 w-[250px] h-[4px] bg-[#078C80]"></div>
         </div>
         
         {/* Inactive Tab */}

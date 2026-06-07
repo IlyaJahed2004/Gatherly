@@ -1,45 +1,30 @@
-// src/components/Navbar/index.tsx
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import Button from '../Button';
 
 const Navbar = () => {
-  const location = useLocation();
-
   return (
-    <nav className="flex items-center justify-between px-12 py-6">
-      {/* Logo Area */}
-      {/* Note: Ensure 'Gveret Levin' font is loaded in your index.css or via a local file */}
-      <Link 
-        to="/" 
-        className="text-primary text-[48px]" 
-        style={{ fontFamily: "'Gveret Levin', cursive" }}
-      >
+    <nav className="bg-[#F8FAFC] py-6 px-8 md:px-16 flex items-center justify-between">
+      {/* Logo */}
+      <div className="text-4xl font-bold text-[#0D9488] tracking-tight cursor-pointer" style={{ fontFamily: 'cursive' }}>
         Gatherly
-      </Link>
-
-      {/* Navigation Links */}
-      <div className="flex gap-24">
-        <Link 
-          to="/" 
-          className={`text-[20px] font-medium text-primary pb-2 ${
-            location.pathname === '/' ? 'border-b-4 border-primary' : ''
-          }`}
-        >
-          home
-        </Link>
-        <Link 
-          to="/about" 
-          className={`text-[20px] font-medium text-primary pb-2 ${
-            location.pathname === '/about' ? 'border-b-4 border-primary' : ''
-          }`}
-        >
-          About us
-        </Link>
       </div>
 
-      {/* Authentication Button */}
-      <button className="bg-primary text-white text-[20px] font-medium px-6 py-3 rounded-[16px] shadow-[5px_5px_10px_0px_rgba(0,0,0,1)] hover:opacity-90 transition-opacity">
-        Sign up | Sign in
-      </button>
+      {/* Links */}
+      <div className="hidden md:flex items-center gap-20">
+        <a href="/" className="text-[#0D9488] font-medium border-b-2 border-[#0D9488] pb-1 px-4 text-lg">
+          home
+        </a>
+        <a href="/about" className="text-[#0D9488] font-medium pb-1 px-4 text-lg hover:opacity-80 transition-opacity">
+          About us
+        </a>
+      </div>
+
+      {/* Auth Button */}
+      <div>
+        <Button className="!w-auto !h-auto !py-2.5 !px-6 !text-sm !font-medium !rounded-full !bg-[#0D9488] hover:!bg-teal-700 !border-none !shadow-md">
+          Sign up | Sign in
+        </Button>
+      </div>
     </nav>
   );
 };

@@ -19,8 +19,8 @@ const Navbar = () => {
           <a href="/" className="text-[#0D9488] text-[20px] font-medium pb-2">
             home
           </a>
-          {/* Extended Underline */}
-          <div className="absolute -bottom-[1px] w-[200px] h-[3px] bg-[#0D9488]"></div>
+          {/* Centered Extended Underline */}
+          <div className="absolute -bottom-[1px] w-[160px] left-1/2 -translate-x-1/2 h-[3px] bg-[#0D9488]"></div>
         </div>
         
         {/* Inactive Tab */}

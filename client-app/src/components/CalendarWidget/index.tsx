@@ -1,71 +1,55 @@
 import React from 'react';
 
-const CalendarWidget: React.FC = () => {
-  const days = Array.from({ length: 30 }, (_, i) => i + 1);
-  const selectedDays = [14, 25];
-
-  const emptyStartDays = ['-', '-', '-', '-']; 
-  const emptyEndDays = ['-', '-'];
+const CalendarWidget = () => {
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  // دیتای تستی برای شبیه‌سازی روزهای تصویر
+  const days = [
+    27, 28, 29, 30, 1, 2, 3,
+    4, 5, 6, 7, 8, 9, 10,
+    11, 12, 13, 14, 15, 16, 17,
+    18, 19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30, 31,
+    1, 2, 3, 4, 5, 6, 7
+  ];
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 w-full max-w-[300px]">
-      
-      {/* هدر تقویم: ماه و فلش‌ها */}
-      <div className="flex justify-between items-center mb-6">
-        <button className="text-[#F59E0B] hover:opacity-80 transition-opacity">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <span className="text-[#148846] text-[20px] font-regular">September 2024</span>
-        <button className="text-[#F59E0B] hover:opacity-80 transition-opacity">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+    <div className="bg-white rounded-3xl p-7 shadow-sm border border-gray-100">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 px-2">
+        <button className="text-yellow-500 hover:text-yellow-600 font-bold text-lg">&lt;</button>
+        <div className="bg-[#0D9488] text-white px-5 py-1 rounded-md text-sm font-medium tracking-wide">
+          May
+        </div>
+        <button className="text-yellow-500 hover:text-yellow-600 font-bold text-lg">&gt;</button>
       </div>
 
-      {/* روزهای هفته */}
-      <div className="grid grid-cols-7 gap-1 text-center mb-2">
-        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-          <div key={`weekday-${index}`} className="text-gray-400 text-[11px] font-medium">
+      {/* Weekdays */}
+      <div className="grid grid-cols-7 gap-2 mb-5 text-center">
+        {daysOfWeek.map(day => (
+          <div key={day} className="text-[11px] text-gray-500 font-medium">
             {day}
           </div>
         ))}
       </div>
 
-      {/* روزهای ماه */}
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {/* روزهای خالی اول ماه */}
-        {emptyStartDays.map((_, index) => (
-          <div key={`empty-start-${index}`} className="text-gray-300 text-[11px] py-1 flex items-center justify-center">
-            -
-          </div>
-        ))}
-
-        {/* روزهای اصلی */}
-        {days.map((day) => {
-          const isSelected = selectedDays.includes(day);
+      {/* Days Grid */}
+      <div className="grid grid-cols-7 gap-y-4 gap-x-2 text-center text-sm">
+        {days.map((day, idx) => {
+          const isCurrentMonth = idx >= 4 && idx <= 34;
           return (
-            <div key={day} className="flex justify-center items-center py-1">
-              <span 
-                className={`w-6 h-6 flex items-center justify-center rounded-full text-[11px] cursor-pointer transition-colors
-                  ${isSelected ? 'bg-[#148846] text-white' : 'text-[#1F2937] hover:bg-gray-100'}`}
-              >
-                {day}
-              </span>
+            <div 
+              key={idx} 
+              className={`font-medium w-6 h-6 mx-auto flex items-center justify-center rounded-full transition-colors ${
+                isCurrentMonth 
+                  ? 'text-gray-600 hover:bg-teal-50 hover:text-[#0D9488] cursor-pointer' 
+                  : 'text-gray-300'
+              }`}
+            >
+              {day}
             </div>
           );
         })}
-
-        {/* روزهای خالی آخر ماه */}
-         {emptyEndDays.map((_, index) => (
-          <div key={`empty-end-${index}`} className="text-gray-300 text-[11px] py-1 flex items-center justify-center">
-            -
-          </div>
-        ))}
       </div>
-      
     </div>
   );
 };

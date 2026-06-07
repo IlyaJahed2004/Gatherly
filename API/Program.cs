@@ -1,12 +1,25 @@
+using API.Middleware;
 using Application.Core;
 using Application.Events.Commands;
+using Application.Events.Validators;
+using Domain;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Global Authorization Policy: Requires authentication for all endpoints by default.
+    // Individual endpoints can override this with [AllowAnonymous] if needed.
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 
 // Register the GatherlyDbContext with the Dependency Injection (DI) container.
 // This tells .NET how to construct our database context whenever it's needed:
@@ -22,25 +35,68 @@ builder.Services.AddDbContext<GatherlyDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// 2. MEDIATR REGISTRATION (CQRS PIPELINE)
-// Scans the specified assembly (where 'GetEventList' is defined) to automatically discover
-// and register all IRequestHandler implementations into the Dependency Injection container.
-// This enables the message-driven pattern, allowing the controller to dispatch requests
-// to their corresponding handlers without explicit instantiation.
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>());
+// Scans the assembly containing CreateEventValidator and registers
+// ALL validators found there automatically with the DI container.
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEventValidator>();
+
+// MediatR registration — scans for all IRequestHandler implementations
+// and registers the ValidationBehavior as an open generic pipeline behaviour.
+// AddOpenBehavior plugs ValidationBehavior<TRequest, TResponse> into the
+// MediatR pipeline so it intercepts every Command and Query automatically —
+// no changes needed in individual handlers.
+builder.Services.AddMediatR(x =>
+{
+    x.RegisterServicesFromAssemblyContaining<CreateEvent.Handler>();
+    x.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+// Register ExceptionMiddleware as a transient service.
+// Transient = a new instance is created per request and disposed after.
+// Must be registered in DI because it implements IMiddleware —
+// ASP.NET Core resolves it from the container when the pipeline runs.
+builder.Services.AddTransient<ExceptionMiddleware>();
+
+builder
+    .Services.AddIdentityApiEndpoints<User>(opt =>
+    {
+        //Unique Username is enforced by default
+        opt.User.RequireUniqueEmail = true;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<GatherlyDbContext>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+// MUST be registered FIRST — before all other middleware.
+// Middleware runs in registration order. ExceptionMiddleware wraps
+// everything below it in a try/catch. If registered later, exceptions
+// thrown in earlier middleware would never be caught.
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseCors(x =>
+    x.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .WithOrigins("http://localhost:3000", "https://localhost:3000")
+);
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.MapControllers();
+
+app.MapGroup("api").MapIdentityApi<User>(); //api/login
 
 // --- DATABASE INITIALIZATION & SEEDING PHASE ---
 
@@ -58,6 +114,7 @@ try
     // 3. Retrieve the GatherlyDbContext instance.
     // .NET follows our blueprint: it builds the Options (SQLite) and injects them into the Constructor.
     var context = services.GetRequiredService<GatherlyDbContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
 
     // 4. Infrastructure Check: Apply any pending migrations.
     // This ensures the SQLite file and tables are ready before the app starts running.
@@ -65,7 +122,7 @@ try
 
     // 5. Data Seeding: Fill the database if it's empty.
     // Our 'if(!context.Activities.Any())' guard inside SeedData prevents duplicate data.
-    await DbInitializer.SeedData(context);
+    await DbInitializer.SeedData(context, userManager);
 }
 catch (Exception ex)
 {

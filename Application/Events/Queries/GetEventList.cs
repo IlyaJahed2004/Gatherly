@@ -1,3 +1,4 @@
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,27 +16,58 @@ namespace Application.Events.Queries
         // Implements 'IRequest<TResponse>' to define this class as a MediatR message.
         // It holds no behavior or state, serving purely as a data transfer contract.
         // The generic argument specifies that the mediator must return a 'List<Domain.Event>' upon execution.
-        public class Query : IRequest<List<Domain.Event>> { }
+        public class Query : IRequest<Result<PagedList<Event>>>
+        {
+            public GetEventsParams Params { get; set; }
+        }
 
         // 2. THE CQRS HANDLER (The Use Case Processor)
         // Implements 'IRequestHandler<TRequest, TResponse>' to register this class as the executor for the Query.
         // - 'Query': Specifies the exact incoming message type this handler is bound to.
         // - 'List<Domain.Event>': Represents the explicit return type, matching the Query's contract.
         // The 'GatherlyDbContext' infrastructure dependency is injected via the primary constructor.
-        public class Handler(GatherlyDbContext context) : IRequestHandler<Query, List<Domain.Event>>
+        public class Handler(GatherlyDbContext context) : IRequestHandler<Query, Result<PagedList<Event>>>
         {
             // 3. THE HANDLER EXECUTION METHOD
             // Automatically invoked by the MediatR pipeline when 'IMediator.Send()' dispatches the Query.
             // - 'request': The captured query instance containing request parameters (empty in this context).
             // - 'cancellationToken': Propagates notification that the network request or operation should be aborted.
-            public async Task<List<Event>> Handle(
+            public async Task<Result<PagedList<Event>>> Handle(
                 Query request,
                 CancellationToken cancellationToken
             )
             {
                 // Executes an asynchronous, non-blocking fetch operation against the database infrastructure.
                 // The API controller remains completely decoupled from this underlying EF Core data access logic.
-                return await context.Events.ToListAsync(cancellationToken);
+                var query = context.Events.AsQueryable();
+
+                var filterDate = request.Params.StartDate ?? DateTime.UtcNow;
+                query = query.Where(x => x.StartDate >= filterDate);
+
+                if (request.Params.Category != EventCategoryParam.None)
+                {
+                    var categoryName = request.Params.Category.ToString();
+                    query = query.Where(x => x.Category == categoryName);
+                }
+
+                query = query.OrderBy(x => x.StartDate);
+
+                var totalCount = await query.CountAsync(cancellationToken);
+
+                var events = await query
+                    .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
+                    .Take(request.Params.PageSize)
+                    .ToListAsync(cancellationToken);
+
+                var pagedList = new PagedList<Event>
+                {
+                    Items = events,
+                    PageNumber = request.Params.PageNumber,
+                    PageSize = request.Params.PageSize,
+                    TotalCount = totalCount
+                };
+
+                return Result<PagedList<Event>>.Success(pagedList);
             }
         }
     }

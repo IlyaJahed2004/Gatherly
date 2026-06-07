@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.Core;
+using Application.Events.DTOs;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Persistence;
@@ -7,22 +9,32 @@ namespace Application.Events.Commands;
 
 public class UpdateEvent
 {
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
-        public required Event Event { get; set; }
+        public required EditEventDto EventDto { get; set; }
     }
 
-    public class Handler(GatherlyDbContext dbContext, IMapper mapper) : IRequestHandler<Command>
+    public class Handler(GatherlyDbContext dbContext, IMapper mapper)
+        : IRequestHandler<Command, Result<Unit>>
     {
-        public async Task Handle(Command command, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
         {
-            var existingEvent =
-                await dbContext.Events.FindAsync(command.Event.Id, cancellationToken)
-                ?? throw new Exception("Event not found.");
+            var existingEvent = await dbContext.Events.FindAsync(
+                command.EventDto.Id,
+                cancellationToken
+            );
 
-            mapper.Map(command.Event, existingEvent);
+            if (existingEvent == null)
+                return Result<Unit>.Failure("Event not found", 404);
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            mapper.Map(command.EventDto, existingEvent);
+
+            var result = await dbContext.SaveChangesAsync() > 0;
+
+            if (!result)
+                return Result<Unit>.Failure("Failed to update the Event", 404);
+
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

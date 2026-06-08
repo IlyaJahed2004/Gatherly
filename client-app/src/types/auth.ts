@@ -10,12 +10,12 @@ export interface RegisterRequest {
 }
 
 export interface User {
+  id: string;
   displayName: string;
-  token: string;
-  image?: string;
+  email: string;
+  imageUrl?: string;
 }
 
 export interface AuthError {
   message: string;
-  errors?: Record<string, string[]>;
 }

@@ -12,26 +12,26 @@ const Navbar = () => {
         Gatherly
       </div>
 
-      {/* Tabs - فاصله بین تب‌ها */}
-      <div className="hidden md:flex items-center gap-[100px]">
+      {/* Tabs - افزایش Gap برای فاصله گرفتن تب‌ها از هم */}
+      <div className="hidden md:flex items-center gap-[40px]">
         
-        {/* Active Tab */}
-        {/* ترفند جادویی: استفاده از after: برای ساختن خطی که کاملاً مستقل از کادر کلمه است */}
-        <a 
-          href="/" 
-          className="relative text-[#078C80] text-[24px] font-medium pb-2
-          after:content-[''] after:absolute after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:w-[150px] after:h-[4px] after:bg-[#078C80]"
-        >
-          home
-        </a>
+        {/* Active Tab: Home */}
+        <div className="relative flex flex-col items-center w-[240px]">
+          <a href="/" className="text-[#078C80] text-[24px] font-medium pb-4">
+            home
+          </a>
+          {/* خط 240 پیکسلی */}
+          <div className="absolute bottom-0 w-[240px] h-[4px] bg-[#078C80]"></div>
+        </div>
         
-        {/* Inactive Tab */}
-        <a 
-          href="/about" 
-          className="relative text-[#078C80] text-[24px] font-medium pb-2 hover:opacity-80 transition-opacity"
-        >
-          About us
-        </a>
+        {/* About Us Tab */}
+        <div className="relative flex flex-col items-center w-[240px]">
+          <a href="/about" className="text-[#078C80] text-[24px] font-medium pb-4 hover:opacity-80 transition-opacity">
+            About us
+          </a>
+          {/* خط زیر About us هم کشیده شد تا کاملا قرینه و هم‌سطح باشد */}
+          <div className="absolute bottom-0 w-[240px] h-[4px] bg-[#078C80] opacity-0 hover:opacity-100 transition-opacity"></div>
+        </div>
 
       </div>
 

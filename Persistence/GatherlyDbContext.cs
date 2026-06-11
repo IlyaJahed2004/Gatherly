@@ -21,4 +21,26 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
     // This property represents the 'Events' table in our database.
     // It maps our Domain Entity (Event) to the Database Table.
     public required DbSet<Domain.Event> Events { get; set; }
+    public required DbSet<EventAttendee> EventAttendees { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // 1. Composite Primary Key
+        builder.Entity<EventAttendee>(x => x.HasKey(a => new { a.EventId, a.UserId }));
+
+        builder
+            .Entity<EventAttendee>()
+            .HasOne(x => x.User) // EventAttendee has a User property → UserId is FK to AspNetUsers
+            .WithMany(x => x.Events) // one User can have many EventAttendee rows
+            .HasForeignKey(x => x.UserId); // the FK column is UserId
+
+        // 3. Event → EventAttendee relationship
+        builder
+            .Entity<EventAttendee>()
+            .HasOne(x => x.Event) // EventAttendee has an Event property → EventId is FK to Events
+            .WithMany(x => x.Attendees) // one Event can have many EventAttendee rows
+            .HasForeignKey(x => x.EventId); // the FK column is EventId
+    }
 }

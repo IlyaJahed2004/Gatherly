@@ -2,8 +2,10 @@ using API.Middleware;
 using Application.Core;
 using Application.Events.Commands;
 using Application.Events.Validators;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -51,6 +53,8 @@ builder.Services.AddMediatR(x =>
 });
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 // Register ExceptionMiddleware as a transient service.
 // Transient = a new instance is created per request and disposed after.

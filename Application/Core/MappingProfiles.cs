@@ -1,4 +1,5 @@
 ﻿using Application.Events.DTOs;
+using Application.Profiles.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -24,5 +25,24 @@ public class MappingProfiles : Profile
         // Used in UpdateEvent — converts the incoming EditEventDto
         // into a full Event domain entity before saving to the database
         CreateMap<EditEventDto, Event>();
+
+        CreateMap<Event, EventDto>()
+            .ForMember(
+                dest => dest.HostDisplayName,
+                opt =>
+                    opt.MapFrom(src =>
+                        src.Attendees.FirstOrDefault(a => a.IsHost)!.User.DisplayName
+                    )
+            )
+            .ForMember(
+                dest => dest.HostId,
+                opt => opt.MapFrom(src => src.Attendees.FirstOrDefault(a => a.IsHost)!.User.Id)
+            );
+
+        CreateMap<EventAttendee, UserProfile>()
+            .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.DisplayName))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.User.Id))
+            .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
     }
 }

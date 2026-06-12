@@ -41,7 +41,7 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// The controller just reads the Result and maps it to the right status code.
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<Event>> GetEvent(string id)
+    public async Task<ActionResult<EventDto>> GetEvent(string id)
     {
         //throw new Exception("Server test error");
 

@@ -1,7 +1,7 @@
 using Application.Core;
 using Application.Events.DTOs;
 using AutoMapper;
-using Domain;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -11,9 +11,11 @@ namespace Application.Events.Queries;
 public class GetEventDetails
 {
     /// <summary>
-    /// MediatR query request.
-    /// Returns Result<Event> — explicitly signals to the caller that
-    /// this operation can succeed (with an Event) or fail (with an error + code).
+    /// MediatR query request for fetching a single event by Id.
+    /// Returns Result<EventDto> — not the raw Event entity — because:
+    ///   1. ProjectTo maps directly to the DTO at the database level.
+    ///   2. EventDto breaks the circular reference that raw entities cause.
+    ///   3. Only columns declared in EventDto are fetched — no sensitive fields leak.
     /// </summary>
     public class Query : IRequest<Result<EventDto>>
     {
@@ -21,9 +23,9 @@ public class GetEventDetails
     }
 
     /// <summary>
-    /// Handles fetching a single event by Id.
-    /// Returns a Result instead of throwing — "not found" is an
-    /// expected business outcome, not a crash.
+    /// Handles the GetEventDetails query.
+    /// Uses ProjectTo instead of Include/ThenInclude + mapper.Map to push
+    /// the projection down to SQL — only the columns EventDto declares are fetched.
     /// </summary>
     public class Handler(GatherlyDbContext context, IMapper mapper)
         : IRequestHandler<Query, Result<EventDto>>
@@ -33,19 +35,22 @@ public class GetEventDetails
             CancellationToken cancellationToken
         )
         {
-            var specificEvent = await context
-                .Events.Include(e => e.Attendees)
-                .ThenInclude(a => a.User)
+            // ProjectTo reads MappingProfiles at query-build time and translates
+            // every ForMember into an IQueryable expression tree.
+            // EF Core compiles that into a SQL SELECT with only the needed columns.
+            // JOINs to EventAttendees and AspNetUsers are inferred automatically —
+            // no Include/ThenInclude required.
+            var specificEventDto = await context
+                .Events.ProjectTo<EventDto>(mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
 
-            // Expected outcome — not a crash, not an exception.
-            // Return a Failure result with 404 so the controller
-            // can translate it to a proper HTTP response.
-            if (specificEvent == null)
+            // "Not found" is an expected business outcome, not a system error.
+            // Return a typed Failure so the controller translates it to 404
+            // without any exception being thrown.
+            if (specificEventDto == null)
                 return Result<EventDto>.Failure("Event not found", 404);
 
-            // Happy path — wrap the found entity in a Success result
-            return Result<EventDto>.Success(mapper.Map<EventDto>(specificEvent));
+            return Result<EventDto>.Success(specificEventDto);
         }
     }
 }

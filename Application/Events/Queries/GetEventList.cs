@@ -1,5 +1,7 @@
 using Application.Core;
-using Domain;
+using Application.Events.DTOs;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -16,7 +18,7 @@ namespace Application.Events.Queries
         // Implements 'IRequest<TResponse>' to define this class as a MediatR message.
         // It holds no behavior or state, serving purely as a data transfer contract.
         // The generic argument specifies that the mediator must return a 'List<Domain.Event>' upon execution.
-        public class Query : IRequest<Result<PagedList<Event>>>
+        public class Query : IRequest<Result<PagedList<EventDto>>>
         {
             public GetEventsParams Params { get; set; }
         }
@@ -26,13 +28,13 @@ namespace Application.Events.Queries
         // - 'Query': Specifies the exact incoming message type this handler is bound to.
         // - 'List<Domain.Event>': Represents the explicit return type, matching the Query's contract.
         // The 'GatherlyDbContext' infrastructure dependency is injected via the primary constructor.
-        public class Handler(GatherlyDbContext context) : IRequestHandler<Query, Result<PagedList<Event>>>
+        public class Handler(GatherlyDbContext context, IMapper mapper) : IRequestHandler<Query, Result<PagedList<EventDto>>>
         {
             // 3. THE HANDLER EXECUTION METHOD
             // Automatically invoked by the MediatR pipeline when 'IMediator.Send()' dispatches the Query.
             // - 'request': The captured query instance containing request parameters (empty in this context).
             // - 'cancellationToken': Propagates notification that the network request or operation should be aborted.
-            public async Task<Result<PagedList<Event>>> Handle(
+            public async Task<Result<PagedList<EventDto>>> Handle(
                 Query request,
                 CancellationToken cancellationToken
             )
@@ -54,20 +56,21 @@ namespace Application.Events.Queries
 
                 var totalCount = await query.CountAsync(cancellationToken);
 
-                var events = await query
+                var eventsDto = await query
                     .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
                     .Take(request.Params.PageSize)
+                    .ProjectTo<EventDto>(mapper.ConfigurationProvider)  
                     .ToListAsync(cancellationToken);
 
-                var pagedList = new PagedList<Event>
+                var pagedList = new PagedList<EventDto>
                 {
-                    Items = events,
+                    Items = eventsDto,
                     PageNumber = request.Params.PageNumber,
                     PageSize = request.Params.PageSize,
                     TotalCount = totalCount
                 };
 
-                return Result<PagedList<Event>>.Success(pagedList);
+                return Result<PagedList<EventDto>>.Success(pagedList);
             }
         }
     }

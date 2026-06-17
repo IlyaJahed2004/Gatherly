@@ -18,7 +18,7 @@ public class EventsController(IMediator mediator) : BaseApiController
 
     [AllowAnonymous] // This endpoint is public and does not require authentication.
     [HttpGet]
-    public async Task<ActionResult<PagedList<Event>>> GetEvents(
+    public async Task<ActionResult<PagedList<EventDto>>> GetEvents(
         [FromQuery] GetEventsParams getEventsParams
     )
     {

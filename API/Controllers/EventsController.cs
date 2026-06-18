@@ -84,7 +84,8 @@ public class EventsController(IMediator mediator) : BaseApiController
         return BadRequest(result.Error);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
+    [Authorize(Policy = "IsEventHost")]
     public async Task<ActionResult> UpdateEvent(EditEventDto newEvent)
     {
         var result = await mediator.Send(new UpdateEvent.Command() { EventDto = newEvent });
@@ -98,6 +99,7 @@ public class EventsController(IMediator mediator) : BaseApiController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = "IsEventHost")]
     public async Task<ActionResult> DeleteEvent(string id)
     {
         var result = await mediator.Send(new DeleteEvent.Command() { Id = id });

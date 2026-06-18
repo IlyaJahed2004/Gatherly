@@ -5,7 +5,7 @@ using Application.Events.Validators;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
-using Infrastructure;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -70,6 +70,16 @@ builder
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<GatherlyDbContext>();
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("IsEventHost", policy =>
+    {
+        policy.Requirements.Add(new IsHostRequirment());
+    });
+});
+
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirmentHandler>();
 
 var app = builder.Build();
 

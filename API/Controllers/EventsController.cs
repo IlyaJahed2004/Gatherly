@@ -107,4 +107,18 @@ public class EventsController(IMediator mediator) : BaseApiController
             return Ok(result.Value);
         return BadRequest(result.Error);
     }
+
+    [HttpPost("{id}/attend")]
+    public async Task<ActionResult> Attend(string id)
+    {
+        var result = await mediator.Send(new UpdateAttendance.Command() { Id = id });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
+    }
 }

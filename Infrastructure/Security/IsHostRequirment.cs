@@ -24,7 +24,8 @@ public class IsHostRequirmentHandler(GatherlyDbContext dbContext, IHttpContextAc
         if (httpContext?.GetRouteValue("id") is not string eventId)
             return;
 
-        var attendee = await dbContext.EventAttendees.SingleOrDefaultAsync(x => x.UserId == userId && x.EventId == eventId);
+        var attendee = await dbContext.EventAttendees.AsNoTracking()
+            .SingleOrDefaultAsync(x => x.UserId == userId && x.EventId == eventId);
         if (attendee == null)
             return;
 

@@ -11,6 +11,7 @@ public class UpdateEvent
 {
     public class Command : IRequest<Result<Unit>>
     {
+        public required string Id { get; set; }
         public required EditEventDto EventDto { get; set; }
     }
 
@@ -20,7 +21,7 @@ public class UpdateEvent
         public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
         {
             var existingEvent = await dbContext.Events.FindAsync(
-                command.EventDto.Id,
+                command.Id,
                 cancellationToken
             );
 

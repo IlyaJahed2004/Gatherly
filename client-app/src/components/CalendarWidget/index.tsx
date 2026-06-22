@@ -75,8 +75,8 @@ const CalendarWidget = observer(() => {
   return (
     <div className="bg-[#FFFFFF] rounded-[16px] p-6 h-full flex flex-col justify-between">
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4 px-2">
+      {/* Header: ماه و سال + دکمه‌های قبلی/بعدی */}
+      <div className="flex justify-between items-center px-2">
         <button
           onClick={prevMonth}
           className="text-[#F59E0B] font-normal text-[20px] hover:opacity-70 transition-opacity"
@@ -94,23 +94,23 @@ const CalendarWidget = observer(() => {
         </button>
       </div>
 
-      {/* Weekdays */}
-      <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+      {/* روزهای هفته */}
+      <div className="grid grid-cols-7 gap-1 text-center">
         {daysOfWeek.map(day => (
-          <div key={day} className="text-[11px] text-[#6B7280] font-medium">
+          <div key={day} className="text-[12px] text-[#6B7280] font-medium">
             {day}
           </div>
         ))}
       </div>
 
-      {/* Days */}
-      <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center flex-1 content-evenly">
+      {/* شبکه روزها — flex-1 تا فضا رو بین ردیف‌ها یکنواخت پخش کنه */}
+      <div className="grid grid-cols-7 gap-x-1 gap-y-1 text-center flex-1 content-evenly">
         {cells.map((cell, idx) => (
           <div
             key={idx}
             onClick={() => handleDayClick(cell.day, cell.currentMonth)}
             className={`
-              text-[12px] font-normal w-7 h-7 mx-auto flex items-center justify-center rounded-full transition-colors
+              text-[13px] font-normal w-8 h-8 mx-auto flex items-center justify-center rounded-full transition-colors
               ${!cell.currentMonth
                 ? 'text-gray-300 cursor-default'
                 : isSelected(cell.day, cell.currentMonth)
@@ -128,7 +128,7 @@ const CalendarWidget = observer(() => {
 
       {/* نشانگر فیلتر فعال */}
       {selectedDate && (
-        <div className="mt-3 flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1">
           <span className="text-[12px] text-[#14B8A6]">
             From: {selectedDate}
           </span>

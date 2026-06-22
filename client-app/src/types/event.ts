@@ -23,6 +23,6 @@ export interface PagedList<T> {
 export interface EventParams {
   pageNumber?: number;
   pageSize?: number;
-  startDate?: string;
-  category?: number; // 0=None, 1=Sports, 2=Science, 3=Leisure, 4=Other
+  startDate?: string;   
+  category?: number;
 }

@@ -10,7 +10,7 @@ export class EventStore {
   totalCount = 0;
   totalPages = 0;
   currentPage = 1;
-  selectedCategory = 0; // 0 = None (All)
+  selectedCategory = 0;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -24,6 +24,8 @@ export class EventStore {
         pageNumber: this.currentPage,
         pageSize: 10,
         category: this.selectedCategory,
+        // ✅ تاریخ رو از اول بذار تا همه ایونت‌ها (از جمله گذشته) نشون داده بشن
+        startDate: '2020-01-01',
         ...params,
       });
       runInAction(() => {

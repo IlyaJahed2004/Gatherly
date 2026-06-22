@@ -1,27 +1,212 @@
 {
   "info": {
     "_postman_id": "66d53565-34c4-4f6c-bb00-4615c61084fe",
-    "name": "New Collection",
+    "name": "Gatherly",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "47506188",
-    "_collection_link": "https://go.postman.co/collection/47506188-66d53565-34c4-4f6c-bb00-4615c61084fe?source=collection_link"
+    "_exporter_id": "47506188"
   },
   "item": [
     {
-      "name": "GetEvents",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
+      "name": "Events",
+      "item": [
+        {
+          "name": "GetEvents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            }
+          }
+        },
+        {
+          "name": "GetSpecificEvent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3c04c604-01a6-4ace-bf23-dbfb0a1c078c",
+                  "description": "Event ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "CreateEvent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"آموزش معماری Clean در دات نت\",\n  \"startDate\": \"2026-08-15T09:00:00Z\",\n  \"endDate\": \"2026-08-15T15:00:00Z\",\n  \"description\": \"یک ورکشاپ عملی برای بررسی و پیاده‌سازی Clean Architecture به همراه FluentValidation.\",\n  \"category\": 2,\n  \"isCancelled\": false,\n  \"city\": \"تهران\",\n  \"venue\": \"پارک فناوری پردیس\",\n  \"latitude\": 35.6892,\n  \"longitude\": 51.3890\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            }
+          }
+        },
+        {
+          "name": "UpdateEvent",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"6ce3bbf7-3de7-4838-b86d-b4c5c0d939be\",\n  \"title\": \"دوره پیشرفته معماری مایکروسرویس در دات نت ۸\",\n  \"startDate\": \"2026-11-20T10:00:00Z\",\n  \"endDate\": \"2026-11-20T18:00:00Z\",\n  \"description\": \"بررسی جامع الگوهای ارتباطی مایکروسرویس‌ها، پیاده‌سازی RabbitMQ و مدیریت توزیع‌شده داده‌ها.\",\n  \"category\": 3,\n  \"isCancelled\": false,\n  \"city\": \"اصفهان\",\n  \"venue\": \"دانشگاه صنعتی اصفهان\",\n  \"latitude\": 32.7196,\n  \"longitude\": 51.5348\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            }
+          }
+        },
+        {
+          "name": "DeleteEvent",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d6106c25-7604-48c1-b7f9-b2dc9ba9bcef",
+                  "description": "Event ID to delete"
+                }
+              ]
+            }
+          }
+        }
+      ]
     },
     {
-      "name": "GetSpecificEvent",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
+      "name": "Account",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"ComplexP@ssw0rd123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "register"]
+            }
+          }
+        },
+        {
+          "name": "GetUserInfo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/user-info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "user-info"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bob@test.com\",\n  \"password\": \"Pa$$w0rd\",\n  \"twoFactorCode\": \"\",\n  \"twoFactorRecoveryCode\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login?useCookies=false&useSessionCookies=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "useCookies",
+                  "value": "false",
+                  "description": "True to use cookie authentication instead of bearer tokens"
+                },
+                {
+                  "key": "useSessionCookies",
+                  "value": "false",
+                  "description": "True to use session cookies (only matters if useCookies is true)"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
     }
   ]
 }

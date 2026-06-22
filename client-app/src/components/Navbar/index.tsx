@@ -3,7 +3,7 @@ import Button from '../Button';
 
 const Navbar = () => {
   return (
-    <nav className="bg-[#F3F4F6] py-8 px-8 md:px-16 flex items-center justify-between border-b border-gray-200">
+    <nav className="bg-[#F3F4F6] py-8 px-8 md:px-16 flex items-center justify-between border-b border-gray-200 sticky top-0 z-50">
       {/* Logo */}
       <div 
         className="text-[48px] font-normal text-[#078C80] tracking-tight cursor-pointer" 

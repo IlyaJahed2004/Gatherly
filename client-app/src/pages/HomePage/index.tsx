@@ -60,16 +60,13 @@ const HomePage = observer(() => {
           )}
         </div>
 
-        {/* ستون راست — sticky، ارتفاع برابر با یه EventCard */}
-        <div
-          className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6"
-          style={{ height: '680px' }}
-        >
+        {/* ستون راست — sticky، بدون height ثابت */}
+        <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
 
-          {/* Event Type Widget — ارتفاع ثابت */}
+          {/* Event Type Widget — ارتفاع طبیعی */}
           <div
-            className="bg-[#FFFFFF] rounded-[16px] p-6 flex flex-col"
-            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '200px' }}
+            className="bg-[#FFFFFF] rounded-[16px] p-6"
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <h3 className="text-2xl font-medium text-[#1F2937] mb-6">Event Type</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -91,10 +88,13 @@ const HomePage = observer(() => {
             </div>
           </div>
 
-          {/* Calendar Widget — بقیه فضا رو پر می‌کنه */}
+          {/* Calendar Widget — min-h تضمین می‌کنه همقد EventCard بشه */}
           <div
-            className="rounded-[16px] overflow-hidden flex-1"
-            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
+            className="rounded-[16px] overflow-hidden"
+            style={{
+              boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)',
+              minHeight: '420px',
+            }}
           >
             <CalendarWidget />
           </div>

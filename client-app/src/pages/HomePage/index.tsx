@@ -35,7 +35,6 @@ const HomePage = observer(() => {
     <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
       <div className="grid grid-cols-3 gap-6 items-start">
 
-        {/* ایونت‌ها: col-span-2 */}
         <div className="col-span-2 grid grid-cols-2 gap-6">
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
@@ -60,10 +59,9 @@ const HomePage = observer(() => {
           )}
         </div>
 
-        {/* ستون راست — sticky، بدون height ثابت */}
         <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
 
-          {/* Event Type Widget — ارتفاع طبیعی */}
+          {/* Event Type Widget */}
           <div
             className="bg-[#FFFFFF] rounded-[16px] p-6"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
@@ -88,12 +86,11 @@ const HomePage = observer(() => {
             </div>
           </div>
 
-          {/* Calendar Widget — min-h تضمین می‌کنه همقد EventCard بشه */}
           <div
             className="rounded-[16px] overflow-hidden"
             style={{
               boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)',
-              minHeight: '420px',
+              height: '460px',
             }}
           >
             <CalendarWidget />

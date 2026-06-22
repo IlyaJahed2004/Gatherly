@@ -1,11 +1,14 @@
 import { createContext, useContext } from 'react';
 import { AuthStore } from './authStore';
+import { EventStore } from './eventStore';
 
 export class RootStore {
   authStore: AuthStore;
+  eventStore: EventStore;
 
   constructor() {
     this.authStore = new AuthStore(this);
+    this.eventStore = new EventStore(this);
   }
 }
 

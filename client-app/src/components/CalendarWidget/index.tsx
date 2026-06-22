@@ -8,16 +8,16 @@ const CalendarWidget = observer(() => {
 
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const monthNames = [
-    'January','February','March','April','May','June',
-    'July','August','September','October','November','December'
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
-  const offset = (firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1);
+  const offset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
 
@@ -49,7 +49,6 @@ const CalendarWidget = observer(() => {
     const month = String(viewMonth + 1).padStart(2, '0');
     const dayStr = String(day).padStart(2, '0');
     const dateStr = `${viewYear}-${month}-${dayStr}`;
-
     if (selectedDate === dateStr) {
       setDate(null);
     } else {
@@ -74,10 +73,10 @@ const CalendarWidget = observer(() => {
   };
 
   return (
-    <div className="bg-[#FFFFFF] rounded-[16px] p-6 h-full flex flex-col">
+    <div className="bg-[#FFFFFF] rounded-[16px] p-6 h-full flex flex-col justify-between">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6 px-2">
+      <div className="flex justify-between items-center mb-4 px-2">
         <button
           onClick={prevMonth}
           className="text-[#F59E0B] font-normal text-[20px] hover:opacity-70 transition-opacity"
@@ -96,7 +95,7 @@ const CalendarWidget = observer(() => {
       </div>
 
       {/* Weekdays */}
-      <div className="grid grid-cols-7 gap-1 mb-3 text-center">
+      <div className="grid grid-cols-7 gap-1 mb-2 text-center">
         {daysOfWeek.map(day => (
           <div key={day} className="text-[11px] text-[#6B7280] font-medium">
             {day}
@@ -104,8 +103,8 @@ const CalendarWidget = observer(() => {
         ))}
       </div>
 
-      {/* Days — flex-1 تا بقیه فضا رو بگیره */}
-      <div className="grid grid-cols-7 gap-x-1 text-center flex-1 content-start gap-y-2">
+      {/* Days */}
+      <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center flex-1 content-evenly">
         {cells.map((cell, idx) => (
           <div
             key={idx}
@@ -129,7 +128,7 @@ const CalendarWidget = observer(() => {
 
       {/* نشانگر فیلتر فعال */}
       {selectedDate && (
-        <div className="mt-4 flex items-center justify-between px-1">
+        <div className="mt-3 flex items-center justify-between px-1">
           <span className="text-[12px] text-[#14B8A6]">
             From: {selectedDate}
           </span>

@@ -16,7 +16,6 @@ const CalendarWidget = observer(() => {
   ];
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  // اول ماه چه روزیه (0=Sun,...,6=Sat) → تبدیل به Mon-based
   const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
   const offset = (firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1);
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -51,7 +50,6 @@ const CalendarWidget = observer(() => {
     const dayStr = String(day).padStart(2, '0');
     const dateStr = `${viewYear}-${month}-${dayStr}`;
 
-    // اگه همون روز دوباره کلیک شد → پاک کن فیلتر
     if (selectedDate === dateStr) {
       setDate(null);
     } else {
@@ -76,7 +74,8 @@ const CalendarWidget = observer(() => {
   };
 
   return (
-    <div className="bg-[#FFFFFF] rounded-3xl p-6 h-full flex flex-col">
+    <div className="bg-[#FFFFFF] rounded-[16px] p-6 h-full flex flex-col">
+
       {/* Header */}
       <div className="flex justify-between items-center mb-6 px-2">
         <button
@@ -105,8 +104,8 @@ const CalendarWidget = observer(() => {
         ))}
       </div>
 
-      {/* Days */}
-      <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center">
+      {/* Days — flex-1 تا بقیه فضا رو بگیره */}
+      <div className="grid grid-cols-7 gap-x-1 text-center flex-1 content-start gap-y-2">
         {cells.map((cell, idx) => (
           <div
             key={idx}

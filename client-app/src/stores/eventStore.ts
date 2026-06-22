@@ -11,6 +11,7 @@ export class EventStore {
   totalPages = 0;
   currentPage = 1;
   selectedCategory = 0;
+  selectedDate: string | null = null;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -24,8 +25,7 @@ export class EventStore {
         pageNumber: this.currentPage,
         pageSize: 10,
         category: this.selectedCategory,
-        // ✅ تاریخ رو از اول بذار تا همه ایونت‌ها (از جمله گذشته) نشون داده بشن
-        startDate: '2020-01-01',
+        startDate: this.selectedDate ?? '2020-01-01',
         ...params,
       });
       runInAction(() => {
@@ -44,6 +44,12 @@ export class EventStore {
 
   setCategory = (category: number) => {
     this.selectedCategory = category;
+    this.currentPage = 1;
+    this.loadEvents();
+  };
+
+  setDate = (date: string | null) => {
+    this.selectedDate = date;
     this.currentPage = 1;
     this.loadEvents();
   };

@@ -1,53 +1,149 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useStore } from '../../stores/rootStore';
+import { observer } from 'mobx-react-lite';
 
-const CalendarWidget = () => {
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const days = [
-    27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-    11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7
+const CalendarWidget = observer(() => {
+  const { eventStore } = useStore();
+  const { selectedDate, setDate } = eventStore;
+
+  const today = new Date();
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
+
+  const monthNames = [
+    'January','February','March','April','May','June',
+    'July','August','September','October','November','December'
   ];
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // اول ماه چه روزیه (0=Sun,...,6=Sat) → تبدیل به Mon-based
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
+  const offset = (firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1);
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+
+  const cells: { day: number; currentMonth: boolean }[] = [];
+
+  for (let i = offset - 1; i >= 0; i--) {
+    cells.push({ day: daysInPrevMonth - i, currentMonth: false });
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({ day: d, currentMonth: true });
+  }
+  const remaining = 42 - cells.length;
+  for (let d = 1; d <= remaining; d++) {
+    cells.push({ day: d, currentMonth: false });
+  }
+
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  };
+
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  };
+
+  const handleDayClick = (day: number, currentMonth: boolean) => {
+    if (!currentMonth) return;
+    const month = String(viewMonth + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    const dateStr = `${viewYear}-${month}-${dayStr}`;
+
+    // اگه همون روز دوباره کلیک شد → پاک کن فیلتر
+    if (selectedDate === dateStr) {
+      setDate(null);
+    } else {
+      setDate(dateStr);
+    }
+  };
+
+  const isSelected = (day: number, currentMonth: boolean) => {
+    if (!currentMonth || !selectedDate) return false;
+    const month = String(viewMonth + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    return selectedDate === `${viewYear}-${month}-${dayStr}`;
+  };
+
+  const isToday = (day: number, currentMonth: boolean) => {
+    if (!currentMonth) return false;
+    return (
+      day === today.getDate() &&
+      viewMonth === today.getMonth() &&
+      viewYear === today.getFullYear()
+    );
+  };
 
   return (
-    <div className="bg-[#FFFFFF] rounded-3xl p-8 shadow-sm border border-gray-100 h-full flex flex-col">
+    <div className="bg-[#FFFFFF] rounded-3xl p-6 h-full flex flex-col">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 px-2">
-        {/* Arrows: 20px, Regular, Orange */}
-        <button className="text-[#F59E0B] font-normal text-[20px]">&lt;</button>
-        {/* Month Name: 20px, Regular, Secondary Bg */}
-        <div className="bg-[#14B8A6] text-[#FFFFFF] px-6 py-1 rounded-md text-[20px] font-normal">
-          May
+      <div className="flex justify-between items-center mb-6 px-2">
+        <button
+          onClick={prevMonth}
+          className="text-[#F59E0B] font-normal text-[20px] hover:opacity-70 transition-opacity"
+        >
+          &lt;
+        </button>
+        <div className="bg-[#14B8A6] text-[#FFFFFF] px-6 py-1 rounded-md text-[18px] font-normal">
+          {monthNames[viewMonth]} {viewYear}
         </div>
-        <button className="text-[#F59E0B] font-normal text-[20px]">&gt;</button>
+        <button
+          onClick={nextMonth}
+          className="text-[#F59E0B] font-normal text-[20px] hover:opacity-70 transition-opacity"
+        >
+          &gt;
+        </button>
       </div>
 
-      {/* Weekdays: 11px, Regular */}
-      <div className="grid grid-cols-7 gap-2 mb-6 text-center">
+      {/* Weekdays */}
+      <div className="grid grid-cols-7 gap-1 mb-3 text-center">
         {daysOfWeek.map(day => (
-          <div key={day} className="text-[11px] text-[#1F2937] font-normal">
+          <div key={day} className="text-[11px] text-[#6B7280] font-medium">
             {day}
           </div>
         ))}
       </div>
 
-      {/* Days Grid: 11px, Regular */}
-      <div className="grid grid-cols-7 gap-y-6 gap-x-2 text-center flex-grow content-start">
-        {days.map((day, idx) => {
-          const isCurrentMonth = idx >= 4 && idx <= 34;
-          return (
-            <div 
-              key={idx} 
-              className={`text-[11px] font-normal w-6 h-6 mx-auto flex items-center justify-center rounded-full ${
-                isCurrentMonth ? 'text-[#1F2937] cursor-pointer hover:bg-teal-50' : 'text-gray-300'
-              }`}
-            >
-              {day}
-            </div>
-          );
-        })}
+      {/* Days */}
+      <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center">
+        {cells.map((cell, idx) => (
+          <div
+            key={idx}
+            onClick={() => handleDayClick(cell.day, cell.currentMonth)}
+            className={`
+              text-[12px] font-normal w-7 h-7 mx-auto flex items-center justify-center rounded-full transition-colors
+              ${!cell.currentMonth
+                ? 'text-gray-300 cursor-default'
+                : isSelected(cell.day, cell.currentMonth)
+                  ? 'bg-[#14B8A6] text-white cursor-pointer'
+                  : isToday(cell.day, cell.currentMonth)
+                    ? 'bg-[#F59E0B] text-white cursor-pointer'
+                    : 'text-[#1F2937] cursor-pointer hover:bg-teal-50'
+              }
+            `}
+          >
+            {cell.day}
+          </div>
+        ))}
       </div>
+
+      {/* نشانگر فیلتر فعال */}
+      {selectedDate && (
+        <div className="mt-4 flex items-center justify-between px-1">
+          <span className="text-[12px] text-[#14B8A6]">
+            From: {selectedDate}
+          </span>
+          <button
+            onClick={() => setDate(null)}
+            className="text-[12px] text-red-400 hover:text-red-600 transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      )}
     </div>
   );
-};
+});
 
 export default CalendarWidget;

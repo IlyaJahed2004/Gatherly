@@ -3,7 +3,8 @@ import Button from '../Button';
 
 const Navbar = () => {
   return (
-    <nav className="bg-[#F3F4F6] py-8 px-8 md:px-16 flex items-center justify-between border-b border-gray-200 sticky top-0 z-50">
+    /* استفاده از پس‌زمینه سفید خالص (bg-white) برای نمایش زیباتر اسکرول کارت‌ها از زیر نوبار */
+    <nav className="bg-white py-8 px-8 md:px-16 flex items-center justify-between border-b border-gray-200 sticky top-0 z-50">
       {/* Logo */}
       <div 
         className="text-[48px] font-normal text-[#078C80] tracking-tight cursor-pointer" 
@@ -12,7 +13,7 @@ const Navbar = () => {
         Gatherly
       </div>
 
-      {/* Tabs - افزایش Gap برای فاصله گرفتن تب‌ها از هم */}
+      {/* Tabs */}
       <div className="hidden md:flex items-center gap-[40px]">
         
         {/* Active Tab: Home */}
@@ -29,7 +30,6 @@ const Navbar = () => {
           <a href="/about" className="text-[#078C80] text-[24px] font-medium pb-4 hover:opacity-80 transition-opacity">
             About us
           </a>
-          {/* خط زیر About us هم کشیده شد تا کاملا قرینه و هم‌سطح باشد */}
           <div className="absolute bottom-0 w-[240px] h-[4px] bg-[#078C80] opacity-0 hover:opacity-100 transition-opacity"></div>
         </div>
 

@@ -62,7 +62,8 @@ const HomePage = observer(() => {
         </div>
 
         {/* ستون راست: دقیقاً 1 ستون از 3 تا — sticky */}
-        <div className="col-span-1 sticky top-8 self-start flex flex-col gap-6">
+        {/* مقدار top روی [160px] تنظیم شد تا فاصله‌ای ایده‌آل و تمیز با نوبار داشته باشد */}
+        <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
 
           {/* Event Type Widget */}
           <div

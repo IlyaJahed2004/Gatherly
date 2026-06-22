@@ -33,10 +33,9 @@ const HomePage = observer(() => {
 
   return (
     <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      {/* 3 ستون مساوی — هر ایونت 1 ستون، ستون راست هم 1 ستون */}
       <div className="grid grid-cols-3 gap-6 items-start">
 
-        {/* ایونت‌ها: col-span-2 یعنی 2 ستون از 3 تا */}
+        {/* ایونت‌ها: col-span-2 */}
         <div className="col-span-2 grid grid-cols-2 gap-6">
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
@@ -61,14 +60,16 @@ const HomePage = observer(() => {
           )}
         </div>
 
-        {/* ستون راست: دقیقاً 1 ستون از 3 تا — sticky */}
-        {/* مقدار top روی [160px] تنظیم شد تا فاصله‌ای ایده‌آل و تمیز با نوبار داشته باشد */}
-        <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
+        {/* ستون راست — sticky، ارتفاع برابر با یه EventCard */}
+        <div
+          className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6"
+          style={{ height: '680px' }}
+        >
 
-          {/* Event Type Widget */}
+          {/* Event Type Widget — ارتفاع ثابت */}
           <div
-            className="bg-[#FFFFFF] rounded-[16px] p-6"
-            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
+            className="bg-[#FFFFFF] rounded-[16px] p-6 flex flex-col"
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '200px' }}
           >
             <h3 className="text-2xl font-medium text-[#1F2937] mb-6">Event Type</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -90,9 +91,9 @@ const HomePage = observer(() => {
             </div>
           </div>
 
-          {/* Calendar Widget */}
+          {/* Calendar Widget — بقیه فضا رو پر می‌کنه */}
           <div
-            className="rounded-[16px] overflow-hidden"
+            className="rounded-[16px] overflow-hidden flex-1"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <CalendarWidget />

@@ -40,7 +40,8 @@ const HomePage = observer(() => {
       <div className="flex gap-8 items-start w-full">
 
         {/* ستون چپ: کارت‌های ایونت — min-w-0 مهمه که overflow نشه */}
-        <div className="flex-1 min-w-0 grid grid-cols-2 gap-6">
+        <div className="flex-[2] min-w-0 grid grid-cols-2 gap-6">
+
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
               <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
@@ -65,7 +66,7 @@ const HomePage = observer(() => {
         </div>
 
         {/* ستون راست: همیشه سمت راست، sticky، عرض ثابت */}
-        <div className="w-[280px] shrink-0 sticky top-8 self-start flex flex-col gap-8">
+        <div className="flex-[1] min-w-[240px] max-w-[380px] sticky top-8 self-start flex flex-col gap-8">
 
           {/* Event Type Widget */}
           <div

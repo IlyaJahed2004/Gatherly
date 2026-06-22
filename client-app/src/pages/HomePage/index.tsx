@@ -31,87 +31,76 @@ const HomePage = observer(() => {
     });
   };
 
-  const sidebar = (
-    <div className="flex flex-col gap-8">
-      {/* Event Type Widget */}
-      <div
-        className="bg-[#FFFFFF] rounded-[16px] p-[32px]"
-        style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
-      >
-        <h3 className="text-[32px] font-medium text-[#1F2937] mb-8">Event Type</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.value}
-              onClick={() =>
-                setCategory(selectedCategory === cat.value ? 0 : cat.value)
-              }
-              className={`py-2 px-4 rounded-[16px] text-[20px] font-medium border transition-colors ${
-                selectedCategory === cat.value
-                  ? 'bg-[#14B8A6] text-white border-[#14B8A6]'
-                  : 'border-[#14B8A6] text-[#14B8A6] hover:bg-teal-50'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Calendar Widget */}
-      <div
-        className="rounded-[16px]"
-        style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
-      >
-        <CalendarWidget />
-      </div>
-    </div>
-  );
-
   return (
     <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      <div className="max-w-[95%] mx-auto">
+      {/* 
+        از flex استفاده می‌کنیم بدون هیچ breakpoint — 
+        همیشه کنار هم، حتی موقع زوم 
+      */}
+      <div className="flex gap-8 items-start w-full">
 
-        {/* لایه‌بندی: روی xl سه ستونه، زیرش تک ستون */}
-        <div className="xl:flex xl:gap-8 xl:items-start">
+        {/* ستون چپ: کارت‌های ایونت — min-w-0 مهمه که overflow نشه */}
+        <div className="flex-1 min-w-0 grid grid-cols-2 gap-6">
+          {isLoading ? (
+            <div className="col-span-2 flex items-center justify-center py-20">
+              <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
+            </div>
+          ) : events.length === 0 ? (
+            <div className="col-span-2 flex items-center justify-center py-20">
+              <span className="text-gray-400 text-[20px]">No events found.</span>
+            </div>
+          ) : (
+            events.map((event) => (
+              <EventCard
+                key={event.id}
+                title={event.title}
+                date={formatDate(event.startDate)}
+                location={event.venue + (event.city ? `, ${event.city}` : '')}
+                description={event.description}
+                hostName="Host"
+                imageUrl={`https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
+              />
+            ))
+          )}
+        </div>
 
-          {/* ستون چپ: کارت‌های ایونت */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 xl:mb-0">
-            {isLoading ? (
-              <div className="col-span-2 flex items-center justify-center py-20">
-                <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
-              </div>
-            ) : events.length === 0 ? (
-              <div className="col-span-2 flex items-center justify-center py-20">
-                <span className="text-gray-400 text-[20px]">No events found.</span>
-              </div>
-            ) : (
-              events.map((event) => (
-                <EventCard
-                  key={event.id}
-                  title={event.title}
-                  date={formatDate(event.startDate)}
-                  location={event.venue + (event.city ? `, ${event.city}` : '')}
-                  description={event.description}
-                  hostName="Host"
-                  imageUrl={`https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
-                />
-              ))
-            )}
+        {/* ستون راست: همیشه سمت راست، sticky، عرض ثابت */}
+        <div className="w-[280px] shrink-0 sticky top-8 self-start flex flex-col gap-8">
+
+          {/* Event Type Widget */}
+          <div
+            className="bg-[#FFFFFF] rounded-[16px] p-6"
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
+          >
+            <h3 className="text-2xl font-medium text-[#1F2937] mb-6">Event Type</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.value}
+                  onClick={() =>
+                    setCategory(selectedCategory === cat.value ? 0 : cat.value)
+                  }
+                  className={`py-2 px-3 rounded-[16px] text-base font-medium border transition-colors ${
+                    selectedCategory === cat.value
+                      ? 'bg-[#14B8A6] text-white border-[#14B8A6]'
+                      : 'border-[#14B8A6] text-[#14B8A6] hover:bg-teal-50'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* ستون راست روی xl: sticky */}
-          <div className="hidden xl:block w-[320px] shrink-0 sticky top-8 self-start">
-            {sidebar}
+          {/* Calendar Widget */}
+          <div
+            className="rounded-[16px] overflow-hidden"
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
+          >
+            <CalendarWidget />
           </div>
 
         </div>
-
-        {/* ستون راست زیر xl: زیر ایونت‌ها نشون داده می‌شه */}
-        <div className="xl:hidden mt-8">
-          {sidebar}
-        </div>
-
       </div>
     </div>
   );

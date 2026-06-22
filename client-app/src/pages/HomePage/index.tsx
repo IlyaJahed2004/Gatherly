@@ -32,11 +32,11 @@ const HomePage = observer(() => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      <div className="max-w-[95%] mx-auto grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
+      <div className="max-w-[95%] mx-auto flex gap-8 items-start">
 
-        {/* ستون چپ: کارت‌های ایونت */}
-        <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+        {/* ستون چپ: کارت‌های ایونت — اسکرول می‌کنه */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8">
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
               <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
@@ -60,12 +60,13 @@ const HomePage = observer(() => {
           )}
         </div>
 
-        {/* ستون راست */}
-        <div className="flex flex-col gap-8 h-full">
-
+        {/* ستون راست: sticky — ثابت می‌مونه */}
+        <div
+          className="hidden xl:flex flex-col gap-8 w-[320px] shrink-0 sticky top-8 self-start"
+        >
           {/* Event Type Widget */}
           <div
-            className="bg-[#FFFFFF] rounded-[16px] p-[32px] shrink-0"
+            className="bg-[#FFFFFF] rounded-[16px] p-[32px]"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <h3 className="text-[32px] font-medium text-[#1F2937] mb-8">Event Type</h3>
@@ -88,15 +89,15 @@ const HomePage = observer(() => {
             </div>
           </div>
 
-          {/* Calendar Widget */}
+          {/* Calendar Widget — ارتفاع طبیعی، کش نمیاد */}
           <div
-            className="rounded-[16px] flex-grow flex flex-col"
+            className="rounded-[16px]"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <CalendarWidget />
           </div>
-
         </div>
+
       </div>
     </div>
   );

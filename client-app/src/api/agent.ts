@@ -10,7 +10,8 @@ axios.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const status = error.response?.status;
-    if (status === 401 && window.location.pathname !== '/signin') {
+    const path = window.location.pathname;
+    if (status === 401 && path !== '/signin' && path !== '/signup') {
       window.location.href = '/signin';
     }
     return Promise.reject(error);

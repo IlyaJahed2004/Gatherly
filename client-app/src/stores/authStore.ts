@@ -19,27 +19,23 @@ export class AuthStore {
     if (axios.isAxiosError(error)) {
       const data = error.response?.data;
 
-      // 1. Validation errors (ProblemDetails.errors)
       if (data?.errors) {
         const messages = Object.values(data.errors).flat().join(' ');
         this.error = { message: messages || fallback };
         return;
       }
 
-      // 2. Direct message field
       if (typeof data?.message === 'string' && data.message) {
         this.error = { message: data.message };
         return;
       }
 
-      // 3. ProblemDetails.title
       if (typeof data?.title === 'string' && data.title) {
         this.error = { message: data.title };
         return;
       }
     }
 
-    // 4. Empty body (e.g. 401 from Identity) -> use fallback, not statusText
     this.error = { message: fallback };
   }
 
@@ -48,15 +44,12 @@ export class AuthStore {
     this.error = null;
     try {
       await agent.Account.login(credentials);
-      // login returns no body; the cookie is set by the server.
-      // Load the user so isLoggedIn flips and the UI reacts.
       await this.loadCurrentUser();
       runInAction(() => {
         this.isLoading = false;
       });
     } catch (error: unknown) {
       runInAction(() => {
-        // 401 from Identity has an empty body, so the fallback is what the user sees.
         this.handleError(error, 'Invalid email or password');
         this.isLoading = false;
       });
@@ -64,17 +57,17 @@ export class AuthStore {
     }
   }
 
-
   async register(credentials: RegisterRequest) {
     this.isLoading = true;
     this.error = null;
     try {
       await agent.Account.register(credentials);
-      // register returns no body and does not sign in, so log in to establish the cookie session
       await this.login({ email: credentials.email, password: credentials.password });
     } catch (error: unknown) {
       runInAction(() => {
-        this.handleError(error, 'Registration failed');
+        if (!this.error) {
+          this.handleError(error, 'Registration failed');
+        }
         this.isLoading = false;
       });
       throw error;
@@ -87,9 +80,8 @@ export class AuthStore {
       runInAction(() => {
         this.user = data ? (data as User) : null;
       });
-    } catch (error: unknown) {
+    } catch {
       runInAction(() => {
-        this.handleError(error, 'Failed to load current user');
         this.user = null;
       });
     }

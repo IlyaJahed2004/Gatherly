@@ -33,15 +33,11 @@ const HomePage = observer(() => {
 
   return (
     <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      {/* 
-        از flex استفاده می‌کنیم بدون هیچ breakpoint — 
-        همیشه کنار هم، حتی موقع زوم 
-      */}
-      <div className="flex gap-8 items-start w-full">
+      {/* 3 ستون مساوی — هر ایونت 1 ستون، ستون راست هم 1 ستون */}
+      <div className="grid grid-cols-3 gap-6 items-start">
 
-        {/* ستون چپ: کارت‌های ایونت — min-w-0 مهمه که overflow نشه */}
-        <div className="flex-[2] min-w-0 grid grid-cols-2 gap-6">
-
+        {/* ایونت‌ها: col-span-2 یعنی 2 ستون از 3 تا */}
+        <div className="col-span-2 grid grid-cols-2 gap-6">
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
               <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
@@ -65,8 +61,8 @@ const HomePage = observer(() => {
           )}
         </div>
 
-        {/* ستون راست: همیشه سمت راست، sticky، عرض ثابت */}
-        <div className="flex-[1] min-w-[240px] max-w-[380px] sticky top-8 self-start flex flex-col gap-8">
+        {/* ستون راست: دقیقاً 1 ستون از 3 تا — sticky */}
+        <div className="col-span-1 sticky top-8 self-start flex flex-col gap-6">
 
           {/* Event Type Widget */}
           <div

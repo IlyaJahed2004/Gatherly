@@ -75,8 +75,7 @@ const CalendarWidget = observer(() => {
   return (
     <div className="bg-[#FFFFFF] rounded-[16px] p-6 h-full flex flex-col justify-between">
 
-      {/* Header: ماه و سال + دکمه‌های قبلی/بعدی */}
-      <div className="flex justify-between items-center px-2">
+      <div className="flex justify-between items-center px-2 mb-4">
         <button
           onClick={prevMonth}
           className="text-[#F59E0B] font-normal text-[20px] hover:opacity-70 transition-opacity"
@@ -94,8 +93,9 @@ const CalendarWidget = observer(() => {
         </button>
       </div>
 
-      {/* روزهای هفته */}
-      <div className="grid grid-cols-7 gap-1 text-center">
+      <div className="border-t border-gray-100 mb-3" />
+
+      <div className="grid grid-cols-7 gap-1 text-center mb-1">
         {daysOfWeek.map(day => (
           <div key={day} className="text-[12px] text-[#6B7280] font-medium">
             {day}
@@ -103,7 +103,6 @@ const CalendarWidget = observer(() => {
         ))}
       </div>
 
-      {/* شبکه روزها — flex-1 تا فضا رو بین ردیف‌ها یکنواخت پخش کنه */}
       <div className="grid grid-cols-7 gap-x-1 gap-y-1 text-center flex-1 content-evenly">
         {cells.map((cell, idx) => (
           <div
@@ -126,9 +125,8 @@ const CalendarWidget = observer(() => {
         ))}
       </div>
 
-      {/* نشانگر فیلتر فعال */}
       {selectedDate && (
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1 mt-2">
           <span className="text-[12px] text-[#14B8A6]">
             From: {selectedDate}
           </span>

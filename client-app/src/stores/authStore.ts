@@ -39,6 +39,7 @@ export class AuthStore {
     this.isLoading = true;
     this.error = null;
     try {
+      // ← token رو از response میگیره و save میکنه
       const result = await agent.Account.login(credentials);
       localStorage.setItem('jwt', result.accessToken);
       await this.loadCurrentUser();

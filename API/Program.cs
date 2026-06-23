@@ -73,10 +73,13 @@ builder
 
 builder.Services.AddAuthorization(opt =>
 {
-    opt.AddPolicy("IsEventHost", policy =>
-    {
-        policy.Requirements.Add(new IsHostRequirment());
-    });
+    opt.AddPolicy(
+        "IsEventHost",
+        policy =>
+        {
+            policy.Requirements.Add(new IsHostRequirment());
+        }
+    );
 });
 
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirmentHandler>();

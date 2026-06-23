@@ -20,10 +20,7 @@ public class UpdateEvent
     {
         public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
         {
-            var existingEvent = await dbContext.Events.FindAsync(
-                command.Id,
-                cancellationToken
-            );
+            var existingEvent = await dbContext.Events.FindAsync(command.Id, cancellationToken);
 
             if (existingEvent == null)
                 return Result<Unit>.Failure("Event not found", 404);

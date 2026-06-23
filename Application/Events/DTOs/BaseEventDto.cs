@@ -19,5 +19,5 @@ public enum EventCategory
     Sports = 1,
     Science = 2,
     Leisure = 3,
-    Other = 4
+    Other = 4,
 }

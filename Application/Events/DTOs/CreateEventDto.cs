@@ -10,8 +10,5 @@ namespace Application.Events.DTOs
     /// the client is allowed to provide. Server-managed fields
     /// like Id and CreatedAt are intentionally excluded.
     /// </summary>
-    public class CreateEventDto : BaseEventDto
-    {
-
-    }
+    public class CreateEventDto : BaseEventDto { }
 }

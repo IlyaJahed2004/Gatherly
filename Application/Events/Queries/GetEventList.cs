@@ -28,7 +28,8 @@ namespace Application.Events.Queries
         // - 'Query': Specifies the exact incoming message type this handler is bound to.
         // - 'List<Domain.Event>': Represents the explicit return type, matching the Query's contract.
         // The 'GatherlyDbContext' infrastructure dependency is injected via the primary constructor.
-        public class Handler(GatherlyDbContext context, IMapper mapper) : IRequestHandler<Query, Result<PagedList<EventDto>>>
+        public class Handler(GatherlyDbContext context, IMapper mapper)
+            : IRequestHandler<Query, Result<PagedList<EventDto>>>
         {
             // 3. THE HANDLER EXECUTION METHOD
             // Automatically invoked by the MediatR pipeline when 'IMediator.Send()' dispatches the Query.
@@ -59,7 +60,7 @@ namespace Application.Events.Queries
                 var eventsDto = await query
                     .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
                     .Take(request.Params.PageSize)
-                    .ProjectTo<EventDto>(mapper.ConfigurationProvider)  
+                    .ProjectTo<EventDto>(mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
                 var pagedList = new PagedList<EventDto>
@@ -67,7 +68,7 @@ namespace Application.Events.Queries
                     Items = eventsDto,
                     PageNumber = request.Params.PageNumber,
                     PageSize = request.Params.PageSize,
-                    TotalCount = totalCount
+                    TotalCount = totalCount,
                 };
 
                 return Result<PagedList<EventDto>>.Success(pagedList);

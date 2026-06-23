@@ -9,6 +9,7 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
 {
     public required DbSet<Domain.Event> Events { get; set; }
     public required DbSet<EventAttendee> EventAttendees { get; set; }
+    public required DbSet<UserFollowing> UserFollowings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +26,21 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
             b.HasOne(ea => ea.Event)
              .WithMany(e => e.Attendees)
              .HasForeignKey(ea => ea.EventId);
+        });
+
+        modelBuilder.Entity<UserFollowing>(b =>
+        {
+            b.HasKey(uf => new { uf.ObserverId, uf.TargetId });
+
+            b.HasOne(uf => uf.Observer)
+             .WithMany(u => u.Followings)
+             .HasForeignKey(uf => uf.ObserverId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(uf => uf.Target)
+             .WithMany(u => u.Followers)
+             .HasForeignKey(uf => uf.TargetId)
+             .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

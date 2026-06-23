@@ -9,4 +9,6 @@ public class User : IdentityUser
     public string? ImageUrl { get; set; }
 
     public ICollection<EventAttendee> Events { get; set; } = new List<EventAttendee>();
+    public ICollection<UserFollowing> Followings { get; set; } = new List<UserFollowing>();
+    public ICollection<UserFollowing> Followers { get; set; } = new List<UserFollowing>();
 }

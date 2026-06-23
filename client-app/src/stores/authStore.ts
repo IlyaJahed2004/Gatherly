@@ -18,24 +18,20 @@ export class AuthStore {
   private handleError(error: unknown, fallback = 'Something went wrong') {
     if (axios.isAxiosError(error)) {
       const data = error.response?.data;
-
       if (data?.errors) {
         const messages = Object.values(data.errors).flat().join(' ');
         this.error = { message: messages || fallback };
         return;
       }
-
       if (typeof data?.message === 'string' && data.message) {
         this.error = { message: data.message };
         return;
       }
-
       if (typeof data?.title === 'string' && data.title) {
         this.error = { message: data.title };
         return;
       }
     }
-
     this.error = { message: fallback };
   }
 
@@ -43,11 +39,10 @@ export class AuthStore {
     this.isLoading = true;
     this.error = null;
     try {
-      await agent.Account.login(credentials);
+      const result = await agent.Account.login(credentials);
+      localStorage.setItem('jwt', result.accessToken);
       await this.loadCurrentUser();
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      runInAction(() => { this.isLoading = false; });
     } catch (error: unknown) {
       runInAction(() => {
         this.handleError(error, 'Invalid email or password');
@@ -62,12 +57,10 @@ export class AuthStore {
     this.error = null;
     try {
       await agent.Account.register(credentials);
-      await this.login({ email: credentials.email, password: credentials.password });
+      runInAction(() => { this.isLoading = false; });
     } catch (error: unknown) {
       runInAction(() => {
-        if (!this.error) {
-          this.handleError(error, 'Registration failed');
-        }
+        this.handleError(error, 'Registration failed');
         this.isLoading = false;
       });
       throw error;
@@ -76,25 +69,18 @@ export class AuthStore {
 
   async loadCurrentUser() {
     try {
+      const token = localStorage.getItem('jwt');
+      if (!token) return;
       const data = await agent.Account.current();
-      runInAction(() => {
-        this.user = data ? (data as User) : null;
-      });
+      runInAction(() => { this.user = data ?? null; });
     } catch {
-      runInAction(() => {
-        this.user = null;
-      });
+      runInAction(() => { this.user = null; });
     }
   }
 
   async logout() {
-    try {
-      await agent.Account.logout();
-    } finally {
-      runInAction(() => {
-        this.user = null;
-      });
-    }
+    agent.Account.logout();
+    runInAction(() => { this.user = null; });
   }
 
   get isLoggedIn() {

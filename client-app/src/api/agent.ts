@@ -2,10 +2,15 @@ import axios, { type AxiosResponse, type AxiosError } from 'axios';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
 import type { PagedList, EventParams, EventDetails } from '../types/event';
 import type { Event } from '../types/event';
-import type { Profile, UserEvent, Follower } from '../types/profile';
 
 axios.defaults.baseURL = 'https://localhost:5001/api';
 axios.defaults.withCredentials = true;
+
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('jwt');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 axios.interceptors.response.use(
   (response) => response,
@@ -13,6 +18,7 @@ axios.interceptors.response.use(
     const status = error.response?.status;
     const path = window.location.pathname;
     if (status === 401 && path !== '/signin' && path !== '/signup') {
+      localStorage.removeItem('jwt');
       window.location.href = '/signin';
     }
     return Promise.reject(error);
@@ -29,10 +35,10 @@ const requests = {
 };
 
 const Account = {
-  login:    (creds: LoginRequest)    => requests.post<void>('/login?useCookies=true', creds),
+  login:    (creds: LoginRequest)    => requests.post<{accessToken: string}>('/login?useCookies=false&useSessionCookies=false', creds),
   register: (creds: RegisterRequest) => requests.post<void>('/account/register', creds),
-  current:  ()                       => requests.get<User | ''>('/account/user-info'),
-  logout:   ()                       => requests.post<void>('/account/logout', {}),
+  current:  ()                       => requests.get<User>('/account/user-info'),
+  logout:   ()                       => { localStorage.removeItem('jwt'); return Promise.resolve(); },
 };
 
 const Events = {
@@ -41,14 +47,6 @@ const Events = {
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
 };
 
-const Profiles = {
-  get:        (username: string)                         => requests.get<Profile>(`/profiles/${username}`),
-  update:     (data: { displayName?: string; bio?: string }) => requests.put<void>('/profiles', data),
-  toggleFollow: (username: string)                       => requests.post<void>(`/profiles/${username}/follow`, {}),
-  getEvents:  (username: string, predicate: string)      => requests.get<UserEvent[]>(`/profiles/${username}/events`, { predicate }),
-  getFollowings: (username: string, predicate: string)   => requests.get<Follower[]>(`/profiles/${username}/followings`, { predicate }),
-};
-
-const agent = { Account, Events, Profiles };
+const agent = { Account, Events };
 
 export default agent;

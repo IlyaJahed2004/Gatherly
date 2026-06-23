@@ -25,7 +25,7 @@ function SignUp() {
   const onSubmit = async (data: SignUpForm) => {
     try {
       await authStore.register(data);
-      navigate('/');
+      navigate('/signin');
     } catch {
     }
   };

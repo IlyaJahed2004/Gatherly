@@ -1,5 +1,3 @@
-using System;
-
 namespace Domain;
 
 public class Event
@@ -11,9 +9,10 @@ public class Event
     public required string Description { get; set; }
     public required string Category { get; set; }
     public bool isCancelled { get; set; }
-
     public required string City { get; set; }
     public required string Venue { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+
+    public ICollection<EventAttendee> Attendees { get; set; } = new List<EventAttendee>();
 }

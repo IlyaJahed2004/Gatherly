@@ -12,6 +12,17 @@ export interface Event {
   longitude: number;
 }
 
+export interface AttendeeDto {
+  id: string;
+  displayName: string;
+  imageUrl?: string;
+  isHost: boolean;
+}
+
+export interface EventDetails extends Event {
+  attendees: AttendeeDto[];
+}
+
 export interface PagedList<T> {
   items: T[];
   pageNumber: number;
@@ -23,6 +34,6 @@ export interface PagedList<T> {
 export interface EventParams {
   pageNumber?: number;
   pageSize?: number;
-  startDate?: string;   
+  startDate?: string;
   category?: number;
 }

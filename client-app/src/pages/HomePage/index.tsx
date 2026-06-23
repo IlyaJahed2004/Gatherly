@@ -5,10 +5,10 @@ import CalendarWidget from '../../components/CalendarWidget';
 import { useStore } from '../../stores/rootStore';
 
 const CATEGORIES = [
-  { label: 'Sports', value: 1 },
+  { label: 'Sports',  value: 1 },
   { label: 'Science', value: 2 },
   { label: 'Leisure', value: 3 },
-  { label: 'Other', value: 4 },
+  { label: 'Other',   value: 4 },
 ];
 
 const HomePage = observer(() => {
@@ -19,22 +19,17 @@ const HomePage = observer(() => {
     loadEvents();
   }, [loadEvents]);
 
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true,
     });
-  };
 
   return (
     <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
       <div className="grid grid-cols-3 gap-6 items-start">
 
+        {/* ستون چپ: ایونت‌ها */}
         <div className="col-span-2 grid grid-cols-2 gap-6">
           {isLoading ? (
             <div className="col-span-2 flex items-center justify-center py-20">
@@ -48,6 +43,7 @@ const HomePage = observer(() => {
             events.map((event) => (
               <EventCard
                 key={event.id}
+                id={event.id}
                 title={event.title}
                 date={formatDate(event.startDate)}
                 location={event.venue + (event.city ? `, ${event.city}` : '')}
@@ -59,6 +55,7 @@ const HomePage = observer(() => {
           )}
         </div>
 
+        {/* ستون راست: sticky sidebar */}
         <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
 
           {/* Event Type Widget */}
@@ -71,9 +68,7 @@ const HomePage = observer(() => {
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.value}
-                  onClick={() =>
-                    setCategory(selectedCategory === cat.value ? 0 : cat.value)
-                  }
+                  onClick={() => setCategory(selectedCategory === cat.value ? 0 : cat.value)}
                   className={`py-2 px-3 rounded-[16px] text-base font-medium border transition-colors ${
                     selectedCategory === cat.value
                       ? 'bg-[#14B8A6] text-white border-[#14B8A6]'
@@ -86,12 +81,10 @@ const HomePage = observer(() => {
             </div>
           </div>
 
+          {/* Calendar Widget */}
           <div
             className="rounded-[16px] overflow-hidden"
-            style={{
-              boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)',
-              height: '460px',
-            }}
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '460px' }}
           >
             <CalendarWidget />
           </div>

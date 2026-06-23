@@ -1,29 +1,31 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 
 interface EventCardProps {
+  id: string;
   title: string;
   date: string;
   location: string;
   description: string;
   hostName: string;
-  status?: 'going' | 'hosting' | 'open';
   imageUrl?: string;
   hostAvatarUrl?: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
+  id,
   title,
   date,
   location,
   description,
   hostName,
-  status = 'open',
   imageUrl = 'https://placehold.co/600x400/e2e8f0/64748b?text=Event+Image',
   hostAvatarUrl = 'https://placehold.co/100x100/cbd5e1/475569?text=Host',
 }) => {
-  return (
+  const navigate = useNavigate();
 
+  return (
     <div
       className="bg-[#FFFFFF] rounded-[16px] p-[32px] flex flex-col hover:-translate-y-1 transition-transform"
       style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '680px' }}
@@ -74,13 +76,14 @@ const EventCard: React.FC<EventCardProps> = ({
             className="w-[40px] h-[40px] rounded-full object-cover"
           />
           <div className="flex flex-col">
-            <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">
-              hosted by
-            </span>
+            <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
             <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
         </div>
-        <Button className="!w-[140px] !h-auto !py-2 !text-[20px] !font-normal !rounded-[16px] !bg-[#078C80] !text-[#FFFFFF] hover:!bg-[#06756b] !border-none !shadow-none">
+        <Button
+          onClick={() => navigate(`/events/${id}`)}
+          className="!w-[140px] !h-auto !py-2 !text-[20px] !font-normal !rounded-[16px] !bg-[#078C80] !text-[#FFFFFF] hover:!bg-[#06756b] !border-none !shadow-none"
+        >
           View
         </Button>
       </div>

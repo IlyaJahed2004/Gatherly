@@ -46,6 +46,7 @@ const Events = {
   list:    (params: EventParams) => requests.get<PagedList<Event>>('/events', params),
   details: (id: string)          => requests.get<EventDetails>(`/events/${id}`),
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
+  create:  (event: object)       => requests.post<string>('/events', event),
 };
 
 const Profiles = {

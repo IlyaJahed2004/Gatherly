@@ -11,4 +11,6 @@ public class User : IdentityUser
 
     //navigation properties
     public ICollection<EventAttendee> Events { get; set; } = [];
+
+    public string? PublicId { get; set; }
 }

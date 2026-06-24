@@ -11,4 +11,7 @@ public class User : IdentityUser
 
     //navigation properties
     public ICollection<EventAttendee> Events { get; set; } = [];
+
+    public ICollection<UserFollowing> Followings { get; set; } = [];    
+    public ICollection<UserFollowing> Followers { get; set; } = [];
 }

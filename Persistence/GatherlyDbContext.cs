@@ -22,6 +22,7 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
     // It maps our Domain Entity (Event) to the Database Table.
     public required DbSet<Domain.Event> Events { get; set; }
     public required DbSet<EventAttendee> EventAttendees { get; set; }
+    public required DbSet<UserFollowing> UserFollowings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -42,5 +43,21 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
             .HasOne(x => x.Event) // EventAttendee has an Event property → EventId is FK to Events
             .WithMany(x => x.Attendees) // one Event can have many EventAttendee rows
             .HasForeignKey(x => x.EventId); // the FK column is EventId
+
+        builder
+            .Entity<UserFollowing>(x =>
+            {
+                x.HasKey(k => new { k.ObserverId, k.TargetId });
+
+                x.HasOne(o => o.Observer)
+                    .WithMany(f => f.Followings)
+                    .HasForeignKey(o => o.ObserverId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                x.HasOne(o => o.Target)
+                    .WithMany(f => f.Followers)
+                    .HasForeignKey(o => o.TargetId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
     }
 }

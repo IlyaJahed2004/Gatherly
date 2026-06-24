@@ -5,6 +5,7 @@ using Application.Events.Validators;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +56,7 @@ builder.Services.AddMediatR(x =>
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 // Register ExceptionMiddleware as a transient service.
 // Transient = a new instance is created per request and disposed after.
@@ -84,6 +86,7 @@ builder.Services.AddAuthorization(opt =>
 
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirmentHandler>();
 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

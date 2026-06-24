@@ -19,4 +19,18 @@ public class ProfilesController(IMediator mediator) : BaseApiController
 
         return BadRequest(result.Error);
     }
+
+    [HttpDelete("delete-photo")]
+    public async Task<ActionResult> DeletePhoto()
+    {
+        var result = await mediator.Send(new DeletePhoto.Command());
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess)
+            return Ok();
+
+        return BadRequest(result.Error);
+    }
 }

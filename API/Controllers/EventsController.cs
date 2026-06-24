@@ -125,4 +125,34 @@ public class EventsController(IMediator mediator) : BaseApiController
 
         return BadRequest(result.Error);
     }
+
+    [HttpPost("{id}/photo")]
+    [Authorize(Policy = "IsEventHost")]
+    public async Task<ActionResult> AddEventPhoto(string id, [FromForm] IFormFile file)
+    {
+        var result = await mediator.Send(new AddEventPhoto.Command { EventId = id, File = file });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
+    }
+
+    [HttpDelete("{id}/photo")]
+    [Authorize(Policy = "IsEventHost")]
+    public async Task<ActionResult> DeleteEventPhoto(string id)
+    {
+        var result = await mediator.Send(new DeleteEventPhoto.Command { EventId = id });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess)
+            return Ok();
+
+        return BadRequest(result.Error);
+    }
 }

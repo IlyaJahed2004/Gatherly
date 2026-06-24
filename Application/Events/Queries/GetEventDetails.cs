@@ -1,5 +1,6 @@
 using Application.Core;
 using Application.Events.DTOs;
+using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -27,7 +28,7 @@ public class GetEventDetails
     /// Uses ProjectTo instead of Include/ThenInclude + mapper.Map to push
     /// the projection down to SQL — only the columns EventDto declares are fetched.
     /// </summary>
-    public class Handler(GatherlyDbContext context, IMapper mapper)
+    public class Handler(GatherlyDbContext context, IMapper mapper, IUserAccessor userAccessor)
         : IRequestHandler<Query, Result<EventDto>>
     {
         public async Task<Result<EventDto>> Handle(
@@ -41,7 +42,8 @@ public class GetEventDetails
             // JOINs to EventAttendees and AspNetUsers are inferred automatically —
             // no Include/ThenInclude required.
             var specificEventDto = await context
-                .Events.ProjectTo<EventDto>(mapper.ConfigurationProvider)
+                .Events.ProjectTo<EventDto>(mapper.ConfigurationProvider,
+                    new { currentUserId = userAccessor.GetUserId() })
                 .FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
 
             // "Not found" is an expected business outcome, not a system error.

@@ -14,6 +14,8 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
+        string? currentUserId = null;
+
         // Used in UpdateEvent — copies property values from one
         // Event instance into another (avoids overwriting the tracked entity)
         CreateMap<Event, Event>();
@@ -43,6 +45,16 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.DisplayName))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.User.Id))
             .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl))
+            .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.User.Followers.Count))
+            .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.User.Followings.Count))
+            .ForMember(d => d.Following, o => o.MapFrom(s =>
+                s.User.Followers.Any(x => x.ObserverId == currentUserId)));
+
+        CreateMap<User, UserProfile>()
+            .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
+            .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.Followings.Count))
+            .ForMember(d => d.Following, o => o.MapFrom(s =>
+                s.Followers.Any(x => x.ObserverId == currentUserId)));
     }
 }

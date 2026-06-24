@@ -7,49 +7,46 @@ import type { RootStore } from './rootStore';
 export class AuthStore {
   rootStore: RootStore;
   user: User | null = null;
-  token: string | null = null;
   isLoading = false;
   error: AuthError | null = null;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     makeAutoObservable(this);
-    this.loadTokenFromStorage();
   }
 
-  private loadTokenFromStorage() {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      this.token = token;
+  private handleError(error: unknown, fallback = 'Something went wrong') {
+    if (axios.isAxiosError(error)) {
+      const data = error.response?.data;
+      if (data?.errors) {
+        const messages = Object.values(data.errors).flat().join(' ');
+        this.error = { message: messages || fallback };
+        return;
+      }
+      if (typeof data?.message === 'string' && data.message) {
+        this.error = { message: data.message };
+        return;
+      }
+      if (typeof data?.title === 'string' && data.title) {
+        this.error = { message: data.title };
+        return;
+      }
     }
-  }
-
-  private setSession(user: User) {
-    this.user = user;
-    this.token = user.token;
-    localStorage.setItem('jwt', user.token);
-  }
-
-  private handleError(error: unknown, fallback: string) {
-    if (axios.isAxiosError(error) && error.response?.data) {
-      this.error = error.response.data as AuthError;
-    } else {
-      this.error = { message: fallback };
-    }
+    this.error = { message: fallback };
   }
 
   async login(credentials: LoginRequest) {
     this.isLoading = true;
     this.error = null;
     try {
-      const user = await agent.Account.login(credentials);
-      runInAction(() => {
-        this.setSession(user);
-        this.isLoading = false;
-      });
+      // ← token رو از response میگیره و save میکنه
+      const result = await agent.Account.login(credentials);
+      localStorage.setItem('jwt', result.accessToken);
+      await this.loadCurrentUser();
+      runInAction(() => { this.isLoading = false; });
     } catch (error: unknown) {
       runInAction(() => {
-        this.handleError(error, 'Login failed');
+        this.handleError(error, 'Invalid email or password');
         this.isLoading = false;
       });
       throw error;
@@ -60,11 +57,8 @@ export class AuthStore {
     this.isLoading = true;
     this.error = null;
     try {
-      const user = await agent.Account.register(credentials);
-      runInAction(() => {
-        this.setSession(user);
-        this.isLoading = false;
-      });
+      await agent.Account.register(credentials);
+      runInAction(() => { this.isLoading = false; });
     } catch (error: unknown) {
       runInAction(() => {
         this.handleError(error, 'Registration failed');
@@ -75,36 +69,22 @@ export class AuthStore {
   }
 
   async loadCurrentUser() {
-    if (!this.token) {
-      return;
-    }
-    this.isLoading = true;
     try {
-      const user = await agent.Account.current();
-      runInAction(() => {
-        this.user = user;
-        this.token = user.token;
-        localStorage.setItem('jwt', user.token);
-        this.isLoading = false;
-      });
-    } catch (error: unknown) {
-      runInAction(() => {
-        this.handleError(error, 'Failed to load current user');
-        this.user = null;
-        this.token = null;
-        localStorage.removeItem('jwt');
-        this.isLoading = false;
-      });
+      const token = localStorage.getItem('jwt');
+      if (!token) return;
+      const data = await agent.Account.current();
+      runInAction(() => { this.user = data ?? null; });
+    } catch {
+      runInAction(() => { this.user = null; });
     }
   }
 
-  logout() {
-    this.user = null;
-    this.token = null;
-    localStorage.removeItem('jwt');
+  async logout() {
+    agent.Account.logout();
+    runInAction(() => { this.user = null; });
   }
 
   get isLoggedIn() {
-    return !!this.token;
+    return !!this.user;
   }
 }

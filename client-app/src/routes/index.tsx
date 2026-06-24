@@ -1,13 +1,17 @@
 import HomePage from '../pages/HomePage';
+import EventDetailPage from '../pages/EventDetailPage';
+import ProfilePage from '../pages/ProfilePage';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import CreateEventPage from '../pages/CreateEventPage';
 
-// Routes rendered inside MainLayout (with Navbar)
 export const layoutRoutes = [
-  { path: '/', index: true, element: <HomePage /> },
+  { path: '/',                  index: true,  element: <HomePage /> },
+  { path: '/events/:id',        index: false, element: <EventDetailPage /> },
+  { path: '/events/create',     index: false, element: <CreateEventPage /> },
+  { path: '/profile/:username', index: false, element: <ProfilePage /> },
 ];
 
-// Standalone routes (no Navbar), e.g. auth pages
 export const standaloneRoutes = [
   { path: '/signin', element: <SignIn /> },
   { path: '/signup', element: <SignUp /> },

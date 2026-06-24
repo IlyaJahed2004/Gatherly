@@ -1,5 +1,6 @@
 using Application.Core;
 using Application.Events.DTOs;
+using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -28,7 +29,7 @@ namespace Application.Events.Queries
         // - 'Query': Specifies the exact incoming message type this handler is bound to.
         // - 'List<Domain.Event>': Represents the explicit return type, matching the Query's contract.
         // The 'GatherlyDbContext' infrastructure dependency is injected via the primary constructor.
-        public class Handler(GatherlyDbContext context, IMapper mapper)
+        public class Handler(GatherlyDbContext context, IMapper mapper, IUserAccessor userAccessor)
             : IRequestHandler<Query, Result<PagedList<EventDto>>>
         {
             // 3. THE HANDLER EXECUTION METHOD
@@ -57,10 +58,13 @@ namespace Application.Events.Queries
 
                 var totalCount = await query.CountAsync(cancellationToken);
 
+                var currentUserId = userAccessor.GetUserId();
+
                 var eventsDto = await query
                     .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
                     .Take(request.Params.PageSize)
-                    .ProjectTo<EventDto>(mapper.ConfigurationProvider)
+                    .ProjectTo<EventDto>(mapper.ConfigurationProvider,
+                        new { currentUserId })
                     .ToListAsync(cancellationToken);
 
                 var pagedList = new PagedList<EventDto>

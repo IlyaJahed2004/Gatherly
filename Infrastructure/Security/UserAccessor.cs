@@ -19,10 +19,11 @@ namespace Infrastructure.Security
                 ?? throw new Exception("No user logged in");
         }
 
-        public string GetUserId()
+        public string? GetUserId()
         {
-            return httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)
-                ?? throw new Exception("User ID claim not found");
+            //return httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("User ID claim not found");
+
+            return httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

@@ -20,8 +20,11 @@ public class FollowToggle
             var observer = await userAccessor.GetUserAsync();
             var target = await dbContext.Users.FindAsync([request.TargetUserId], cancellationToken);
 
-            if (target  == null) 
+            if (target == null)
                 return Result<Unit>.Failure("Targer user not found.", 400);
+
+            if (observer.Id == target.Id)
+                return Result<Unit>.Failure("Can not follow your self!", 400);
 
             var following = await dbContext.UserFollowings.FindAsync([observer.Id, target.Id], cancellationToken);
 

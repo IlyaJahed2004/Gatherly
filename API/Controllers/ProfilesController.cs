@@ -1,4 +1,5 @@
 ﻿using Application.Profiles.Commands;
+using Application.Profiles.DTOs;
 using Application.Profiles.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,20 @@ public class ProfilesController(IMediator mediator) : BaseApiController
     public async Task<ActionResult> GetFollowings(string userId, string predicate)
     {
         var result = await mediator.Send(new GetFollowings.Query { UserId = userId, Predicate = predicate });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<UserProfile>> GetProfile(string userId) 
+    {
+        var result = await mediator.Send(new GetProfile.Query { UserId = userId });
 
         if (!result.IsSuccess && result.Code == 404)
             return NotFound();

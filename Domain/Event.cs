@@ -16,6 +16,9 @@ public class Event
     public required string Venue { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    
+    public string? ImageUrl { get; set; }
+    public string? PublicId { get; set; }
 
     //navigation properties
 

@@ -23,6 +23,7 @@ namespace Application.Events.DTOs
         public required string Venue { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string? ImageUrl { get; set; }
 
         //navigation properties
 

@@ -42,8 +42,10 @@ public class GetEventDetails
             // JOINs to EventAttendees and AspNetUsers are inferred automatically —
             // no Include/ThenInclude required.
             var specificEventDto = await context
-                .Events.ProjectTo<EventDto>(mapper.ConfigurationProvider,
-                    new { currentUserId = userAccessor.GetUserId() })
+                .Events.ProjectTo<EventDto>(
+                    mapper.ConfigurationProvider,
+                    new { currentUserId = userAccessor.GetUserId() }
+                )
                 .FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
 
             // "Not found" is an expected business outcome, not a system error.

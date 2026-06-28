@@ -63,8 +63,7 @@ namespace Application.Events.Queries
                 var eventsDto = await query
                     .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)
                     .Take(request.Params.PageSize)
-                    .ProjectTo<EventDto>(mapper.ConfigurationProvider,
-                        new { currentUserId })
+                    .ProjectTo<EventDto>(mapper.ConfigurationProvider, new { currentUserId })
                     .ToListAsync(cancellationToken);
 
                 var pagedList = new PagedList<EventDto>

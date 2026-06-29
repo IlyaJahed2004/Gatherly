@@ -19,7 +19,7 @@ namespace Application.Events.Queries
         // Implements 'IRequest<TResponse>' to define this class as a MediatR message.
         // It holds no behavior or state, serving purely as a data transfer contract.
         // The generic argument specifies that the mediator must return a 'List<Domain.Event>' upon execution.
-        public class Query : IRequest<Result<PagedList<EventDto>>>
+        public class Query : IRequest<Result<GetEventsResultDto>>
         {
             public GetEventsParams Params { get; set; }
         }
@@ -30,13 +30,13 @@ namespace Application.Events.Queries
         // - 'List<Domain.Event>': Represents the explicit return type, matching the Query's contract.
         // The 'GatherlyDbContext' infrastructure dependency is injected via the primary constructor.
         public class Handler(GatherlyDbContext context, IMapper mapper, IUserAccessor userAccessor)
-            : IRequestHandler<Query, Result<PagedList<EventDto>>>
+            : IRequestHandler<Query, Result<GetEventsResultDto>>
         {
             // 3. THE HANDLER EXECUTION METHOD
             // Automatically invoked by the MediatR pipeline when 'IMediator.Send()' dispatches the Query.
             // - 'request': The captured query instance containing request parameters (empty in this context).
             // - 'cancellationToken': Propagates notification that the network request or operation should be aborted.
-            public async Task<Result<PagedList<EventDto>>> Handle(
+            public async Task<Result<GetEventsResultDto>> Handle(
                 Query request,
                 CancellationToken cancellationToken
             )
@@ -74,7 +74,13 @@ namespace Application.Events.Queries
                     TotalCount = totalCount,
                 };
 
-                return Result<PagedList<EventDto>>.Success(pagedList);
+                var result = new GetEventsResultDto()
+                { 
+                    PagedEvents = pagedList,
+                    CurrentDate = DateTime.UtcNow
+                };
+
+                return Result<GetEventsResultDto>.Success(result);
             }
         }
     }

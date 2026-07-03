@@ -84,9 +84,9 @@ public class EventsController(IMediator mediator) : BaseApiController
         return BadRequest(result.Error);
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")] // PUT → PATCH
     [Authorize(Policy = "IsEventHost")]
-    public async Task<ActionResult> UpdateEvent(string id, EditEventDto newEvent)
+    public async Task<ActionResult> UpdateEvent(string id, [FromForm] EditEventDto newEvent) // add [FromForm]
     {
         var result = await mediator.Send(
             new UpdateEvent.Command() { Id = id, EventDto = newEvent }
@@ -94,8 +94,8 @@ public class EventsController(IMediator mediator) : BaseApiController
         if (!result.IsSuccess && result.Code == 404)
             return NotFound();
 
-        if (result.IsSuccess && result.Value != null)
-            return Ok(result.Value);
+        if (result.IsSuccess) // drop "&& result.Value != null"
+            return NoContent(); // Ok(result.Value) → NoContent()
 
         return BadRequest(result.Error);
     }

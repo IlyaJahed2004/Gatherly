@@ -33,12 +33,35 @@ public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? valid
         // Run all validation rules defined for this request type
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        // If any rules failed, collect all errors and throw.
+        // If any rules failed, collect all errors and return.
         // The Handler is never reached — pipeline stops here.
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
+        {
+            var errors = validationResult.Errors
+                .Select(e => e.ErrorMessage)
+                .Distinct()
+                .ToList();
 
-        // All rules passed — invoke the next step (the actual Handler)
+            var responseType = typeof(TResponse);
+
+            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+            {
+                var failureResult = Activator.CreateInstance(responseType);
+
+                if (failureResult != null)
+                {
+                    responseType.GetProperty("IsSuccess")?.SetValue(failureResult, false);
+                    responseType.GetProperty("Error")?.SetValue(failureResult, "Validation failed");
+                    responseType.GetProperty("Code")?.SetValue(failureResult, 400);
+                    responseType.GetProperty("Errors")?.SetValue(failureResult, errors);
+
+                    return (TResponse)failureResult;
+                }
+            }
+
+            throw new ValidationException(validationResult.Errors);
+        }
+
         return await next();
     }
 }

@@ -80,13 +80,24 @@ public class EventsController(IMediator mediator) : BaseApiController
         // persistence, and returning the new Id.
         var result = await mediator.Send(new CreateEvent.Command { EventDto = newEventDto });
 
-        if (!result.IsSuccess && result.Code == 404)
-            return NotFound();
+        if (!result.IsSuccess)
+        {
+            if (result.Code == 404)
+                return NotFound(result.Error);
 
-        if (result.IsSuccess && result.Value != null)
-            return result.Value;
+            if (result.Code == 400)
+            {
+                return BadRequest(new
+                {
+                    message = result.Error,
+                    errors = result.Errors
+                });
+            }
 
-        return BadRequest(result.Error);
+            return StatusCode(result.Code, result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpPut("{id}")]
@@ -96,13 +107,25 @@ public class EventsController(IMediator mediator) : BaseApiController
         var result = await mediator.Send(
             new UpdateEvent.Command() { Id = id, EventDto = newEvent }
         );
-        if (!result.IsSuccess && result.Code == 404)
-            return NotFound();
 
-        if (result.IsSuccess && result.Value != null)
-            return Ok(result.Value);
+        if (!result.IsSuccess)
+        {
+            if (result.Code == 404)
+                return NotFound(result.Error);
 
-        return BadRequest(result.Error);
+            if (result.Code == 400)
+            {
+                return BadRequest(new
+                {
+                    message = result.Error,
+                    errors = result.Errors
+                });
+            }
+
+            return StatusCode(result.Code, result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpDelete("{id}")]

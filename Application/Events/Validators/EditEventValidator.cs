@@ -9,6 +9,5 @@ public class EditEventValidator : BaseEventValidator<UpdateEvent.Command, EditEv
     public EditEventValidator()
         : base(x => x.EventDto)
     {
-        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
     }
 }

@@ -27,6 +27,8 @@ public class Result<T>
     // e.g. 404 for not found, 403 for forbidden, 400 for bad request
     public int Code { get; set; }
 
+    public List<string>? Errors { get; set; }
+
     /// <summary>
     /// Factory method for a successful result.
     /// The caller gets back the value they asked for.

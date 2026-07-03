@@ -23,5 +23,7 @@ public enum EventCategoryParam
     Sports = 1,
     Science = 2,
     Leisure = 3,
-    Other = 4
+    Other = 4,
+    IsHost = 5,
+    IsGoing = 6
 }

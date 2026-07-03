@@ -32,6 +32,11 @@ public class EventsController(IMediator mediator) : BaseApiController
         // This safely forwards execution to the Application layer without exposing HOW the data is retrieved.
         var result = await mediator.Send(new GetEventList.Query { Params = getEventsParams });
 
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
         return Ok(result.Value);
     }
 

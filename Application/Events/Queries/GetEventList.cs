@@ -41,6 +41,12 @@ namespace Application.Events.Queries
                 CancellationToken cancellationToken
             )
             {
+                var currentUserId = userAccessor.GetUserId();
+                if (string.IsNullOrEmpty(currentUserId) && (request.Params.Category == EventCategoryParam.IsHost || request.Params.Category == EventCategoryParam.IsGoing))
+                {
+                    return Result<GetEventsResultDto>.Failure("You must be authenticated to filter by your own events.", 400);
+                }
+
                 // Executes an asynchronous, non-blocking fetch operation against the database infrastructure.
                 // The API controller remains completely decoupled from this underlying EF Core data access logic.
                 var query = context.Events.AsQueryable();
@@ -50,15 +56,24 @@ namespace Application.Events.Queries
 
                 if (request.Params.Category != EventCategoryParam.None)
                 {
-                    var categoryName = request.Params.Category.ToString();
-                    query = query.Where(x => x.Category == categoryName);
+                    if (request.Params.Category == EventCategoryParam.IsHost)
+                    {
+                        query = query.Where(x => x.Attendees.Any(a => a.UserId == currentUserId && a.IsHost));
+                    }
+                    else if (request.Params.Category == EventCategoryParam.IsGoing)
+                    {
+                        query = query.Where(x => x.Attendees.Any(a => a.UserId == currentUserId && !a.IsHost));
+                    }
+                    else
+                    {
+                        var categoryName = request.Params.Category.ToString();
+                        query = query.Where(x => x.Category == categoryName);
+                    }
                 }
 
                 query = query.OrderBy(x => x.StartDate);
 
                 var totalCount = await query.CountAsync(cancellationToken);
-
-                var currentUserId = userAccessor.GetUserId();
 
                 var eventsDto = await query
                     .Skip((request.Params.PageNumber - 1) * request.Params.PageSize)

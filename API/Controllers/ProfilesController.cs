@@ -79,4 +79,18 @@ public class ProfilesController(IMediator mediator) : BaseApiController
 
         return BadRequest(result.Error);
     }
+
+    [HttpPatch]
+    public async Task<ActionResult> UpdateProfile([FromForm] UpdateProfile.Command command)
+    {
+        var result = await mediator.Send(command);
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess)
+            return Ok();
+
+        return BadRequest(result.Error);
+    }
 }

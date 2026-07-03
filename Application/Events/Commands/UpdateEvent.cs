@@ -1,7 +1,7 @@
 ﻿using Application.Core;
 using Application.Events.DTOs;
+using Application.Interfaces;
 using AutoMapper;
-using Domain;
 using MediatR;
 using Persistence;
 
@@ -15,22 +15,48 @@ public class UpdateEvent
         public required EditEventDto EventDto { get; set; }
     }
 
-    public class Handler(GatherlyDbContext dbContext, IMapper mapper)
+    public class Handler(GatherlyDbContext dbContext, IMapper mapper, IPhotoService photoService)
         : IRequestHandler<Command, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
         {
-            var existingEvent = await dbContext.Events.FindAsync(command.Id, cancellationToken);
+            var existingEvent = await dbContext.Events.FindAsync([command.Id], cancellationToken);
 
             if (existingEvent == null)
                 return Result<Unit>.Failure("Event not found", 404);
 
+            // map plain fields (Title, Description, City, etc.)
             mapper.Map(command.EventDto, existingEvent);
 
-            var result = await dbContext.SaveChangesAsync() > 0;
+            // user explicitly deleted the photo
+            if (command.EventDto.DeleteImage && existingEvent.PublicId != null)
+            {
+                var deleteResult = await photoService.DeletePhoto(existingEvent.PublicId);
+                if (deleteResult != "ok")
+                    return Result<Unit>.Failure("Problem deleting photo", 400);
 
-            if (!result)
-                return Result<Unit>.Failure("Failed to update the Event", 404);
+                existingEvent.ImageUrl = null;
+                existingEvent.PublicId = null;
+            }
+
+            // user selected a new photo — delete old one first to avoid orphan
+            if (command.EventDto.Image != null)
+            {
+                if (existingEvent.PublicId != null)
+                    await photoService.DeletePhoto(existingEvent.PublicId);
+
+                var uploadResult = await photoService.UploadPhoto(command.EventDto.Image);
+                if (uploadResult == null)
+                    return Result<Unit>.Failure("Problem uploading photo", 400);
+
+                existingEvent.ImageUrl = uploadResult.Url;
+                existingEvent.PublicId = uploadResult.PublicId;
+            }
+
+            var saved = await dbContext.SaveChangesAsync(cancellationToken) > 0;
+
+            if (!saved)
+                return Result<Unit>.Failure("Failed to update the event", 400);
 
             return Result<Unit>.Success(Unit.Value);
         }

@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import agent from '../api/agent';
-import type { Event, PagedList, EventParams } from '../types/event';
+import type { Event, GetEventsResult, EventParams } from '../types/event';
 import type { RootStore } from './rootStore';
 
 export class EventStore {
@@ -21,7 +21,7 @@ export class EventStore {
   loadEvents = async (params?: EventParams) => {
     this.isLoading = true;
     try {
-      const result: PagedList<Event> = await agent.Events.list({
+      const result: GetEventsResult = await agent.Events.list({
         pageNumber: this.currentPage,
         pageSize: 10,
         category: this.selectedCategory,
@@ -29,9 +29,9 @@ export class EventStore {
         ...params,
       });
       runInAction(() => {
-        this.events = result.items;
-        this.totalCount = result.totalCount;
-        this.totalPages = result.totalPages;
+        this.events = result.pagedEvents.items;
+        this.totalCount = result.pagedEvents.totalCount;
+        this.totalPages = result.pagedEvents.totalPages;
         this.isLoading = false;
       });
     } catch (error) {

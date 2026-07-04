@@ -1,10 +1,9 @@
 import axios, { type AxiosResponse, type AxiosError } from 'axios';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
-import type { PagedList, EventParams, EventDetails } from '../types/event';
-import type { Event } from '../types/event';
+import type { GetEventsResult, EventParams, EventDetails } from '../types/event';
 import type { Profile, UserEvent, Follower } from '../types/profile';
 
-axios.defaults.baseURL = 'https://localhost:5001/api';
+axios.defaults.baseURL = '/api';
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(config => {
@@ -43,7 +42,7 @@ const Account = {
 };
 
 const Events = {
-  list:    (params: EventParams) => requests.get<PagedList<Event>>('/events', params),
+  list:    (params: EventParams) => requests.get<GetEventsResult>('/events', params),
   details: (id: string)          => requests.get<EventDetails>(`/events/${id}`),
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
   create:  (event: object)       => requests.post<string>('/events', event),

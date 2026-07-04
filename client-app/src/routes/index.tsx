@@ -9,7 +9,7 @@ export const layoutRoutes = [
   { path: '/',                  index: true,  element: <HomePage /> },
   { path: '/events/:id',        index: false, element: <EventDetailPage /> },
   { path: '/events/create',     index: false, element: <CreateEventPage /> },
-  { path: '/profile/:username', index: false, element: <ProfilePage /> },
+  { path: '/profile/:id', index: false, element: <ProfilePage /> },
 ];
 
 export const standaloneRoutes = [

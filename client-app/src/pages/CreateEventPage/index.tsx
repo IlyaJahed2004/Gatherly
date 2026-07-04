@@ -203,7 +203,9 @@ const CreateEventPage = observer(() => {
   const validate = (): boolean => {
     const e: typeof errors = {};
     if (!form.title.trim()) e.title = 'Title is required';
+    else if (form.title.length > 100) e.title = 'Title must not exceed 100 characters';
     if (!form.description.trim()) e.description = 'Description is required';
+    else if (form.description.length > 2000) e.description = 'Description must not exceed 2000 characters';
     if (!form.startDate) e.startDate = 'Start date is required';
     if (!form.endDate) e.endDate = 'End date is required';
     if (!form.category) e.category = 'Category is required';

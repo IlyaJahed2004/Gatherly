@@ -48,8 +48,8 @@ const HomePage = observer(() => {
                 date={formatDate(event.startDate)}
                 location={event.venue + (event.city ? `, ${event.city}` : '')}
                 description={event.description}
-                hostName="Host"
-                imageUrl={`https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
+                hostName={event.hostDisplayName}
+                imageUrl={event.imageUrl ?? `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
               />
             ))
           )}

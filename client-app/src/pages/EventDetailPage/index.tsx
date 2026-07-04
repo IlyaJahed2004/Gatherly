@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../../stores/rootStore';
 import agent from '../../api/agent';
-import type { EventDetails, AttendeeDto } from '../../types/event';
+import type { EventDetails } from '../../types/event';
 
 const EventDetailPage = observer(() => {
   const { id } = useParams<{ id: string }>();
-  const { authStore } = useStore();
-  const { user } = authStore;
 
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,15 +27,10 @@ const EventDetailPage = observer(() => {
     loadEvent();
   }, [id]);
 
-  // محاسبه وضعیت کاربر نسبت به ایونت
-  const currentAttendee: AttendeeDto | undefined = event?.attendees.find(
-    (a) => a.id === user?.id
-  );
-  const isHost      = currentAttendee?.isHost === true;
-  const isAttendee  = !!currentAttendee && !isHost;
+  // وضعیت کاربر نسبت به ایونت مستقیماً از بک‌اند می‌آید (برای هر کاربر جداگانه محاسبه شده)
+  const isHost      = event?.isHost === true;
+  const isAttendee  = event?.isGoing === true;
   const isCancelled = event?.isCancelled === true;
-
-  const host = event?.attendees.find((a) => a.isHost);
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleString('en-GB', {
@@ -88,7 +80,7 @@ const EventDetailPage = observer(() => {
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <img
-              src={`https://placehold.co/1200x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
+              src={event.imageUrl ?? `https://placehold.co/1200x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
               alt={event.title}
               className="w-full h-full object-cover"
             />
@@ -109,7 +101,7 @@ const EventDetailPage = observer(() => {
               <p className="text-[14px] opacity-90">{formatDate(event.startDate)}</p>
               <p className="text-[14px] opacity-90">
                 hosted by{' '}
-                <span className="underline cursor-pointer">{host?.displayName ?? 'Unknown'}</span>
+                <span className="underline cursor-pointer">{event.hostDisplayName}</span>
               </p>
             </div>
 
@@ -239,7 +231,7 @@ const EventDetailPage = observer(() => {
                 <span className="text-[#1F2937] text-[18px] font-medium flex-1">
                   {attendee.displayName}
                 </span>
-                {attendee.isHost && (
+                {attendee.id === event.hostId && (
                   <span className="bg-[#F87171] text-white text-[13px] font-medium px-3 py-1 rounded-full">
                     Host
                   </span>

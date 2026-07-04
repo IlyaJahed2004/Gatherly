@@ -84,7 +84,7 @@ const Navbar = observer(() => {
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
-                    navigate(`/profile/${authStore.user?.username}`);
+                    navigate(`/profile/${authStore.user?.id}`);
                   }}
                   className="w-full text-left px-5 py-3 text-[16px] text-[#1F2937] hover:bg-teal-50 transition-colors flex items-center gap-3"
                 >

@@ -11,9 +11,15 @@ const CATEGORIES = [
   { label: 'Other',   value: 4 },
 ];
 
+const AUTH_CATEGORIES = [
+  { label: "I'm going",  value: 6 },
+  { label: "I'm hosting", value: 5 },
+];
+
 const HomePage = observer(() => {
-  const { eventStore } = useStore();
+  const { eventStore, authStore } = useStore();
   const { events, isLoading, selectedCategory, setCategory, loadEvents } = eventStore;
+  const categories = authStore.isLoggedIn ? [...AUTH_CATEGORIES, ...CATEGORIES] : CATEGORIES;
 
   useEffect(() => {
     loadEvents();
@@ -65,7 +71,7 @@ const HomePage = observer(() => {
           >
             <h3 className="text-2xl font-medium text-[#1F2937] mb-6">Event Type</h3>
             <div className="grid grid-cols-2 gap-3">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <button
                   key={cat.value}
                   onClick={() => setCategory(selectedCategory === cat.value ? 0 : cat.value)}

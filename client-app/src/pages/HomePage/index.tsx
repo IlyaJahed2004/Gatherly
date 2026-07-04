@@ -62,11 +62,14 @@ const HomePage = observer(() => {
         </div>
 
         {/* ستون راست: sticky sidebar */}
-        <div className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6">
+        <div
+          className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6"
+          style={{ height: '680px' }}
+        >
 
           {/* Event Type Widget */}
           <div
-            className="bg-[#FFFFFF] rounded-[16px] p-6"
+            className="bg-[#FFFFFF] rounded-[16px] p-6 flex-shrink-0"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <h3 className="text-2xl font-medium text-[#1F2937] mb-6">Event Type</h3>
@@ -89,8 +92,8 @@ const HomePage = observer(() => {
 
           {/* Calendar Widget */}
           <div
-            className="rounded-[16px] overflow-hidden"
-            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '460px' }}
+            className="rounded-[16px] overflow-hidden flex-1 min-h-0"
+            style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <CalendarWidget />
           </div>

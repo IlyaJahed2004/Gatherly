@@ -96,6 +96,12 @@ function SignUp() {
                 value: 8,
                 message: 'Password must be at least 8 characters',
               },
+              validate: {
+                hasUpper: (v) => /[A-Z]/.test(v) || 'Password must contain an uppercase letter',
+                hasLower: (v) => /[a-z]/.test(v) || 'Password must contain a lowercase letter',
+                hasDigit: (v) => /[0-9]/.test(v) || 'Password must contain a digit',
+                hasSpecial: (v) => /[^A-Za-z0-9]/.test(v) || 'Password must contain a special character',
+              },
             })}
           />
           <Button

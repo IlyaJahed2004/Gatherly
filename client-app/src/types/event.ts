@@ -1,3 +1,9 @@
+export interface EventAttendee {
+  id: string;
+  displayName: string;
+  imageUrl?: string | null;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -15,6 +21,7 @@ export interface Event {
   imageUrl: string | null;
   isHost: boolean;
   isGoing: boolean;
+  attendees: EventAttendee[];
 }
 
 export interface AttendeeDto {

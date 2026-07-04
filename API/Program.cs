@@ -26,7 +26,7 @@ builder.Services.AddControllers(options =>
 
 // Register the GatherlyDbContext with the Dependency Injection (DI) container.
 // This tells .NET how to construct our database context whenever it's needed:
-// 1. Motor: Use the SQLite provider.
+// 1. Motor: Use the SQL Server provider.
 // 2. Configuration: Retrieve the Connection String from 'appsettings.json'.
 // 3. Lifecycle: Managed as a 'Scoped' service (created/destroyed per request).
 
@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<GatherlyDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 // Scans the assembly containing CreateEventValidator and registers

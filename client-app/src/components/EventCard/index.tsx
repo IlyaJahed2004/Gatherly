@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
+import type { EventAttendee } from '../../types/event';
 
 interface EventCardProps {
   id: string;
@@ -11,6 +12,10 @@ interface EventCardProps {
   hostName: string;
   imageUrl?: string;
   hostAvatarUrl?: string;
+  isCancelled?: boolean;
+  isHost?: boolean;
+  isGoing?: boolean;
+  attendees?: EventAttendee[];
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -22,6 +27,10 @@ const EventCard: React.FC<EventCardProps> = ({
   hostName,
   imageUrl = 'https://placehold.co/600x400/e2e8f0/64748b?text=Event+Image',
   hostAvatarUrl = 'https://placehold.co/100x100/cbd5e1/475569?text=Host',
+  isCancelled = false,
+  isHost = false,
+  isGoing = false,
+  attendees = [],
 }) => {
   const navigate = useNavigate();
 
@@ -30,9 +39,26 @@ const EventCard: React.FC<EventCardProps> = ({
       className="bg-[#FFFFFF] rounded-[16px] p-[32px] flex flex-col hover:-translate-y-1 transition-transform"
       style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '680px' }}
     >
-      <h3 className="text-[32px] font-medium text-[#1F2937] leading-tight mb-4 truncate">
-        {title}
-      </h3>
+      <div className="flex items-center gap-2 mb-4">
+        <h3 className="text-[32px] font-medium text-[#1F2937] leading-tight truncate">
+          {title}
+        </h3>
+        {isCancelled && (
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium bg-red-400 text-white">
+            canceled
+          </span>
+        )}
+        {isHost && (
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#F87171] text-[#F87171]">
+            I'm hosting
+          </span>
+        )}
+        {!isHost && isGoing && (
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#F87171] text-[#F87171]">
+            I'm going
+          </span>
+        )}
+      </div>
 
       <div
         className="w-full h-[260px] rounded-[16px] overflow-hidden mb-6 flex-shrink-0"
@@ -80,6 +106,19 @@ const EventCard: React.FC<EventCardProps> = ({
             <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
         </div>
+        {attendees.length > 0 && (
+          <div className="flex items-center -space-x-3 mx-3">
+            {attendees.slice(0, 4).map((attendee) => (
+              <img
+                key={attendee.id}
+                src={attendee.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${encodeURIComponent(attendee.displayName.charAt(0))}`}
+                alt={attendee.displayName}
+                title={attendee.displayName}
+                className="w-[36px] h-[36px] rounded-full object-cover border-2 border-white"
+              />
+            ))}
+          </div>
+        )}
         <Button
           onClick={() => navigate(`/events/${id}`)}
           className="!w-[140px] !h-auto !py-2 !text-[20px] !font-normal !rounded-[16px] !bg-[#078C80] !text-[#FFFFFF] hover:!bg-[#06756b] !border-none !shadow-none"

@@ -44,20 +44,19 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
             .WithMany(x => x.Attendees) // one Event can have many EventAttendee rows
             .HasForeignKey(x => x.EventId); // the FK column is EventId
 
-        builder
-            .Entity<UserFollowing>(x =>
-            {
-                x.HasKey(k => new { k.ObserverId, k.TargetId });
+        builder.Entity<UserFollowing>(x =>
+        {
+            x.HasKey(k => new { k.ObserverId, k.TargetId });
 
-                x.HasOne(o => o.Observer)
-                    .WithMany(f => f.Followings)
-                    .HasForeignKey(o => o.ObserverId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            x.HasOne(o => o.Observer)
+                .WithMany(f => f.Followings)
+                .HasForeignKey(o => o.ObserverId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                x.HasOne(o => o.Target)
-                    .WithMany(f => f.Followers)
-                    .HasForeignKey(o => o.TargetId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
+            x.HasOne(o => o.Target)
+                .WithMany(f => f.Followers)
+                .HasForeignKey(o => o.TargetId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
     }
 }

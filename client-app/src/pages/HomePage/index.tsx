@@ -46,18 +46,27 @@ const HomePage = observer(() => {
               <span className="text-gray-400 text-[20px]">No events found.</span>
             </div>
           ) : (
-            events.map((event) => (
-              <EventCard
-                key={event.id}
-                id={event.id}
-                title={event.title}
-                date={formatDate(event.startDate)}
-                location={event.venue + (event.city ? `, ${event.city}` : '')}
-                description={event.description}
-                hostName={event.hostDisplayName}
-                imageUrl={event.imageUrl ?? `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
-              />
-            ))
+            events.map((event) => {
+              const host = event.attendees.find((a) => a.id === event.hostId);
+              const otherAttendees = event.attendees.filter((a) => a.id !== event.hostId);
+              return (
+                <EventCard
+                  key={event.id}
+                  id={event.id}
+                  title={event.title}
+                  date={formatDate(event.startDate)}
+                  location={event.venue + (event.city ? `, ${event.city}` : '')}
+                  description={event.description}
+                  hostName={event.hostDisplayName}
+                  hostAvatarUrl={host?.imageUrl ?? undefined}
+                  imageUrl={event.imageUrl ?? `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(event.category)}`}
+                  isCancelled={event.isCancelled}
+                  isHost={event.isHost}
+                  isGoing={event.isGoing}
+                  attendees={otherAttendees}
+                />
+              );
+            })
           )}
         </div>
 

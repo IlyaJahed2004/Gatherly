@@ -24,16 +24,7 @@ export interface Event {
   attendees: EventAttendee[];
 }
 
-export interface AttendeeDto {
-  id: string;
-  displayName: string;
-  imageUrl?: string;
-  isHost: boolean;
-}
-
-export interface EventDetails extends Event {
-  attendees: AttendeeDto[];
-}
+export type EventDetails = Event;
 
 export interface PagedList<T> {
   items: T[];

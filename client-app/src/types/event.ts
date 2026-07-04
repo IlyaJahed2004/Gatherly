@@ -10,6 +10,11 @@ export interface Event {
   venue: string;
   latitude: number;
   longitude: number;
+  hostId: string;
+  hostDisplayName: string;
+  imageUrl: string | null;
+  isHost: boolean;
+  isGoing: boolean;
 }
 
 export interface AttendeeDto {
@@ -29,6 +34,11 @@ export interface PagedList<T> {
   pageSize: number;
   totalCount: number;
   totalPages: number;
+}
+
+export interface GetEventsResult {
+  pagedEvents: PagedList<Event>;
+  currentDate: string;
 }
 
 export interface EventParams {

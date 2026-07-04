@@ -18,10 +18,10 @@ export class ProfileStore {
     makeAutoObservable(this);
   }
 
-  loadProfile = async (username: string) => {
+  loadProfile = async (id: string) => {
     this.isLoading = true;
     try {
-      const data = await agent.Profiles.get(username);
+      const data = await agent.Profiles.get(id);
       runInAction(() => { this.profile = data; });
     } catch (err) {
       console.error(err);
@@ -30,16 +30,16 @@ export class ProfileStore {
     }
   };
 
-  updateProfile = async (data: { displayName?: string; bio?: string }) => {
+  updateProfile = async (data: { displayName: string; bio?: string; image?: File; deleteImage?: boolean }) => {
     this.isSubmitting = true;
     try {
       await agent.Profiles.update(data);
       runInAction(() => {
         if (this.profile) {
-          this.profile.displayName = data.displayName ?? this.profile.displayName;
-          this.profile.bio         = data.bio         ?? this.profile.bio;
+          this.profile.displayName = data.displayName;
+          this.profile.bio         = data.bio ?? this.profile.bio;
         }
-        if (this.rootStore.authStore.user && data.displayName) {
+        if (this.rootStore.authStore.user) {
           this.rootStore.authStore.user.displayName = data.displayName;
         }
       });
@@ -50,14 +50,14 @@ export class ProfileStore {
     }
   };
 
-  toggleFollow = async (username: string) => {
+  toggleFollow = async (id: string) => {
     this.isSubmitting = true;
     try {
-      await agent.Profiles.toggleFollow(username);
+      await agent.Profiles.toggleFollow(id);
       runInAction(() => {
         if (this.profile) {
-          this.profile.isFollowing = !this.profile.isFollowing;
-          this.profile.followersCount += this.profile.isFollowing ? 1 : -1;
+          this.profile.following = !this.profile.following;
+          this.profile.followersCount += this.profile.following ? 1 : -1;
         }
       });
     } catch (err) {
@@ -67,10 +67,10 @@ export class ProfileStore {
     }
   };
 
-  loadEvents = async (username: string, predicate: string) => {
+  loadEvents = async (id: string, predicate: string) => {
     this.isLoadingEvents = true;
     try {
-      const data = await agent.Profiles.getEvents(username, predicate);
+      const data = await agent.Profiles.getEvents(id, predicate);
       runInAction(() => { this.events = data; });
     } catch (err) {
       console.error(err);
@@ -79,10 +79,10 @@ export class ProfileStore {
     }
   };
 
-  loadFollowings = async (username: string, predicate: string) => {
+  loadFollowings = async (id: string, predicate: string) => {
     this.isLoadingFollowings = true;
     try {
-      const data = await agent.Profiles.getFollowings(username, predicate);
+      const data = await agent.Profiles.getFollowings(id, predicate);
       runInAction(() => { this.followings = data; });
     } catch (err) {
       console.error(err);

@@ -49,11 +49,19 @@ const Events = {
 };
 
 const Profiles = {
-  get:          (username: string)                             => requests.get<Profile>(`/profiles/${username}`),
-  update:       (data: { displayName?: string; bio?: string }) => requests.put<void>('/profiles', data),
-  toggleFollow: (username: string)                             => requests.post<void>(`/profiles/${username}/follow`, {}),
-  getEvents:    (username: string, predicate: string)          => requests.get<UserEvent[]>(`/profiles/${username}/events`, { predicate }),
-  getFollowings:(username: string, predicate: string)          => requests.get<Follower[]>(`/profiles/${username}/followings`, { predicate }),
+  get: (id: string) => requests.get<Profile>(`/profiles/${id}`),
+  update: (data: { displayName: string; bio?: string; image?: File; deleteImage?: boolean }) => {
+    const form = new FormData();
+    form.append('DisplayName', data.displayName);
+    if (data.bio) form.append('Bio', data.bio);
+    if (data.image) form.append('Image', data.image);
+    if (data.deleteImage) form.append('DeleteImage', 'true');
+    return axios.patch<void>('/profiles', form).then(responseBody);
+  },
+  toggleFollow: (id: string) => requests.post<void>(`/profiles/${id}/follow`, {}),
+  // NOTE: no backend endpoint exists yet for a user's events (nothing in ProfilesController) — this will 404 until it's added.
+  getEvents:     (id: string, predicate: string) => requests.get<UserEvent[]>(`/profiles/${id}/events`, { predicate }),
+  getFollowings: (id: string, predicate: string) => requests.get<Follower[]>(`/profiles/${id}/follow-list`, { predicate }),
 };
 
 const agent = { Account, Events, Profiles };

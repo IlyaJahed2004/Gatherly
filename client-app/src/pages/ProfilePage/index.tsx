@@ -7,9 +7,11 @@ type SideTab = 'about' | 'events' | 'followers' | 'following';
 type EventTab = 'future' | 'past' | 'hosting';
 
 const ProfilePage = observer(() => {
-  const { username } = useParams<{ username: string }>();
+  const { id } = useParams<{ id: string }>();
   const { profileStore, authStore } = useStore();
   const { profile, events, followings, isLoading, isLoadingEvents, isLoadingFollowings, isSubmitting } = profileStore;
+
+  const isCurrentUser = !!profile && profile.id === authStore.user?.id;
 
   const [sideTab, setSideTab] = useState<SideTab>('about');
   const [eventTab, setEventTab] = useState<EventTab>('future');
@@ -18,20 +20,20 @@ const ProfilePage = observer(() => {
   const [editBio, setEditBio] = useState('');
 
   useEffect(() => {
-    if (username) profileStore.loadProfile(username);
-  }, [username]);
+    if (id) profileStore.loadProfile(id);
+  }, [id]);
 
   useEffect(() => {
-    if (sideTab === 'events' && username)
-      profileStore.loadEvents(username, eventTab);
-  }, [sideTab, eventTab, username]);
+    if (sideTab === 'events' && id)
+      profileStore.loadEvents(id, eventTab);
+  }, [sideTab, eventTab, id]);
 
   useEffect(() => {
-    if (sideTab === 'followers' && username)
-      profileStore.loadFollowings(username, 'followers');
-    if (sideTab === 'following' && username)
-      profileStore.loadFollowings(username, 'following');
-  }, [sideTab, username]);
+    if (sideTab === 'followers' && id)
+      profileStore.loadFollowings(id, 'followers');
+    if (sideTab === 'following' && id)
+      profileStore.loadFollowings(id, 'followings');
+  }, [sideTab, id]);
 
   const handleEditStart = () => {
     setEditDisplayName(profile?.displayName ?? '');
@@ -100,11 +102,11 @@ const ProfilePage = observer(() => {
         />
         <div className="flex-1">
           <h1 className="text-[36px] font-semibold text-[#1F2937] mb-2">
-            {profile.displayName ?? profile.username}
+            {profile.displayName}
           </h1>
-          {!profile.isCurrentUser && (
+          {!isCurrentUser && (
             <span className="inline-block border border-[#14B8A6] text-[#14B8A6] text-[14px] px-4 py-1 rounded-full">
-              {profile.isFollowing ? 'following' : 'follow'}
+              {profile.following ? 'following' : 'follow'}
             </span>
           )}
         </div>
@@ -122,20 +124,20 @@ const ProfilePage = observer(() => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <span className="text-[14px] text-gray-400">Following</span>
-              <span className="text-[20px] font-medium text-[#1F2937]">{profile.followingsCount}</span>
+              <span className="text-[20px] font-medium text-[#1F2937]">{profile.followingCount}</span>
             </div>
           </div>
-          {!profile.isCurrentUser && (
+          {!isCurrentUser && (
             <button
-              onClick={() => profileStore.toggleFollow(profile.username)}
+              onClick={() => profileStore.toggleFollow(profile.id)}
               disabled={isSubmitting}
               className={`w-[160px] py-2 rounded-[8px] text-[16px] font-medium border transition-colors ${
-                profile.isFollowing
+                profile.following
                   ? 'border-[#F59E0B] text-[#F59E0B] hover:bg-amber-50'
                   : 'bg-[#14B8A6] text-white border-[#14B8A6] hover:bg-[#0d9488]'
               }`}
             >
-              {profile.isFollowing ? 'Unfollow' : 'Follow'}
+              {profile.following ? 'Unfollow' : 'Follow'}
             </button>
           )}
         </div>
@@ -172,9 +174,9 @@ const ProfilePage = observer(() => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[28px] font-medium text-[#1F2937]">
-                  About {profile.displayName ?? profile.username}
+                  About {profile.displayName}
                 </h2>
-                {profile.isCurrentUser && !isEditing && (
+                {isCurrentUser && !isEditing && (
                   <button onClick={handleEditStart} className="flex items-center gap-2 text-[#078C80] text-[16px] hover:opacity-70 transition-opacity">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -253,18 +255,18 @@ const ProfilePage = observer(() => {
           {sideTab === 'followers' && (
             <div>
               <h2 className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
-                {profile.isCurrentUser ? 'Your followers' : `${profile.displayName ?? profile.username}'s Followers`}
+                {isCurrentUser ? 'Your followers' : `${profile.displayName}'s Followers`}
               </h2>
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
                 : followings.length === 0 ? <p className="text-gray-400 mt-4">No followers yet.</p>
                 : (
                   <div className="grid grid-cols-4 gap-4 mt-4">
                     {followings.map((f) => (
-                      <div key={f.id} onClick={() => window.location.href = `/profile/${f.username}`}
+                      <div key={f.id} onClick={() => window.location.href = `/profile/${f.id}`}
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
                         <img src={f.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${f.displayName?.charAt(0) ?? 'U'}`}
                           alt={f.displayName} className="w-[70px] h-[70px] rounded-full object-cover" />
-                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName ?? f.username}</p>
+                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
                         <div className="flex items-center gap-1 text-[13px] text-gray-400">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -282,18 +284,18 @@ const ProfilePage = observer(() => {
           {sideTab === 'following' && (
             <div>
               <h2 className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
-                {profile.isCurrentUser ? 'Your following' : `${profile.displayName ?? profile.username}'s Following`}
+                {isCurrentUser ? 'Your following' : `${profile.displayName}'s Following`}
               </h2>
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
                 : followings.length === 0 ? <p className="text-gray-400 mt-4">Not following anyone yet.</p>
                 : (
                   <div className="grid grid-cols-4 gap-4 mt-4">
                     {followings.map((f) => (
-                      <div key={f.id} onClick={() => window.location.href = `/profile/${f.username}`}
+                      <div key={f.id} onClick={() => window.location.href = `/profile/${f.id}`}
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
                         <img src={f.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${f.displayName?.charAt(0) ?? 'U'}`}
                           alt={f.displayName} className="w-[70px] h-[70px] rounded-full object-cover" />
-                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName ?? f.username}</p>
+                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
                         <div className="flex items-center gap-1 text-[13px] text-gray-400">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

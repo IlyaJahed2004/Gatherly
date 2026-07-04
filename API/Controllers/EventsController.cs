@@ -32,6 +32,11 @@ public class EventsController(IMediator mediator) : BaseApiController
         // This safely forwards execution to the Application layer without exposing HOW the data is retrieved.
         var result = await mediator.Send(new GetEventList.Query { Params = getEventsParams });
 
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
         return Ok(result.Value);
     }
 
@@ -75,29 +80,44 @@ public class EventsController(IMediator mediator) : BaseApiController
         // persistence, and returning the new Id.
         var result = await mediator.Send(new CreateEvent.Command { EventDto = newEventDto });
 
-        if (!result.IsSuccess && result.Code == 404)
-            return NotFound();
+        if (!result.IsSuccess)
+        {
+            if (result.Code == 404)
+                return NotFound(result.Error);
 
-        if (result.IsSuccess && result.Value != null)
-            return result.Value;
+            if (result.Code == 400)
+            {
+                return BadRequest(new { message = result.Error, errors = result.Errors });
+            }
 
-        return BadRequest(result.Error);
+            return StatusCode(result.Code, result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
-    [HttpPatch("{id}")] // PUT → PATCH
+    [HttpPatch("{id}")]
     [Authorize(Policy = "IsEventHost")]
-    public async Task<ActionResult> UpdateEvent(string id, [FromForm] EditEventDto newEvent) // add [FromForm]
+    public async Task<ActionResult> UpdateEvent(string id, [FromForm] EditEventDto newEvent)
     {
         var result = await mediator.Send(
             new UpdateEvent.Command() { Id = id, EventDto = newEvent }
         );
-        if (!result.IsSuccess && result.Code == 404)
-            return NotFound();
 
-        if (result.IsSuccess) // drop "&& result.Value != null"
-            return NoContent(); // Ok(result.Value) → NoContent()
+        if (!result.IsSuccess)
+        {
+            if (result.Code == 404)
+                return NotFound(result.Error);
 
-        return BadRequest(result.Error);
+            if (result.Code == 400)
+            {
+                return BadRequest(new { message = result.Error, errors = result.Errors });
+            }
+
+            return StatusCode(result.Code, result.Error);
+        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id}")]

@@ -1,13 +1,11 @@
 export interface Profile {
   id: string;
-  username: string;
-  displayName?: string;
-  bio?: string;
-  imageUrl?: string;
+  displayName: string;
+  bio?: string | null;
+  imageUrl?: string | null;
+  following: boolean;
   followersCount: number;
-  followingsCount: number;
-  isFollowing: boolean;
-  isCurrentUser: boolean;
+  followingCount: number;
 }
 
 export interface UserEvent {
@@ -18,10 +16,4 @@ export interface UserEvent {
   imageUrl?: string;
 }
 
-export interface Follower {
-  id: string;
-  username: string;
-  displayName?: string;
-  imageUrl?: string;
-  followersCount: number;
-}
+export type Follower = Profile;

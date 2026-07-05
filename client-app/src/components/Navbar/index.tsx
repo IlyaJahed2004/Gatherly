@@ -5,7 +5,7 @@ import Button from '../Button';
 import { useStore } from '../../stores/rootStore';
 
 const Navbar = observer(() => {
-  const { authStore } = useStore();
+  const { authStore, eventStore } = useStore();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -23,6 +23,10 @@ const Navbar = observer(() => {
   const handleLogout = async () => {
     setDropdownOpen(false);
     await authStore.logout();
+    // events were loaded while authenticated (isHost/isGoing computed for that user) —
+    // re-fetch now that the JWT is gone so the homepage reflects the anonymous view
+    // immediately instead of requiring a manual refresh.
+    eventStore.loadEvents();
     navigate('/');
   };
 

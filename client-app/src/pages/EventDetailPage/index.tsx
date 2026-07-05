@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
 
 const EventDetailPage = observer(() => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,7 +122,10 @@ const EventDetailPage = observer(() => {
                   >
                     {isCancelled ? 'Reactivate' : 'Cancel Event'}
                   </button>
-                  <button className="px-5 py-2 rounded-full text-[15px] font-medium bg-white/20 border border-white text-white hover:bg-white/30 transition-colors">
+                  <button
+                    onClick={() => navigate(`/events/${id}/edit`)}
+                    className="px-5 py-2 rounded-full text-[15px] font-medium bg-white/20 border border-white text-white hover:bg-white/30 transition-colors"
+                  >
                     Manage Event
                   </button>
                 </>

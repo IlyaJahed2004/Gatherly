@@ -9,11 +9,9 @@ interface CreateEventForm {
   title: string;
   description: string;
   startDate: string;
-  startTime: string;
-  startPeriod: 'AM' | 'PM';
+  startTime: string; // 24-hour "HH:MM" — single source of truth, AM/PM is derived for display only
   endDate: string;
-  endTime: string;
-  endPeriod: 'AM' | 'PM';
+  endTime: string; // 24-hour "HH:MM"
   category: string;
   venue: string;
   city: string;
@@ -39,15 +37,17 @@ const HOURS = Array.from({ length: 12 }, (_, i) => String(i === 0 ? 12 : i));
 const MINUTES = ['00','05','10','15','20','25','30','35','40','45','50','55'];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function buildISO(dateStr: string, timeStr: string, period: 'AM' | 'PM'): string {
+// timeStr is always 24-hour "HH:MM" — no AM/PM conversion needed here.
+function buildISO(dateStr: string, timeStr: string): string {
   if (!dateStr || !timeStr) return '';
   const [year, month, day] = dateStr.split('-').map(Number);
   const [hStr, mStr] = timeStr.split(':');
-  let h = parseInt(hStr, 10);
-  const m = parseInt(mStr, 10);
-  if (period === 'AM' && h === 12) h = 0;
-  if (period === 'PM' && h !== 12) h += 12;
-  return new Date(Date.UTC(year, month - 1, day, h, m)).toISOString();
+  return new Date(Date.UTC(year, month - 1, day, parseInt(hStr, 10), parseInt(mStr, 10))).toISOString();
+}
+
+// Derives AM/PM from a 24-hour "HH:MM" string — period is a view of the time, not separate state.
+function getPeriod(timeStr: string): 'AM' | 'PM' {
+  return parseInt(timeStr.split(':')[0], 10) >= 12 ? 'PM' : 'AM';
 }
 
 function formatDisplayDate(dateStr: string): string {
@@ -73,11 +73,9 @@ const CreateEventPage = observer(() => {
     title: '',
     description: '',
     startDate: '',
-    startTime: '12:00',
-    startPeriod: 'AM',
+    startTime: '00:00',
     endDate: '',
-    endTime: '12:00',
-    endPeriod: 'AM',
+    endTime: '00:00',
     category: '',
     venue: '',
     city: '',
@@ -175,12 +173,13 @@ const CreateEventPage = observer(() => {
   }, [picker.open, picker.field]);
 
   const handleHourClick = (h: string) => {
-    const period = picker.field === 'start' ? form.startPeriod : form.endPeriod;
+    const timeKey = picker.field === 'start' ? 'startTime' : 'endTime';
+    const curTime = picker.field === 'start' ? form.startTime : form.endTime;
+    const period = getPeriod(curTime);
     let hour = parseInt(h, 10);
     if (period === 'AM' && hour === 12) hour = 0;
     if (period === 'PM' && hour !== 12) hour += 12;
-    const timeKey = picker.field === 'start' ? 'startTime' : 'endTime';
-    const curMin = (picker.field === 'start' ? form.startTime : form.endTime).split(':')[1];
+    const curMin = curTime.split(':')[1];
     set(timeKey, `${String(hour).padStart(2, '0')}:${curMin}`);
   };
 
@@ -191,8 +190,14 @@ const CreateEventPage = observer(() => {
   };
 
   const handlePeriodClick = (period: 'AM' | 'PM') => {
-    const periodKey = picker.field === 'start' ? 'startPeriod' : 'endPeriod';
-    set(periodKey, period);
+    const timeKey = picker.field === 'start' ? 'startTime' : 'endTime';
+    const curTime = picker.field === 'start' ? form.startTime : form.endTime;
+    const displayHour = getDisplayHour(curTime);
+    let hour = displayHour;
+    if (period === 'AM' && hour === 12) hour = 0;
+    if (period === 'PM' && hour !== 12) hour += 12;
+    const curMin = curTime.split(':')[1];
+    set(timeKey, `${String(hour).padStart(2, '0')}:${curMin}`);
   };
 
   const getDisplayHour = (timeStr: string) => {
@@ -213,8 +218,8 @@ const CreateEventPage = observer(() => {
     if (!form.city.trim()) e.city = 'City is required';
 
     if (form.startDate && form.endDate) {
-      const start = buildISO(form.startDate, form.startTime, form.startPeriod);
-      const end   = buildISO(form.endDate,   form.endTime,   form.endPeriod);
+      const start = buildISO(form.startDate, form.startTime);
+      const end   = buildISO(form.endDate,   form.endTime);
       if (new Date(start) >= new Date(end)) {
         e.endDate = 'End date/time must be after start';
       }
@@ -233,8 +238,8 @@ const CreateEventPage = observer(() => {
       const payload = {
         title:       form.title,
         description: form.description,
-        startDate:   buildISO(form.startDate, form.startTime, form.startPeriod),
-        endDate:     buildISO(form.endDate,   form.endTime,   form.endPeriod),
+        startDate:   buildISO(form.startDate, form.startTime),
+        endDate:     buildISO(form.endDate,   form.endTime),
         category:    CATEGORIES.indexOf(form.category) + 1,
         city:        form.city,
         venue:       form.venue,
@@ -253,8 +258,8 @@ const CreateEventPage = observer(() => {
   };
 
   // ── Current selected hour/min for display ──
-  const activePeriod  = picker.field === 'start' ? form.startPeriod  : form.endPeriod;
   const activeTime    = picker.field === 'start' ? form.startTime     : form.endTime;
+  const activePeriod  = getPeriod(activeTime);
   const activeDispH   = getDisplayHour(activeTime);
   const activeMin     = activeTime.split(':')[1];
 

@@ -73,7 +73,7 @@ const Navbar = observer(() => {
                 alt="avatar"
                 className="w-[44px] h-[44px] rounded-full object-cover border-2 border-[#078C80]"
               />
-              <span className="text-[#078C80] text-[20px] font-medium">
+              <span dir="auto" className="text-[#078C80] text-[20px] font-medium">
                 {authStore.user?.displayName}
               </span>
             </button>

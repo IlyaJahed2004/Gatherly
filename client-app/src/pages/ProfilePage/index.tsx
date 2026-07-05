@@ -134,7 +134,7 @@ const ProfilePage = observer(() => {
           className="w-[160px] h-[160px] rounded-full object-cover flex-shrink-0"
         />
         <div className="flex-1">
-          <h1 className="text-[36px] font-semibold text-[#1F2937] mb-2">
+          <h1 dir="ltr" className="text-[36px] font-semibold text-[#1F2937] mb-2 text-left">
             {profile.displayName}
           </h1>
           {!isCurrentUser && (
@@ -207,7 +207,7 @@ const ProfilePage = observer(() => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[28px] font-medium text-[#1F2937]">
-                  About {profile.displayName}
+                  About <span dir="auto">{profile.displayName}</span>
                 </h2>
                 {isCurrentUser && !isEditing && (
                   <button onClick={handleEditStart} className="flex items-center gap-2 text-[#078C80] text-[16px] hover:opacity-70 transition-opacity">
@@ -263,12 +263,14 @@ const ProfilePage = observer(() => {
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Display Name</label>
                     <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)}
+                      dir="auto"
                       className="w-full border border-[#078C80] rounded-[8px] px-4 py-3 text-[16px] outline-none focus:ring-2 focus:ring-[#078C80]/30" />
                   </div>
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Bio</label>
                     <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)}
                       placeholder="Tell us a bit about yourself..." rows={4}
+                      dir="auto"
                       className="w-full border border-[#078C80] rounded-[8px] px-4 py-3 text-[16px] outline-none focus:ring-2 focus:ring-[#078C80]/30 resize-none" />
                   </div>
                   <div className="flex justify-end gap-3 mt-2">
@@ -280,7 +282,7 @@ const ProfilePage = observer(() => {
                   </div>
                 </div>
               ) : (
-                <p className="text-[18px] text-gray-400 leading-relaxed">{profile.bio || 'No description added yet.'}</p>
+                <p dir="auto" className="text-[18px] text-gray-400 leading-relaxed">{profile.bio || 'No description added yet.'}</p>
               )}
             </div>
           )}
@@ -308,7 +310,7 @@ const ProfilePage = observer(() => {
                         <img src={ev.imageUrl || `https://placehold.co/300x180/e2e8f0/64748b?text=${encodeURIComponent(ev.category)}`}
                           alt={ev.title} className="w-full h-[120px] object-cover" />
                         <div className="p-3">
-                          <p className="text-[16px] font-medium text-[#1F2937] truncate">{ev.title}</p>
+                          <p dir="auto" className="text-[16px] font-medium text-[#1F2937] truncate">{ev.title}</p>
                           <p className="text-[13px] text-gray-400 mt-1">
                             {new Date(ev.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                           </p>
@@ -326,7 +328,7 @@ const ProfilePage = observer(() => {
           {/* FOLLOWERS */}
           {sideTab === 'followers' && (
             <div>
-              <h2 className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
+              <h2 dir="auto" className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
                 {isCurrentUser ? 'Your followers' : `${profile.displayName}'s Followers`}
               </h2>
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
@@ -338,7 +340,7 @@ const ProfilePage = observer(() => {
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
                         <img src={f.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${f.displayName?.charAt(0) ?? 'U'}`}
                           alt={f.displayName} className="w-[70px] h-[70px] rounded-full object-cover" />
-                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
+                        <p dir="auto" className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
                         <div className="flex items-center gap-1 text-[13px] text-gray-400">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -355,7 +357,7 @@ const ProfilePage = observer(() => {
           {/* FOLLOWING */}
           {sideTab === 'following' && (
             <div>
-              <h2 className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
+              <h2 dir="auto" className="text-[22px] font-medium text-[#1F2937] mb-2 pb-3 border-b border-gray-200">
                 {isCurrentUser ? 'Your following' : `${profile.displayName}'s Following`}
               </h2>
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
@@ -367,7 +369,7 @@ const ProfilePage = observer(() => {
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
                         <img src={f.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${f.displayName?.charAt(0) ?? 'U'}`}
                           alt={f.displayName} className="w-[70px] h-[70px] rounded-full object-cover" />
-                        <p className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
+                        <p dir="auto" className="text-[16px] font-medium text-[#1F2937]">{f.displayName}</p>
                         <div className="flex items-center gap-1 text-[13px] text-gray-400">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

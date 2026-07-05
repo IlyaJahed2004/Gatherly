@@ -318,6 +318,7 @@ const CreateEventPage = observer(() => {
               placeholder="Enter a title for your activity"
               value={form.title}
               onChange={e => set('title', e.target.value)}
+              dir="auto"
               className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400"
             />
           </FieldBox>
@@ -329,6 +330,7 @@ const CreateEventPage = observer(() => {
               value={form.description}
               onChange={e => set('description', e.target.value)}
               rows={3}
+              dir="auto"
               className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400 resize-none"
             />
           </FieldBox>
@@ -554,6 +556,7 @@ const CreateEventPage = observer(() => {
                 placeholder="Enter a venue / location"
                 value={form.venue}
                 onChange={e => set('venue', e.target.value)}
+                dir="auto"
                 className="flex-1 text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400"
               />
               {form.venue && (
@@ -564,6 +567,7 @@ const CreateEventPage = observer(() => {
                 placeholder="City"
                 value={form.city}
                 onChange={e => set('city', e.target.value)}
+                dir="auto"
                 className="w-[140px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400"
               />
             </div>

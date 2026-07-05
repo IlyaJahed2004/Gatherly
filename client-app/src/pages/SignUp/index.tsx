@@ -75,6 +75,7 @@ function SignUp() {
           <Input
             type="text"
             placeholder="Display Name"
+            dir="auto"
             icon={<User size={22} className="text-gray-400" />}
             error={errors.displayName?.message}
             {...register('displayName', {

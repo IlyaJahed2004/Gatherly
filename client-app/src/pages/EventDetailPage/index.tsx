@@ -98,11 +98,12 @@ const EventDetailPage = observer(() => {
 
             {/* اطلاعات پایین Hero */}
             <div className="absolute bottom-4 left-4 text-white">
-              <p className="text-[22px] font-semibold">{event.title}</p>
+              <p dir="auto" className="text-[22px] font-semibold">{event.title}</p>
               <p className="text-[14px] opacity-90">{formatDate(event.startDate)}</p>
               <p className="text-[14px] opacity-90">
                 hosted by{' '}
                 <span
+                  dir="auto"
                   className="underline cursor-pointer"
                   onClick={() => navigate(`/profile/${event.hostId}`)}
                 >
@@ -169,7 +170,7 @@ const EventDetailPage = observer(() => {
                     d="M4 6h16M4 12h16M4 18h7" />
                 </svg>
               </div>
-              <span className="text-[#1F2937] text-[20px]">{event.title}</span>
+              <span dir="auto" className="text-[#1F2937] text-[20px]">{event.title}</span>
             </div>
 
             {/* تاریخ */}
@@ -194,7 +195,7 @@ const EventDetailPage = observer(() => {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <span className="text-[#1F2937] text-[20px]">{event.venue}</span>
+                <span dir="auto" className="text-[#1F2937] text-[20px]">{event.venue}</span>
               </div>
               <button className="text-[#14B8A6] text-[16px] hover:underline">show map</button>
             </div>
@@ -208,7 +209,7 @@ const EventDetailPage = observer(() => {
                     clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-[#1F2937] text-[18px] leading-relaxed">{event.description}</p>
+              <p dir="auto" className="text-[#1F2937] text-[18px] leading-relaxed">{event.description}</p>
             </div>
           </div>
         </div>
@@ -241,7 +242,7 @@ const EventDetailPage = observer(() => {
                   alt={attendee.displayName}
                   className="w-[70px] h-[70px] rounded-[12px] object-cover flex-shrink-0"
                 />
-                <span className="text-[#1F2937] text-[18px] font-medium flex-1">
+                <span dir="auto" className="text-[#1F2937] text-[18px] font-medium flex-1">
                   {attendee.displayName}
                 </span>
                 {attendee.id === event.hostId && (

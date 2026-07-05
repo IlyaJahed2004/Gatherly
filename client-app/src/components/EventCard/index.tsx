@@ -42,7 +42,7 @@ const EventCard: React.FC<EventCardProps> = ({
       style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '680px' }}
     >
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-[32px] font-medium text-[#1F2937] leading-tight truncate">
+        <h3 dir="auto" className="text-[32px] font-medium text-[#1F2937] leading-tight truncate">
           {title}
         </h3>
         {isCancelled && (
@@ -88,11 +88,11 @@ const EventCard: React.FC<EventCardProps> = ({
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="truncate">{location}</span>
+          <span dir="auto" className="truncate">{location}</span>
         </div>
       </div>
 
-      <p className="text-[20px] font-normal text-[#1F2937] leading-snug line-clamp-3 mb-8 flex-grow">
+      <p dir="auto" className="text-[20px] font-normal text-[#1F2937] leading-snug line-clamp-3 mb-8 flex-grow">
         {description}
       </p>
 
@@ -108,7 +108,7 @@ const EventCard: React.FC<EventCardProps> = ({
           />
           <div className="flex flex-col">
             <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
-            <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
+            <span dir="auto" className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
         </button>
         {attendees.length > 0 && (

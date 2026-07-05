@@ -1,13 +1,14 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import agent from '../api/agent';
-import type { Profile, UserEvent, Follower } from '../types/profile';
+import type { Profile, Follower, ProfileEventFilter } from '../types/profile';
+import type { Event } from '../types/event';
 import type { RootStore } from './rootStore';
 import { getApiErrorMessage } from '../utils/apiError';
 
 export class ProfileStore {
   rootStore: RootStore;
   profile: Profile | null = null;
-  events: UserEvent[] = [];
+  events: Event[] = [];
   followings: Follower[] = [];
   isLoading = false;
   isLoadingEvents = false;
@@ -73,10 +74,10 @@ export class ProfileStore {
     }
   };
 
-  loadEvents = async (id: string, predicate: string) => {
+  loadEvents = async (id: string, eventType: ProfileEventFilter) => {
     this.isLoadingEvents = true;
     try {
-      const data = await agent.Profiles.getEvents(id, predicate);
+      const data = await agent.Profiles.getEvents(id, eventType);
       runInAction(() => { this.events = data; });
     } catch (err) {
       console.error(err);

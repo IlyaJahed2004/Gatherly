@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse, type AxiosError } from 'axios';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
-import type { GetEventsResult, EventParams, EventDetails } from '../types/event';
-import type { Profile, UserEvent, Follower } from '../types/profile';
+import type { Event, GetEventsResult, EventParams, EventDetails } from '../types/event';
+import type { Profile, Follower, ProfileEventFilter } from '../types/profile';
 
 axios.defaults.baseURL = '/api';
 axios.defaults.withCredentials = true;
@@ -90,8 +90,7 @@ const Profiles = {
     return axios.patch<void>('/profiles', form).then(responseBody);
   },
   toggleFollow: (id: string) => requests.post<void>(`/profiles/${id}/follow`, {}),
-  // NOTE: no backend endpoint exists yet for a user's events (nothing in ProfilesController) — this will 404 until it's added.
-  getEvents:     (id: string, predicate: string) => requests.get<UserEvent[]>(`/profiles/${id}/events`, { predicate }),
+  getEvents:     (id: string, eventType: ProfileEventFilter) => requests.get<Event[]>(`/profiles/${id}/events`, { eventType }),
   getFollowings: (id: string, predicate: string) => requests.get<Follower[]>(`/profiles/${id}/follow-list`, { predicate }),
 };
 

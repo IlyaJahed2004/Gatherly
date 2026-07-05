@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Image as ImageIcon, X } from 'lucide-react';
 import { useStore } from '../../stores/rootStore';
+import type { ProfileEventFilter } from '../../types/profile';
 
 type SideTab = 'about' | 'events' | 'followers' | 'following';
-type EventTab = 'future' | 'past' | 'hosting';
+type EventTab = ProfileEventFilter;
 
 const ProfilePage = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +16,7 @@ const ProfilePage = observer(() => {
   const isCurrentUser = !!profile && profile.id === authStore.user?.id;
 
   const [sideTab, setSideTab] = useState<SideTab>('about');
-  const [eventTab, setEventTab] = useState<EventTab>('future');
+  const [eventTab, setEventTab] = useState<EventTab>('Future');
   const [isEditing, setIsEditing] = useState(false);
   const [editDisplayName, setEditDisplayName] = useState('');
   const [editBio, setEditBio] = useState('');
@@ -288,12 +289,12 @@ const ProfilePage = observer(() => {
           {sideTab === 'events' && (
             <div>
               <div className="flex gap-8 border-b border-gray-200 mb-6">
-                {(['future', 'past', 'hosting'] as EventTab[]).map((t) => (
+                {(['Future', 'Past', 'Host'] as EventTab[]).map((t) => (
                   <button key={t} onClick={() => setEventTab(t)}
                     className={`pb-3 text-[18px] capitalize transition-colors ${
                       eventTab === t ? 'text-[#1F2937] font-medium border-b-2 border-[#078C80]' : 'text-[#6B7280] hover:text-[#1F2937]'
                     }`}>
-                    {t === 'future' ? 'Future Events' : t === 'past' ? 'Past Events' : 'Hosting'}
+                    {t === 'Future' ? 'Future Events' : t === 'Past' ? 'Past Events' : 'Hosting'}
                   </button>
                 ))}
               </div>

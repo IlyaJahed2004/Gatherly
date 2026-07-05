@@ -8,12 +8,8 @@ export interface Profile {
   followingCount: number;
 }
 
-export interface UserEvent {
-  id: string;
-  title: string;
-  category: string;
-  startDate: string;
-  imageUrl?: string;
-}
-
 export type Follower = Profile;
+
+// The profile events endpoint (GET /profiles/{id}/events) returns full EventDto,
+// so we reuse the Event type from types/event.ts rather than a separate shape.
+export type ProfileEventFilter = 'Future' | 'Past' | 'Host';

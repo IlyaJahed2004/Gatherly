@@ -58,9 +58,7 @@ public class UpdateProfile
             }
 
             // single SaveChangesAsync covers all changes in one transaction
-            var saved = await dbContext.SaveChangesAsync(cancellationToken) > 0;
-            if (!saved)
-                return Result<Unit>.Failure("Problem saving changes", 400);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             return Result<Unit>.Success(Unit.Value);
         }

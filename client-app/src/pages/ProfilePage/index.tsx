@@ -8,6 +8,8 @@ import type { ProfileEventFilter } from '../../types/profile';
 type SideTab = 'about' | 'events' | 'followers' | 'following';
 type EventTab = ProfileEventFilter;
 
+const BIO_MAX_LENGTH = 150;
+
 const ProfilePage = observer(() => {
   const { id } = useParams<{ id: string }>();
   const { profileStore, authStore } = useStore();
@@ -43,7 +45,7 @@ const ProfilePage = observer(() => {
 
   const handleEditStart = () => {
     setEditDisplayName(profile?.displayName ?? '');
-    setEditBio(profile?.bio ?? '');
+    setEditBio((profile?.bio ?? '').slice(0, BIO_MAX_LENGTH));
     setEditImage(null);
     setEditImagePreview(null);
     setEditDeleteImage(false);
@@ -68,7 +70,7 @@ const ProfilePage = observer(() => {
   const handleEditSubmit = async () => {
     const success = await profileStore.updateProfile({
       displayName: editDisplayName,
-      bio: editBio,
+      bio: editBio.slice(0, BIO_MAX_LENGTH),
       image: editImage ?? undefined,
       deleteImage: editDeleteImage,
     });
@@ -200,7 +202,7 @@ const ProfilePage = observer(() => {
         </div>
 
         {/* Content Panel */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 min-w-0 p-8">
 
           {/* ABOUT */}
           {sideTab === 'about' && (
@@ -268,10 +270,12 @@ const ProfilePage = observer(() => {
                   </div>
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Bio</label>
-                    <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)}
+                    <textarea value={editBio} onChange={(e) => setEditBio(e.target.value.slice(0, BIO_MAX_LENGTH))}
                       placeholder="Tell us a bit about yourself..." rows={4}
                       dir="auto"
+                      maxLength={BIO_MAX_LENGTH}
                       className="w-full border border-[#078C80] rounded-[8px] px-4 py-3 text-[16px] outline-none focus:ring-2 focus:ring-[#078C80]/30 resize-none" />
+                    <p className="text-right text-[12px] text-gray-400 mt-1">{editBio.length}/{BIO_MAX_LENGTH}</p>
                   </div>
                   <div className="flex justify-end gap-3 mt-2">
                     <button onClick={() => setIsEditing(false)} className="px-6 py-2 rounded-[8px] border border-gray-300 text-[#6B7280] text-[16px] hover:bg-gray-50">Cancel</button>
@@ -282,7 +286,7 @@ const ProfilePage = observer(() => {
                   </div>
                 </div>
               ) : (
-                <p dir="auto" className="text-[18px] text-gray-400 leading-relaxed">{profile.bio || 'No description added yet.'}</p>
+                <p dir="auto" className="text-[18px] text-gray-400 leading-relaxed break-words">{profile.bio || 'No description added yet.'}</p>
               )}
             </div>
           )}

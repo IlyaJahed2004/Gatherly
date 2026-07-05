@@ -97,8 +97,8 @@ const EventDetailPage = observer(() => {
             )}
 
             {/* اطلاعات پایین Hero */}
-            <div className="absolute bottom-4 left-4 text-white">
-              <p dir="auto" className="text-[22px] font-semibold">{event.title}</p>
+            <div className="absolute bottom-4 left-4 right-4 text-white">
+              <p dir="auto" className="text-[22px] font-semibold break-words">{event.title}</p>
               <p className="text-[14px] opacity-90">{formatDate(event.startDate)}</p>
               <p className="text-[14px] opacity-90">
                 hosted by{' '}
@@ -163,14 +163,14 @@ const EventDetailPage = observer(() => {
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             {/* عنوان */}
-            <div className="flex items-center gap-4">
-              <div className="text-[#14B8A6]">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="text-[#14B8A6] flex-shrink-0">
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M4 6h16M4 12h16M4 18h7" />
                 </svg>
               </div>
-              <span dir="auto" className="text-[#1F2937] text-[20px]">{event.title}</span>
+              <span dir="auto" className="text-[#1F2937] text-[20px] break-words min-w-0">{event.title}</span>
             </div>
 
             {/* تاریخ */}
@@ -185,9 +185,9 @@ const EventDetailPage = observer(() => {
             </div>
 
             {/* لوکیشن */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="text-[#14B8A6]">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="text-[#14B8A6] flex-shrink-0">
                   <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                       d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -195,21 +195,21 @@ const EventDetailPage = observer(() => {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <span dir="auto" className="text-[#1F2937] text-[20px]">{event.venue}</span>
+                <span dir="auto" className="text-[#1F2937] text-[20px] break-words min-w-0">{event.venue}</span>
               </div>
-              <button className="text-[#14B8A6] text-[16px] hover:underline">show map</button>
+              <button className="text-[#14B8A6] text-[16px] hover:underline flex-shrink-0">show map</button>
             </div>
 
             {/* توضیحات */}
-            <div className="flex items-start gap-4">
-              <div className="text-[#14B8A6] mt-1">
+            <div className="flex items-start gap-4 min-w-0">
+              <div className="text-[#14B8A6] mt-1 flex-shrink-0">
                 <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd"
                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
                     clipRule="evenodd" />
                 </svg>
               </div>
-              <p dir="auto" className="text-[#1F2937] text-[18px] leading-relaxed">{event.description}</p>
+              <p dir="auto" className="text-[#1F2937] text-[18px] leading-relaxed break-words min-w-0">{event.description}</p>
             </div>
           </div>
         </div>

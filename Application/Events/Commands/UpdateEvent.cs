@@ -53,10 +53,7 @@ public class UpdateEvent
                 existingEvent.PublicId = uploadResult.PublicId;
             }
 
-            var saved = await dbContext.SaveChangesAsync(cancellationToken) > 0;
-
-            if (!saved)
-                return Result<Unit>.Failure("Failed to update the event", 400);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             return Result<Unit>.Success(Unit.Value);
         }

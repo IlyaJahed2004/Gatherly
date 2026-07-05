@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Profiles.Commands;
 using Application.Profiles.DTOs;
 using Application.Profiles.Queries;
@@ -90,6 +91,20 @@ public class ProfilesController(IMediator mediator) : BaseApiController
 
         if (result.IsSuccess)
             return Ok();
+
+        return BadRequest(result.Error);
+    }
+
+    [HttpGet("{userId}/events")]
+    public async Task<ActionResult> GetEvents(string userId, ProfileEventType eventType)
+    {
+        var result = await mediator.Send(new GetEvents.Query() { UserId = userId, EventType = eventType });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
 
         return BadRequest(result.Error);
     }

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { MapPin, Calendar, Image as ImageIcon, X } from 'lucide-react';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface EditEventForm {
@@ -75,6 +76,33 @@ function getFirstDayOfMonth(year: number, month: number): number {
   // 0=Sun, shift so Mon=0
   return (new Date(year, month, 1).getDay() + 6) % 7;
 }
+
+// Defined at module scope (not inside the component) so it keeps a stable identity across
+// renders — otherwise React remounts its children (including any <input>) on every keystroke,
+// which drops focus and makes typing look broken.
+const FieldBox = ({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex flex-col gap-0">
+    <div
+      className={`relative rounded-[12px] border ${
+        error ? 'border-red-400' : 'border-[#078C80]'
+      } bg-white`}
+    >
+      <span className="absolute -top-[11px] left-4 bg-white px-1 text-[14px] font-medium text-[#374151]">
+        {label}
+      </span>
+      {children}
+    </div>
+    {error && <p className="mt-1 ml-2 text-[12px] text-red-500">{error}</p>}
+  </div>
+);
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const EditEventPage = observer(() => {
@@ -311,7 +339,7 @@ const EditEventPage = observer(() => {
       });
       navigate(`/events/${id}`);
     } catch (err: unknown) {
-      setErrors({ submit: 'Failed to update event. Please try again.' });
+      setErrors({ submit: getApiErrorMessage(err, 'Failed to update event. Please try again.') });
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -331,31 +359,6 @@ const EditEventPage = observer(() => {
     ...Array(firstDay).fill(null),
     ...Array.from({ length: daysCount }, (_, i) => i + 1),
   ];
-
-  // ─── Field component ────────────────────────────────────────────────────────
-  const FieldBox = ({
-    label,
-    error,
-    children,
-  }: {
-    label: string;
-    error?: string;
-    children: React.ReactNode;
-  }) => (
-    <div className="flex flex-col gap-0">
-      <div
-        className={`relative rounded-[12px] border ${
-          error ? 'border-red-400' : 'border-[#078C80]'
-        } bg-white`}
-      >
-        <span className="absolute -top-[11px] left-4 bg-white px-1 text-[14px] font-medium text-[#374151]">
-          {label}
-        </span>
-        {children}
-      </div>
-      {error && <p className="mt-1 ml-2 text-[12px] text-red-500">{error}</p>}
-    </div>
-  );
 
   if (isLoading) {
     return (

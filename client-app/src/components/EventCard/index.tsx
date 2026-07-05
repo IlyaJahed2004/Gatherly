@@ -9,6 +9,7 @@ interface EventCardProps {
   date: string;
   location: string;
   description: string;
+  hostId: string;
   hostName: string;
   imageUrl?: string;
   hostAvatarUrl?: string;
@@ -24,6 +25,7 @@ const EventCard: React.FC<EventCardProps> = ({
   date,
   location,
   description,
+  hostId,
   hostName,
   imageUrl = 'https://placehold.co/600x400/e2e8f0/64748b?text=Event+Image',
   hostAvatarUrl = 'https://placehold.co/100x100/cbd5e1/475569?text=Host',
@@ -95,7 +97,10 @@ const EventCard: React.FC<EventCardProps> = ({
       </p>
 
       <div className="flex justify-between items-center mt-auto flex-shrink-0">
-        <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate(`/profile/${hostId}`)}
+          className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity"
+        >
           <img
             src={hostAvatarUrl}
             alt={hostName}
@@ -105,17 +110,18 @@ const EventCard: React.FC<EventCardProps> = ({
             <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
             <span className="text-[20px] font-normal text-[#F59E0B]">{hostName}</span>
           </div>
-        </div>
+        </button>
         {attendees.length > 0 && (
           <div className="flex items-center -space-x-3 mx-3">
             {attendees.slice(0, 4).map((attendee) => (
-              <img
-                key={attendee.id}
-                src={attendee.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${encodeURIComponent(attendee.displayName.charAt(0))}`}
-                alt={attendee.displayName}
-                title={attendee.displayName}
-                className="w-[36px] h-[36px] rounded-full object-cover border-2 border-white"
-              />
+              <button key={attendee.id} onClick={() => navigate(`/profile/${attendee.id}`)}>
+                <img
+                  src={attendee.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${encodeURIComponent(attendee.displayName.charAt(0))}`}
+                  alt={attendee.displayName}
+                  title={attendee.displayName}
+                  className="w-[36px] h-[36px] rounded-full object-cover border-2 border-white hover:opacity-80 transition-opacity"
+                />
+              </button>
             ))}
           </div>
         )}

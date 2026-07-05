@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import agent from '../api/agent';
 import type { Profile, UserEvent, Follower } from '../types/profile';
 import type { RootStore } from './rootStore';
+import { getApiErrorMessage } from '../utils/apiError';
 
 export class ProfileStore {
   rootStore: RootStore;
@@ -12,6 +13,7 @@ export class ProfileStore {
   isLoadingEvents = false;
   isLoadingFollowings = false;
   isSubmitting = false;
+  error: string | null = null;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -32,6 +34,7 @@ export class ProfileStore {
 
   updateProfile = async (data: { displayName: string; bio?: string; image?: File; deleteImage?: boolean }) => {
     this.isSubmitting = true;
+    this.error = null;
     try {
       await agent.Profiles.update(data);
       runInAction(() => {
@@ -43,8 +46,11 @@ export class ProfileStore {
           this.rootStore.authStore.user.displayName = data.displayName;
         }
       });
+      return true;
     } catch (err) {
       console.error(err);
+      runInAction(() => { this.error = getApiErrorMessage(err, 'Failed to update profile. Please try again.'); });
+      return false;
     } finally {
       runInAction(() => { this.isSubmitting = false; });
     }

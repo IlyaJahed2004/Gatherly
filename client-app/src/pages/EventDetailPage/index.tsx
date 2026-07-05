@@ -102,7 +102,12 @@ const EventDetailPage = observer(() => {
               <p className="text-[14px] opacity-90">{formatDate(event.startDate)}</p>
               <p className="text-[14px] opacity-90">
                 hosted by{' '}
-                <span className="underline cursor-pointer">{event.hostDisplayName}</span>
+                <span
+                  className="underline cursor-pointer"
+                  onClick={() => navigate(`/profile/${event.hostId}`)}
+                >
+                  {event.hostDisplayName}
+                </span>
               </p>
             </div>
 
@@ -223,7 +228,11 @@ const EventDetailPage = observer(() => {
           {/* لیست شرکت‌کنندگان */}
           <div className="divide-y divide-gray-100">
             {event.attendees.map((attendee) => (
-              <div key={attendee.id} className="flex items-center gap-4 px-6 py-4">
+              <div
+                key={attendee.id}
+                onClick={() => navigate(`/profile/${attendee.id}`)}
+                className="flex items-center gap-4 px-6 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+              >
                 <img
                   src={
                     attendee.imageUrl ||

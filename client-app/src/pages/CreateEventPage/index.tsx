@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { MapPin, Calendar } from 'lucide-react';
 import agent from '../../api/agent';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface CreateEventForm {
@@ -64,6 +65,33 @@ function getFirstDayOfMonth(year: number, month: number): number {
   // 0=Sun, shift so Mon=0
   return (new Date(year, month, 1).getDay() + 6) % 7;
 }
+
+// Defined at module scope (not inside the component) so it keeps a stable identity across
+// renders — otherwise React remounts its children (including any <input>) on every keystroke,
+// which drops focus and makes typing look broken.
+const FieldBox = ({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex flex-col gap-0">
+    <div
+      className={`relative rounded-[12px] border ${
+        error ? 'border-red-400' : 'border-[#078C80]'
+      } bg-white`}
+    >
+      <span className="absolute -top-[11px] left-4 bg-white px-1 text-[14px] font-medium text-[#374151]">
+        {label}
+      </span>
+      {children}
+    </div>
+    {error && <p className="mt-1 ml-2 text-[12px] text-red-500">{error}</p>}
+  </div>
+);
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const CreateEventPage = observer(() => {
@@ -250,7 +278,7 @@ const CreateEventPage = observer(() => {
       const id = await agent.Events.create(payload);
       navigate(`/events/${id}`);
     } catch (err: unknown) {
-      setErrors({ submit: 'Failed to create event. Please try again.' });
+      setErrors({ submit: getApiErrorMessage(err, 'Failed to create event. Please try again.') });
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -270,31 +298,6 @@ const CreateEventPage = observer(() => {
     ...Array(firstDay).fill(null),
     ...Array.from({ length: daysCount }, (_, i) => i + 1),
   ];
-
-  // ─── Field component ────────────────────────────────────────────────────────
-  const FieldBox = ({
-    label,
-    error,
-    children,
-  }: {
-    label: string;
-    error?: string;
-    children: React.ReactNode;
-  }) => (
-    <div className="flex flex-col gap-0">
-      <div
-        className={`relative rounded-[12px] border ${
-          error ? 'border-red-400' : 'border-[#078C80]'
-        } bg-white`}
-      >
-        <span className="absolute -top-[11px] left-4 bg-white px-1 text-[14px] font-medium text-[#374151]">
-          {label}
-        </span>
-        {children}
-      </div>
-      {error && <p className="mt-1 ml-2 text-[12px] text-red-500">{error}</p>}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] py-10 px-6 lg:px-16">

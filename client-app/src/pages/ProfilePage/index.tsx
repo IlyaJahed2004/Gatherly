@@ -9,7 +9,7 @@ type EventTab = 'future' | 'past' | 'hosting';
 const ProfilePage = observer(() => {
   const { id } = useParams<{ id: string }>();
   const { profileStore, authStore } = useStore();
-  const { profile, events, followings, isLoading, isLoadingEvents, isLoadingFollowings, isSubmitting } = profileStore;
+  const { profile, events, followings, isLoading, isLoadingEvents, isLoadingFollowings, isSubmitting, error } = profileStore;
 
   const isCurrentUser = !!profile && profile.id === authStore.user?.id;
 
@@ -42,8 +42,8 @@ const ProfilePage = observer(() => {
   };
 
   const handleEditSubmit = async () => {
-    await profileStore.updateProfile({ displayName: editDisplayName, bio: editBio });
-    setIsEditing(false);
+    const success = await profileStore.updateProfile({ displayName: editDisplayName, bio: editBio });
+    if (success) setIsEditing(false);
   };
 
   if (isLoading || !profile) {
@@ -188,6 +188,7 @@ const ProfilePage = observer(() => {
               {isEditing ? (
                 <div className="flex flex-col gap-4">
                   <p className="text-[14px] text-gray-400 uppercase tracking-wider font-medium">EDIT PROFILE</p>
+                  {error && <p className="text-red-500 text-[14px]">{error}</p>}
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Display Name</label>
                     <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)}

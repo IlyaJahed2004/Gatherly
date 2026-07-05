@@ -41,11 +41,42 @@ const Account = {
   logout:   ()                       => { localStorage.removeItem('jwt'); return Promise.resolve(); },
 };
 
+interface EditEventData {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  category: string;
+  city: string;
+  venue: string;
+  latitude: number;
+  longitude: number;
+  isCancelled: boolean;
+  image?: File;
+  deleteImage?: boolean;
+}
+
 const Events = {
   list:    (params: EventParams) => requests.get<GetEventsResult>('/events', params),
   details: (id: string)          => requests.get<EventDetails>(`/events/${id}`),
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
   create:  (event: object)       => requests.post<string>('/events', event),
+  update: (id: string, data: EditEventData) => {
+    const form = new FormData();
+    form.append('Title', data.title);
+    form.append('Description', data.description);
+    form.append('StartDate', data.startDate);
+    form.append('EndDate', data.endDate);
+    form.append('Category', data.category);
+    form.append('City', data.city);
+    form.append('Venue', data.venue);
+    form.append('Latitude', String(data.latitude));
+    form.append('Longitude', String(data.longitude));
+    form.append('isCancelled', String(data.isCancelled));
+    if (data.image) form.append('Image', data.image);
+    if (data.deleteImage) form.append('DeleteImage', 'true');
+    return axios.patch<void>(`/events/${id}`, form).then(responseBody);
+  },
 };
 
 const Profiles = {

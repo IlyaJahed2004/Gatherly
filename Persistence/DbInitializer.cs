@@ -50,163 +50,134 @@ public class DbInitializer
         {
             new()
             {
-                Title = "Past Activity 1",
-                StartDate = DateTime.Now.AddMonths(-2),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 2 months ago",
-                Category = "drinks",
-                City = "London",
-                Venue =
-                    "The Lamb and Flag, 33, Rose Street, Seven Dials, Covent Garden, London, Greater London, England, WC2E 9EB, United Kingdom",
-                Latitude = 51.51171665,
-                Longitude = -0.1256611057818921,
-                Attendees =
-                [
-                    new() { UserId = users[0].Id, IsHost = true },
-                    new() { UserId = users[1].Id, IsHost = false },
-                ],
+                Title = "مسابقات فوتبال دوستانه شمال تهران",
+                Description = "یک بازی دوستانه ۱۱ به ۱۱ در زمین چمن مصنوعی الهیه. همراه داشتن استوک الزامی است.",
+                StartDate = DateTime.UtcNow.AddDays(7),
+                EndDate = DateTime.UtcNow.AddDays(7).AddHours(2),
+                Category = "Sports",
+                City = "Tehran",
+                Venue = "Elahieh Sports Center",
+                Latitude = 35.7892,
+                Longitude = 51.4243,
+                Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[1].Id } ]
             },
             new()
             {
-                Title = "Past Activity 2",
-                StartDate = DateTime.Now.AddMonths(-1),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 1 month ago",
-                Category = "culture",
-                City = "Paris",
-                Venue =
-                    "Louvre Museum, Rue Saint-Honoré, Quartier du Palais Royal, 1st Arrondissement, Paris, Ile-de-France, Metropolitan France, 75001, France",
-                Latitude = 48.8611473,
-                Longitude = 2.33802768704666,
-                Attendees =
-                [
-                    new() { UserId = users[1].Id, IsHost = true },
-                    new() { UserId = users[2].Id },
-                    new() { UserId = users[0].Id },
-                ],
+                Title = "سمینار هوش مصنوعی و آینده برنامه‌نویسی",
+                Description = "بررسی تاثیر مدل‌های زبانی بزرگ (LLMs) بر روی معماری نرم‌افزار و آینده دات‌نت کارها.",
+                StartDate = DateTime.UtcNow.AddDays(14),
+                EndDate = DateTime.UtcNow.AddDays(14).AddHours(4),
+                Category = "Science",
+                City = "Tehran",
+                Venue = "Tehran Book Garden - Amphitheater",
+                Latitude = 35.7531,
+                Longitude = 51.4502,
+                Attendees = [ new() { UserId = users[2].Id, IsHost = true }, new() { UserId = users[0].Id } ]
             },
             new()
             {
-                Title = "Future Activity 1",
-                StartDate = DateTime.Now.AddMonths(1),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 1 month in future",
-                Category = "culture",
-                City = "London",
-                Venue = "Natural History Museum",
-                Latitude = 51.496510900000004,
-                Longitude = -0.17600190725447445,
-                Attendees = [new() { UserId = users[2].Id, IsHost = true }],
+                Title = "کارگاه تخصصی کوانتوم برای تازه‌واردها",
+                Description = "در این جلسه به زبان ساده مفاهیم پایه محاسبات کوانتومی و کیوبیت‌ها را بررسی می‌کنیم.",
+                StartDate = DateTime.UtcNow.AddDays(-5), // رویداد در گذشته
+                EndDate = DateTime.UtcNow.AddDays(-5).AddHours(3),
+                Category = "Science",
+                City = "Isfahan",
+                Venue = "Isfahan University of Technology",
+                Latitude = 32.7208,
+                Longitude = 51.5285,
+                Attendees = [ new() { UserId = users[1].Id, IsHost = true } ]
             },
             new()
             {
-                Title = "Future Activity 2",
-                StartDate = DateTime.Now.AddMonths(2),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 2 months in future",
-                Category = "music",
-                City = "London",
-                Venue = "The O2",
-                Latitude = 51.502936649999995,
-                Longitude = 0.0032029278126681844,
-                Attendees =
-                [
-                    new() { UserId = users[0].Id, IsHost = true },
-                    new() { UserId = users[2].Id },
-                ],
+                Title = "تور پیاده‌روی و عکاسی در کوچه پس کوچه‌های تجریش",
+                Description = "یک گشت‌ و گذار دوستانه برای عکاسی از بافت قدیمی بازار تجریش و صرف آش در دربند.",
+                StartDate = DateTime.UtcNow.AddMonths(1),
+                EndDate = DateTime.UtcNow.AddMonths(1).AddHours(5),
+                Category = "Leisure",
+                City = "Tehran",
+                Venue = "Tajrish Square",
+                Latitude = 35.8051,
+                Longitude = 51.4251,
+                Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[2].Id } ]
             },
             new()
             {
-                Title = "Future Activity 3",
-                StartDate = DateTime.Now.AddMonths(3),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 3 months in future",
-                Category = "drinks",
-                City = "London",
-                Venue = "The Mayflower",
-                Latitude = 51.501778,
-                Longitude = -0.053577,
-                Attendees = [new() { UserId = users[1].Id, IsHost = true }],
+                Title = "جلسه نقد و بررسی کتاب معماری تمیز",
+                Description = "دورهمی هفتگی برای بحث درباره فصل‌های پایانی کتاب Clean Architecture اثر رابرت مارتین.",
+                StartDate = DateTime.UtcNow.AddDays(3),
+                EndDate = DateTime.UtcNow.AddDays(3).AddHours(2),
+                Category = "Other",
+                City = "Tabriz",
+                Venue = "Central Library of Tabriz",
+                Latitude = 38.0758,
+                Longitude = 46.2919,
+                Attendees = [ new() { UserId = users[1].Id, IsHost = true } ]
             },
             new()
             {
-                Title = "Future Activity 4",
-                StartDate = DateTime.Now.AddMonths(4),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 4 months in future",
-                Category = "drinks",
-                City = "London",
-                Venue = "The Blackfriar",
-                Latitude = 51.512146650000005,
-                Longitude = -0.10364680647106028,
-                Attendees =
-                [
-                    new() { UserId = users[2].Id, IsHost = true },
-                    new() { UserId = users[0].Id },
-                ],
+                Title = "تمرین گروهی یوگا در پارک ملت",
+                Description = "تمرین یوگا در فضای باز مناسب برای تمام سطوح. لطفا زیرانداز شخصی همراه داشته باشید.",
+                StartDate = DateTime.UtcNow.AddDays(10),
+                EndDate = DateTime.UtcNow.AddDays(10).AddHours(1.5),
+                Category = "Sports",
+                City = "Tehran",
+                Venue = "Mellat Park",
+                Latitude = 35.7761,
+                Longitude = 51.4116,
+                Attendees = [ new() { UserId = users[2].Id, IsHost = true }, new() { UserId = users[1].Id } ]
             },
             new()
             {
-                Title = "Future Activity 5",
-                StartDate = DateTime.Now.AddMonths(5),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 5 months in future",
-                Category = "culture",
-                City = "London",
-                Venue =
-                    "Sherlock Holmes Museum, 221b, Baker Street, Marylebone, London, Greater London, England, NW1 6XE, United Kingdom",
-                Latitude = 51.5237629,
-                Longitude = -0.1584743,
-                Attendees = [new() { UserId = users[0].Id, IsHost = true }],
+                Title = "وبینار امنیت در اپلیکیشن‌های وب",
+                Description = "بررسی رایج‌ترین حفره‌های امنیتی در سال ۲۰۲۵ و راه‌های مقابله با آن‌ها در ASP.NET Core.",
+                StartDate = DateTime.UtcNow.AddDays(20),
+                EndDate = DateTime.UtcNow.AddDays(20).AddHours(2),
+                Category = "Science",
+                City = "Online",
+                Venue = "Skyroom Platform",
+                Latitude = 0,
+                Longitude = 0,
+                Attendees = [ new() { UserId = users[0].Id, IsHost = true } ]
             },
             new()
             {
-                Title = "Future Activity 6",
-                StartDate = DateTime.Now.AddMonths(6),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 6 months in future",
-                Category = "music",
-                City = "London",
-                Venue =
-                    "Roundhouse, Chalk Farm Road, Maitland Park, Chalk Farm, London Borough of Camden, London, Greater London, England, NW1 8EH, United Kingdom",
-                Latitude = 51.5432505,
-                Longitude = -0.15197608174931165,
-                Attendees =
-                [
-                    new() { UserId = users[1].Id, IsHost = true },
-                    new() { UserId = users[0].Id },
-                ],
+                Title = "شب‌های مافیا در کافه بردگیم",
+                Description = "یک دورهمی جذاب برای بازی مافیا همراه با آموزش رایگان برای افراد مبتدی.",
+                StartDate = DateTime.UtcNow.AddDays(2),
+                EndDate = DateTime.UtcNow.AddDays(2).AddHours(4),
+                Category = "Leisure",
+                City = "Shiraz",
+                Venue = "BoardGame Cafe - Afif Abad",
+                Latitude = 29.6231,
+                Longitude = 52.5211,
+                Attendees = [ new() { UserId = users[1].Id, IsHost = true }, new() { UserId = users[0].Id }, new() { UserId = users[2].Id } ]
             },
             new()
             {
-                Title = "Future Activity 7",
-                StartDate = DateTime.Now.AddMonths(7),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 7 months in future",
-                Category = "travel",
-                City = "London",
-                Venue = "River Thames, England, United Kingdom",
-                Latitude = 51.5575525,
-                Longitude = -0.781404,
-                Attendees =
-                [
-                    new() { UserId = users[2].Id, IsHost = true },
-                    new() { UserId = users[1].Id },
-                ],
+                Title = "نمایشگاه تکنولوژی‌های فضایی",
+                Description = "بازدید از آخرین دستاوردهای ایران و جهان در حوزه ماهواره‌برها و اکتشافات فضایی.",
+                StartDate = DateTime.UtcNow.AddMonths(2),
+                EndDate = DateTime.UtcNow.AddMonths(2).AddDays(3),
+                Category = "Science",
+                City = "Tehran",
+                Venue = "International Exhibition Center",
+                Latitude = 35.7909,
+                Longitude = 51.3934,
+                Attendees = [ new() { UserId = users[2].Id, IsHost = true } ]
             },
             new()
             {
-                Title = "Future Activity 8",
-                StartDate = DateTime.Now.AddMonths(8),
-                EndDate = DateTime.Now.AddYears(1),
-                Description = "Activity 8 months in future",
-                Category = "film",
-                City = "London",
-                Venue = "Odeon Leicester Square",
-                Latitude = 51.5575525,
-                Longitude = -0.781404,
-                Attendees = [new() { UserId = users[0].Id, IsHost = true }],
-            },
+                Title = "مسابقه تنیس روی میز جام رمضان",
+                Description = "مسابقات حذفی پینگ‌پنگ با جوایز ارزنده برای نفرات اول تا سوم.",
+                StartDate = DateTime.UtcNow.AddDays(15),
+                EndDate = DateTime.UtcNow.AddDays(15).AddHours(6),
+                Category = "Sports",
+                City = "Mashhad",
+                Venue = "Astadlou Sports Hall",
+                Latitude = 36.2972,
+                Longitude = 59.6067,
+                Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[2].Id } ]
+            }
         };
 
         await context.Events.AddRangeAsync(events);

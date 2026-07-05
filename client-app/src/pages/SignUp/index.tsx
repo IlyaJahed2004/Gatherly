@@ -76,6 +76,7 @@ function SignUp() {
             type="text"
             placeholder="Display Name"
             dir="auto"
+            maxLength={50}
             icon={<User size={22} className="text-gray-400" />}
             error={errors.displayName?.message}
             {...register('displayName', {
@@ -83,6 +84,10 @@ function SignUp() {
               minLength: {
                 value: 3,
                 message: 'Display name must be at least 3 characters',
+              },
+              maxLength: {
+                value: 50,
+                message: 'Display name must not exceed 50 characters',
               },
             })}
           />

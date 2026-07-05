@@ -9,6 +9,7 @@ type SideTab = 'about' | 'events' | 'followers' | 'following';
 type EventTab = ProfileEventFilter;
 
 const BIO_MAX_LENGTH = 150;
+const DISPLAY_NAME_MAX_LENGTH = 50;
 
 const ProfilePage = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -44,7 +45,7 @@ const ProfilePage = observer(() => {
   }, [sideTab, id]);
 
   const handleEditStart = () => {
-    setEditDisplayName(profile?.displayName ?? '');
+    setEditDisplayName((profile?.displayName ?? '').slice(0, DISPLAY_NAME_MAX_LENGTH));
     setEditBio((profile?.bio ?? '').slice(0, BIO_MAX_LENGTH));
     setEditImage(null);
     setEditImagePreview(null);
@@ -69,7 +70,7 @@ const ProfilePage = observer(() => {
 
   const handleEditSubmit = async () => {
     const success = await profileStore.updateProfile({
-      displayName: editDisplayName,
+      displayName: editDisplayName.slice(0, DISPLAY_NAME_MAX_LENGTH),
       bio: editBio.slice(0, BIO_MAX_LENGTH),
       image: editImage ?? undefined,
       deleteImage: editDeleteImage,
@@ -78,6 +79,9 @@ const ProfilePage = observer(() => {
       setIsEditing(false);
       // re-fetch so the real (Cloudinary) imageUrl and any server-side changes show up immediately
       if (id) profileStore.loadProfile(id);
+      // authStore.user (used by the Navbar avatar/name) is a separate copy — refresh it too,
+      // otherwise the navbar keeps showing the old photo/name until a manual page reload.
+      if (isCurrentUser) authStore.loadCurrentUser();
     }
   };
 
@@ -264,9 +268,11 @@ const ProfilePage = observer(() => {
                   </div>
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Display Name</label>
-                    <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)}
+                    <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value.slice(0, DISPLAY_NAME_MAX_LENGTH))}
                       dir="auto"
+                      maxLength={DISPLAY_NAME_MAX_LENGTH}
                       className="w-full border border-[#078C80] rounded-[8px] px-4 py-3 text-[16px] outline-none focus:ring-2 focus:ring-[#078C80]/30" />
+                    <p className="text-right text-[12px] text-gray-400 mt-1">{editDisplayName.length}/{DISPLAY_NAME_MAX_LENGTH}</p>
                   </div>
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Bio</label>

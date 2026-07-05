@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Image as ImageIcon, X } from 'lucide-react';
 import { useStore } from '../../stores/rootStore';
 
 type SideTab = 'about' | 'events' | 'followers' | 'following';
@@ -18,6 +19,10 @@ const ProfilePage = observer(() => {
   const [isEditing, setIsEditing] = useState(false);
   const [editDisplayName, setEditDisplayName] = useState('');
   const [editBio, setEditBio] = useState('');
+  const [editImage, setEditImage] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [editDeleteImage, setEditDeleteImage] = useState(false);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (id) profileStore.loadProfile(id);
@@ -38,12 +43,39 @@ const ProfilePage = observer(() => {
   const handleEditStart = () => {
     setEditDisplayName(profile?.displayName ?? '');
     setEditBio(profile?.bio ?? '');
+    setEditImage(null);
+    setEditImagePreview(null);
+    setEditDeleteImage(false);
     setIsEditing(true);
   };
 
+  const handleEditImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEditImage(file);
+    setEditDeleteImage(false);
+    setEditImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleEditImageRemove = () => {
+    setEditImage(null);
+    setEditImagePreview(null);
+    setEditDeleteImage(true);
+    if (editFileInputRef.current) editFileInputRef.current.value = '';
+  };
+
   const handleEditSubmit = async () => {
-    const success = await profileStore.updateProfile({ displayName: editDisplayName, bio: editBio });
-    if (success) setIsEditing(false);
+    const success = await profileStore.updateProfile({
+      displayName: editDisplayName,
+      bio: editBio,
+      image: editImage ?? undefined,
+      deleteImage: editDeleteImage,
+    });
+    if (success) {
+      setIsEditing(false);
+      // re-fetch so the real (Cloudinary) imageUrl and any server-side changes show up immediately
+      if (id) profileStore.loadProfile(id);
+    }
   };
 
   if (isLoading || !profile) {
@@ -189,6 +221,44 @@ const ProfilePage = observer(() => {
                 <div className="flex flex-col gap-4">
                   <p className="text-[14px] text-gray-400 uppercase tracking-wider font-medium">EDIT PROFILE</p>
                   {error && <p className="text-red-500 text-[14px]">{error}</p>}
+                  <div className="flex items-center gap-4">
+                    {editDeleteImage ? (
+                      <div className="w-[80px] h-[80px] rounded-full bg-gray-100 flex items-center justify-center text-gray-400 flex-shrink-0">
+                        <ImageIcon size={28} />
+                      </div>
+                    ) : (
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={editImagePreview ?? profile.imageUrl ?? `https://placehold.co/160x160/e2e8f0/64748b?text=${profile.displayName?.charAt(0) ?? 'U'}`}
+                          alt="Avatar"
+                          className="w-[80px] h-[80px] rounded-full object-cover"
+                        />
+                        {(editImagePreview || profile.imageUrl) && (
+                          <button
+                            type="button"
+                            onClick={handleEditImageRemove}
+                            className="absolute -top-1 -right-1 bg-white rounded-full shadow p-1 text-red-500 hover:bg-red-50"
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => editFileInputRef.current?.click()}
+                      className="px-5 py-2 rounded-full text-[14px] font-medium border border-[#078C80] text-[#078C80] hover:bg-teal-50 transition-colors"
+                    >
+                      {editImagePreview || (profile.imageUrl && !editDeleteImage) ? 'Change photo' : 'Upload photo'}
+                    </button>
+                    <input
+                      ref={editFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleEditImageSelect}
+                      className="hidden"
+                    />
+                  </div>
                   <div className="relative">
                     <label className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-[#078C80]">Display Name</label>
                     <input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)}

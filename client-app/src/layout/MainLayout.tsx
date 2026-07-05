@@ -12,7 +12,7 @@ const MainLayout = observer(() => {
   }, [authStore]);
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6]">
+    <div className="min-h-screen min-w-[1280px] bg-[#F3F4F6]">
       <Navbar />
       <main className="px-12 py-8">
         <Outlet />

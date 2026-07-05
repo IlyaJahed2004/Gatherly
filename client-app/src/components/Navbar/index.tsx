@@ -45,7 +45,7 @@ const Navbar = observer(() => {
       </div>
 
       {/* Tabs */}
-      <div className="hidden md:flex items-center gap-[40px]">
+      <div className="flex items-center gap-[40px]">
         <div className="relative flex flex-col items-center w-[240px]">
           <a href="/" className="text-[#078C80] text-[24px] font-medium pb-4">
             home

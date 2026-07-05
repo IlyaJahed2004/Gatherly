@@ -92,7 +92,7 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
 
-      <p dir="auto" className="text-[20px] font-normal text-[#1F2937] leading-snug line-clamp-3 mb-8 flex-grow">
+      <p dir="auto" className="text-[20px] font-normal text-[#1F2937] leading-snug break-words mb-8 flex-grow min-h-0 overflow-y-auto">
         {description}
       </p>
 

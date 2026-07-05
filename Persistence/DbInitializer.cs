@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,6 +15,8 @@ public class DbInitializer
                 DisplayName = "Bob",
                 UserName = "bob@test.com",
                 Email = "bob@test.com",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783260495/UsersPhotos/jnfucmkcmvjnfynqsoe8.jpg",
+                PublicId = "UsersPhotos/jnfucmkcmvjnfynqsoe8"
             },
             new User()
             {
@@ -23,6 +24,8 @@ public class DbInitializer
                 DisplayName = "Tom",
                 UserName = "tom@test.com",
                 Email = "tom@test.com",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783260903/UsersPhotos/o3vnguixhmgg1jctxyo5.jpg",
+                PublicId = "UsersPhotos/o3vnguixhmgg1jctxyo5"
             },
             new User()
             {
@@ -30,6 +33,8 @@ public class DbInitializer
                 DisplayName = "Jane",
                 UserName = "jane@test.com",
                 Email = "jane@test.com",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783261255/UsersPhotos/andhhu4az6kpqkrqyntq.jpg",
+                PublicId = "UsersPhotos/andhhu4az6kpqkrqyntq"
             },
         };
 
@@ -59,6 +64,8 @@ public class DbInitializer
                 Venue = "Elahieh Sports Center",
                 Latitude = 35.7892,
                 Longitude = 51.4243,
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783262694/UsersPhotos/gouev91y5nyhy4jopzfz.jpg",
+                PublicId = "UsersPhotos/gouev91y5nyhy4jopzfz",
                 Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[1].Id } ]
             },
             new()
@@ -72,19 +79,23 @@ public class DbInitializer
                 Venue = "Tehran Book Garden - Amphitheater",
                 Latitude = 35.7531,
                 Longitude = 51.4502,
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783262799/UsersPhotos/nqzwf0h6ujliov0lgqtx.jpg",
+                PublicId = "UsersPhotos/nqzwf0h6ujliov0lgqtx",
                 Attendees = [ new() { UserId = users[2].Id, IsHost = true }, new() { UserId = users[0].Id } ]
             },
             new()
             {
                 Title = "کارگاه تخصصی کوانتوم برای تازه‌واردها",
                 Description = "در این جلسه به زبان ساده مفاهیم پایه محاسبات کوانتومی و کیوبیت‌ها را بررسی می‌کنیم.",
-                StartDate = DateTime.UtcNow.AddDays(-5), // رویداد در گذشته
+                StartDate = DateTime.UtcNow.AddDays(-5), 
                 EndDate = DateTime.UtcNow.AddDays(-5).AddHours(3),
                 Category = "Science",
                 City = "Isfahan",
                 Venue = "Isfahan University of Technology",
                 Latitude = 32.7208,
                 Longitude = 51.5285,
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783262971/UsersPhotos/wjh20goqnxb78nwmweee.jpg",
+                PublicId = "UsersPhotos/wjh20goqnxb78nwmweee",
                 Attendees = [ new() { UserId = users[1].Id, IsHost = true } ]
             },
             new()
@@ -98,6 +109,8 @@ public class DbInitializer
                 Venue = "Tajrish Square",
                 Latitude = 35.8051,
                 Longitude = 51.4251,
+                PublicId = "UsersPhotos/bra7txqhtf0ofvxjpafb",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263059/UsersPhotos/bra7txqhtf0ofvxjpafb.jpg",
                 Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[2].Id } ]
             },
             new()
@@ -111,6 +124,8 @@ public class DbInitializer
                 Venue = "Central Library of Tabriz",
                 Latitude = 38.0758,
                 Longitude = 46.2919,
+                PublicId = "UsersPhotos/skta2unahrj3zgyskawl",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263178/UsersPhotos/skta2unahrj3zgyskawl.jpg",
                 Attendees = [ new() { UserId = users[1].Id, IsHost = true } ]
             },
             new()
@@ -124,6 +139,8 @@ public class DbInitializer
                 Venue = "Mellat Park",
                 Latitude = 35.7761,
                 Longitude = 51.4116,
+                PublicId = "UsersPhotos/dh40fuxte0nuqsc7u4ks",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263268/UsersPhotos/dh40fuxte0nuqsc7u4ks.jpg",
                 Attendees = [ new() { UserId = users[2].Id, IsHost = true }, new() { UserId = users[1].Id } ]
             },
             new()
@@ -137,6 +154,8 @@ public class DbInitializer
                 Venue = "Skyroom Platform",
                 Latitude = 0,
                 Longitude = 0,
+                PublicId = "UsersPhotos/w3luboxcd3nvvjopqfst",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263482/UsersPhotos/w3luboxcd3nvvjopqfst.png",
                 Attendees = [ new() { UserId = users[0].Id, IsHost = true } ]
             },
             new()
@@ -150,6 +169,8 @@ public class DbInitializer
                 Venue = "BoardGame Cafe - Afif Abad",
                 Latitude = 29.6231,
                 Longitude = 52.5211,
+                PublicId = "UsersPhotos/nsoz3ipuj4xqdatcva7k",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263661/UsersPhotos/nsoz3ipuj4xqdatcva7k.jpg",
                 Attendees = [ new() { UserId = users[1].Id, IsHost = true }, new() { UserId = users[0].Id }, new() { UserId = users[2].Id } ]
             },
             new()
@@ -163,6 +184,8 @@ public class DbInitializer
                 Venue = "International Exhibition Center",
                 Latitude = 35.7909,
                 Longitude = 51.3934,
+                PublicId = "UsersPhotos/skta2unahrj3zgyskawl",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263178/UsersPhotos/skta2unahrj3zgyskawl.jpg",
                 Attendees = [ new() { UserId = users[2].Id, IsHost = true } ]
             },
             new()
@@ -176,6 +199,8 @@ public class DbInitializer
                 Venue = "Astadlou Sports Hall",
                 Latitude = 36.2972,
                 Longitude = 59.6067,
+                PublicId = "UsersPhotos/vcan1qphbd3eg7h0675k",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783263764/UsersPhotos/vcan1qphbd3eg7h0675k.webp",
                 Attendees = [ new() { UserId = users[0].Id, IsHost = true }, new() { UserId = users[2].Id } ]
             }
         };

@@ -5,6 +5,7 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import CreateEventPage from '../pages/CreateEventPage';
 import EditEventPage from '../pages/EditEventPage';
+import AboutUsPage from '../pages/AboutUsPage';
 
 export const layoutRoutes = [
   { path: '/',                  index: true,  element: <HomePage /> },
@@ -12,6 +13,7 @@ export const layoutRoutes = [
   { path: '/events/create',     index: false, element: <CreateEventPage /> },
   { path: '/events/:id/edit',   index: false, element: <EditEventPage /> },
   { path: '/profile/:id', index: false, element: <ProfilePage /> },
+  { path: '/about',       index: false, element: <AboutUsPage /> },
 ];
 
 export const standaloneRoutes = [

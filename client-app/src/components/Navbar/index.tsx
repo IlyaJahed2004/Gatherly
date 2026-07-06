@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button from '../Button';
 import { useStore } from '../../stores/rootStore';
 
 const Navbar = observer(() => {
   const { authStore, eventStore } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAbout = location.pathname === '/about';
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -47,16 +49,16 @@ const Navbar = observer(() => {
       {/* Tabs */}
       <div className="flex items-center gap-[40px]">
         <div className="relative flex flex-col items-center w-[240px]">
-          <a href="/" className="text-[#078C80] text-[24px] font-medium pb-4">
+          <a href="/" className="text-[#078C80] text-[24px] font-medium pb-4 hover:opacity-80 transition-opacity">
             home
           </a>
-          <div className="absolute bottom-0 w-[240px] h-[4px] bg-[#078C80]" />
+          <div className={`absolute bottom-0 w-[240px] h-[4px] bg-[#078C80] transition-opacity ${isAbout ? 'opacity-0' : 'opacity-100'}`} />
         </div>
         <div className="relative flex flex-col items-center w-[240px]">
           <a href="/about" className="text-[#078C80] text-[24px] font-medium pb-4 hover:opacity-80 transition-opacity">
             About us
           </a>
-          <div className="absolute bottom-0 w-[240px] h-[4px] bg-[#078C80] opacity-0 hover:opacity-100 transition-opacity" />
+          <div className={`absolute bottom-0 w-[240px] h-[4px] bg-[#078C80] transition-opacity ${isAbout ? 'opacity-100' : 'opacity-0'}`} />
         </div>
       </div>
 

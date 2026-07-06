@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
+import EventMap from '../../components/EventMap';
 
 const EventDetailPage = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,7 @@ const EventDetailPage = observer(() => {
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
   const loadEvent = async () => {
     if (!id) return;
@@ -197,8 +199,17 @@ const EventDetailPage = observer(() => {
                 </div>
                 <span dir="auto" className="text-[#1F2937] text-[20px] break-words min-w-0">{event.venue}</span>
               </div>
-              <button className="text-[#14B8A6] text-[16px] hover:underline flex-shrink-0">show map</button>
+              <button
+                onClick={() => setShowMap((v) => !v)}
+                className="text-[#14B8A6] text-[16px] hover:underline flex-shrink-0"
+              >
+                {showMap ? 'hide map' : 'show map'}
+              </button>
             </div>
+
+            {showMap && (
+              <EventMap latitude={event.latitude} longitude={event.longitude} />
+            )}
 
             {/* توضیحات */}
             <div className="flex items-start gap-4 min-w-0">

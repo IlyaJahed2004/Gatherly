@@ -5,6 +5,7 @@ import { MapPin, Calendar, Image as ImageIcon, X } from 'lucide-react';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
 import { getApiErrorMessage } from '../../utils/apiError';
+import LocationPickerMap from '../../components/LocationPickerMap';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface EditEventForm {
@@ -695,6 +696,23 @@ const EditEventPage = observer(() => {
               />
             </div>
           </FieldBox>
+
+          {/* Map: click to set the event's coordinates */}
+          <div className="flex flex-col gap-2">
+            <p className="text-[14px] text-gray-500">
+              Click on the map to set the exact location
+              {(form.latitude !== 0 || form.longitude !== 0) &&
+                ` (${form.latitude.toFixed(5)}, ${form.longitude.toFixed(5)})`}
+            </p>
+            <LocationPickerMap
+              latitude={form.latitude}
+              longitude={form.longitude}
+              onChange={(lat, lng) => {
+                set('latitude', lat);
+                set('longitude', lng);
+              }}
+            />
+          </div>
 
           {/* Actions */}
           <div className="flex justify-end gap-3 mt-2">

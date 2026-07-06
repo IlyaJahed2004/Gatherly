@@ -4,10 +4,13 @@ import { observer } from 'mobx-react-lite';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
 import EventMap from '../../components/EventMap';
+import EventChat from '../../components/EventChat';
+import { useStore } from '../../stores/rootStore';
 
 const EventDetailPage = observer(() => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { authStore } = useStore();
 
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +96,7 @@ const EventDetailPage = observer(() => {
 
             {/* Badge Cancelled */}
             {isCancelled && (
-              <div className="absolute top-4 left-4 bg-white text-red-500 text-[14px] font-medium px-4 py-1 rounded-full">
+              <div className="absolute top-4 left-4 bg-white border border-[#FF614C] text-[#FF614C] text-[14px] font-medium px-4 py-1 rounded-full">
                 Cancelled
               </div>
             )}
@@ -223,6 +226,13 @@ const EventDetailPage = observer(() => {
               <p dir="auto" className="text-[#1F2937] text-[18px] leading-relaxed break-words min-w-0">{event.description}</p>
             </div>
           </div>
+
+          <EventChat
+            eventId={event.id}
+            currentUserId={authStore.user?.id}
+            currentUserName={authStore.user?.displayName}
+            currentUserImageUrl={authStore.user?.imageUrl}
+          />
         </div>
 
         {/* ستون راست: Attendees */}

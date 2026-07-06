@@ -46,17 +46,17 @@ const EventCard: React.FC<EventCardProps> = ({
           {title}
         </h3>
         {isCancelled && (
-          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium bg-red-400 text-white">
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#FF614C] text-[#FF614C]">
             canceled
           </span>
         )}
         {isHost && (
-          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#F87171] text-[#F87171]">
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#FF614C] text-[#FF614C]">
             I'm hosting
           </span>
         )}
         {!isHost && isGoing && (
-          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#F87171] text-[#F87171]">
+          <span className="flex-shrink-0 px-3 py-1 rounded-full text-[12px] font-medium border border-[#FF614C] text-[#FF614C]">
             I'm going
           </span>
         )}
@@ -66,7 +66,15 @@ const EventCard: React.FC<EventCardProps> = ({
         className="w-full h-[260px] rounded-[16px] overflow-hidden mb-6 flex-shrink-0"
         style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }}
       >
-        <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        <img
+          src={imageUrl}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(title)}`;
+          }}
+        />
       </div>
 
       <div className="flex flex-col gap-3 text-[20px] font-normal text-[#1F2937] mb-6 flex-shrink-0">
@@ -105,6 +113,10 @@ const EventCard: React.FC<EventCardProps> = ({
             src={hostAvatarUrl}
             alt={hostName}
             className="w-[40px] h-[40px] rounded-full object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://placehold.co/100x100/cbd5e1/475569?text=Host';
+            }}
           />
           <div className="flex flex-col">
             <span className="text-[12px] text-[#1F2937] font-medium uppercase tracking-wide">hosted by</span>
@@ -113,16 +125,28 @@ const EventCard: React.FC<EventCardProps> = ({
         </button>
         {attendees.length > 0 && (
           <div className="flex items-center -space-x-3 mx-3">
-            {attendees.slice(0, 4).map((attendee) => (
+            {attendees.slice(0, 3).map((attendee) => (
               <button key={attendee.id} onClick={() => navigate(`/profile/${attendee.id}`)}>
                 <img
                   src={attendee.imageUrl || `https://placehold.co/100x100/e2e8f0/64748b?text=${encodeURIComponent(attendee.displayName.charAt(0))}`}
                   alt={attendee.displayName}
                   title={attendee.displayName}
                   className="w-[36px] h-[36px] rounded-full object-cover border-2 border-white hover:opacity-80 transition-opacity"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://placehold.co/100x100/e2e8f0/64748b?text=${encodeURIComponent(attendee.displayName.charAt(0))}`;
+                  }}
                 />
               </button>
             ))}
+            {attendees.length > 3 && (
+              <div
+                title={`+${attendees.length - 3} more`}
+                className="w-[36px] h-[36px] rounded-full border-2 border-white bg-gray-200 text-gray-600 text-[12px] font-medium flex items-center justify-center"
+              >
+                +{attendees.length - 3}
+              </div>
+            )}
           </div>
         )}
         <Button

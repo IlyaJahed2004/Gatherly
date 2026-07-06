@@ -21,7 +21,7 @@ const members: TeamMember[] = [
   { name: 'Ramin Buzarpur',            role: 'Frontend Team',            email: 'raminbuzarpur@gmail.com',                team: 'frontend', icon: <Code2 className="w-6 h-6" /> },
   { name: 'Mohammadhosein Fathali',     role: 'Frontend Team',            email: 'mhfathali2003@gmail.com',                team: 'frontend', icon: <Code2 className="w-6 h-6" /> },
   { name: 'Mohammadreza Yousefi',       role: 'Frontend Team · Figma',    email: 'mryousefi123456@gmail.com',              team: 'frontend', icon: <Palette className="w-6 h-6" /> },
-  { name: 'Mohammadreza Farahbakhsh',   role: 'Backend Team',             email: 'farahbakhsh20mohamadreza30@gmail.com',   team: 'backend',  icon: <Server className="w-6 h-6" /> },
+  { name: 'Mohammadreza Farahbakhsh',   role: 'Backend Team',             email: 'Moreza.farahbakhsh@gmail.com',   team: 'backend',  icon: <Server className="w-6 h-6" /> },
   { name: 'Ilya Jahed',                 role: 'Backend Team',             email: 'ilyajahed.w2004@gmail.com',              team: 'backend',  icon: <Server className="w-6 h-6" /> },
 ];
 

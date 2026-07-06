@@ -56,11 +56,39 @@ interface EditEventData {
   deleteImage?: boolean;
 }
 
+interface CreateEventData {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  category: number;
+  city: string;
+  venue: string;
+  latitude: number;
+  longitude: number;
+  isCancelled: boolean;
+  image?: File;
+}
+
 const Events = {
   list:    (params: EventParams) => requests.get<GetEventsResult>('/events', params),
   details: (id: string)          => requests.get<EventDetails>(`/events/${id}`),
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
-  create:  (event: object)       => requests.post<string>('/events', event),
+  create:  (data: CreateEventData) => {
+    const form = new FormData();
+    form.append('Title', data.title);
+    form.append('Description', data.description);
+    form.append('StartDate', data.startDate);
+    form.append('EndDate', data.endDate);
+    form.append('Category', String(data.category));
+    form.append('City', data.city);
+    form.append('Venue', data.venue);
+    form.append('Latitude', String(data.latitude));
+    form.append('Longitude', String(data.longitude));
+    form.append('IsCancelled', String(data.isCancelled));
+    if (data.image) form.append('Image', data.image);
+    return axios.post<string>('/events', form).then(responseBody);
+  },
   update: (id: string, data: EditEventData) => {
     const form = new FormData();
     form.append('Title', data.title);

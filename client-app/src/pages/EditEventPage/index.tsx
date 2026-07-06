@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { MapPin, Calendar, Image as ImageIcon, X } from 'lucide-react';
+import { MapPin, Calendar, Image as ImageIcon, Pencil, Trash2 } from 'lucide-react';
 import agent from '../../api/agent';
 import type { EventDetails } from '../../types/event';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -399,65 +399,71 @@ const EditEventPage = observer(() => {
         )}
 
         <div className="flex flex-col gap-6">
-          {/* Cover photo */}
-          <FieldBox label="Cover Photo">
-            <div className="flex items-center gap-4 px-4 py-3">
-              {currentImageUrl ? (
-                <div className="relative">
-                  <img src={currentImageUrl} alt="Cover" className="w-24 h-24 rounded-[12px] object-cover" />
+          {/* Title / Description + Cover Photo */}
+          <div className="flex flex-col md:flex-row gap-6 items-stretch">
+            <div className="flex-1 flex flex-col gap-6">
+              <FieldBox label="Title" error={errors.title}>
+                <input
+                  type="text"
+                  placeholder="Enter a title for your activity"
+                  value={form.title}
+                  onChange={e => set('title', e.target.value)}
+                  dir="auto"
+                  className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400"
+                />
+              </FieldBox>
+
+              <FieldBox label="Descripion" error={errors.description}>
+                <textarea
+                  placeholder="Describe your activity , what it's about , and what people can expect"
+                  value={form.description}
+                  onChange={e => set('description', e.target.value)}
+                  rows={3}
+                  dir="auto"
+                  className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400 resize-none"
+                />
+              </FieldBox>
+            </div>
+
+            <div className="w-full md:w-[340px] flex-shrink-0">
+              <div className="relative w-full h-full min-h-[160px] rounded-[16px] overflow-hidden bg-gray-100">
+                {currentImageUrl ? (
+                  <img src={currentImageUrl} alt="Cover" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <ImageIcon size={40} />
+                  </div>
+                )}
+                <div className="absolute bottom-3 right-3 flex gap-2">
                   <button
                     type="button"
-                    onClick={handleRemoveImage}
-                    className="absolute -top-2 -right-2 bg-white rounded-full shadow p-1 text-red-500 hover:bg-red-50"
+                    onClick={() => fileInputRef.current?.click()}
+                    title={currentImageUrl ? 'Change photo' : 'Upload photo'}
+                    className="w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-[#078C80] hover:bg-teal-50 transition-colors"
                   >
-                    <X size={14} />
+                    <Pencil size={16} />
                   </button>
+                  {currentImageUrl && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      title="Remove photo"
+                      className="w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div className="w-24 h-24 rounded-[12px] bg-gray-100 flex items-center justify-center text-gray-400">
-                  <ImageIcon size={28} />
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="px-5 py-2 rounded-full text-[14px] font-medium border border-[#078C80] text-[#078C80] hover:bg-teal-50 transition-colors"
-              >
-                {currentImageUrl ? 'Change photo' : 'Upload photo'}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-                className="hidden"
-              />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+              </div>
             </div>
-          </FieldBox>
-
-          {/* Title */}
-          <FieldBox label="Title" error={errors.title}>
-            <input
-              type="text"
-              placeholder="Enter a title for your activity"
-              value={form.title}
-              onChange={e => set('title', e.target.value)}
-              dir="auto"
-              className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400"
-            />
-          </FieldBox>
-
-          {/* Description */}
-          <FieldBox label="Descripion" error={errors.description}>
-            <textarea
-              placeholder="Describe your activity , what it's about , and what people can expect"
-              value={form.description}
-              onChange={e => set('description', e.target.value)}
-              rows={3}
-              dir="auto"
-              className="w-full px-4 py-3 rounded-[12px] text-[15px] text-[#374151] bg-transparent outline-none placeholder-gray-400 resize-none"
-            />
-          </FieldBox>
+          </div>
 
           {/* Date row */}
           <div ref={pickerRef} className="relative flex gap-4">
@@ -496,7 +502,7 @@ const EditEventPage = observer(() => {
             {/* ── Date/Time Picker Dropdown ── */}
             {picker.open && (
               <div
-                className="absolute left-0 top-[calc(100%+8px)] z-50 flex bg-white rounded-[16px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
+                className="absolute left-0 top-[calc(100%+8px)] z-[1100] flex bg-white rounded-[16px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
                 style={{ minWidth: 460 }}
               >
                 {/* Calendar */}
@@ -651,7 +657,7 @@ const EditEventPage = observer(() => {
             </FieldBox>
 
             {catOpen && (
-              <div className="absolute right-0 top-[calc(100%+4px)] z-50 bg-white rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden"
+              <div className="absolute right-0 top-[calc(100%+4px)] z-[1100] bg-white rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden"
                 style={{ minWidth: 200 }}>
                 {CATEGORIES.map(cat => (
                   <button

@@ -15,8 +15,8 @@ public class DbInitializer
                 DisplayName = "Bob",
                 UserName = "bob@test.com",
                 Email = "bob@test.com",
-                PublicId = "UsersPhotos/zwdn94prwxr4nuuau6wi",
-                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783260495/UsersPhotos/jnfucmkcmvjnfynqsoe8.jpg"
+                PublicId = "UsersPhotos/xyj2dafi2yntk9w9rjrq",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783328196/UsersPhotos/xyj2dafi2yntk9w9rjrq.jpg"
             },
             new User()
             {
@@ -154,8 +154,8 @@ public class DbInitializer
                 Venue = "Zoom Webinar Link",
                 Latitude = 0,
                 Longitude = 0,
-                PublicId = "UsersPhotos/hgmz0txlxnw1odp0rugw",
-                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783326834/UsersPhotos/hgmz0txlxnw1odp0rugw.webp",
+                PublicId = "UsersPhotos/ex8qymkvm5y7tsf4yp4o",
+                ImageUrl = "https://res.cloudinary.com/df387hub9/image/upload/v1783328434/UsersPhotos/ex8qymkvm5y7tsf4yp4o.png",
                 Attendees = [ new() { UserId = users[0].Id, IsHost = true } ]
             },
             new()

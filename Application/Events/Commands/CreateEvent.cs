@@ -31,12 +31,18 @@ public class CreateEvent
     /// Handles the CreateEvent command.
     /// IUserAccessor is injected to identify the current logged-in user
     /// so they can be assigned as the host of the newly created event.
+    /// IPhotoService is injected to handle the optional image upload to Cloudinary.
     /// </summary>
-    public class Handler(GatherlyDbContext dbContext, IMapper mapper, IUserAccessor userAccessor)
-        : IRequestHandler<Command, Result<string>>
+    public class Handler(
+        GatherlyDbContext dbContext,
+        IMapper mapper,
+        IUserAccessor userAccessor,
+        IPhotoService photoService
+    ) : IRequestHandler<Command, Result<string>>
     {
         /// <summary>
-        /// Creates the event, assigns the current user as host, and saves to the database.
+        /// Creates the event, optionally uploads a photo, assigns the current
+        /// user as host, and saves everything to the database.
         /// </summary>
         public async Task<Result<string>> Handle(
             Command request,
@@ -49,7 +55,21 @@ public class CreateEvent
 
             // Map CreateEventDto → Event entity.
             // AutoMapper fills in all matching properties automatically.
+            // request.EventDto.Image has no matching Event property — AutoMapper
+            // silently skips it, handled manually below instead.
             var eventEntity = mapper.Map<Event>(request.EventDto);
+
+            // Optional photo upload — no old photo to worry about on create,
+            // so this is simpler than the UpdateEvent version (no delete-first branch).
+            if (request.EventDto.Image != null)
+            {
+                var uploadResult = await photoService.UploadPhoto(request.EventDto.Image);
+                if (uploadResult == null)
+                    return Result<string>.Failure("Problem uploading photo", 400);
+
+                eventEntity.ImageUrl = uploadResult.Url;
+                eventEntity.PublicId = uploadResult.PublicId;
+            }
 
             dbContext.Events.Add(eventEntity);
 
@@ -68,7 +88,7 @@ public class CreateEvent
             eventEntity.Attendees.Add(attendee);
 
             // SaveChangesAsync returns the number of rows affected.
-            // Both the Event row and the EventAttendee row must be written.
+            // Event row, EventAttendee row (and Cloudinary metadata if uploaded) all saved together.
             var success = await dbContext.SaveChangesAsync(cancellationToken) > 0;
 
             if (!success)

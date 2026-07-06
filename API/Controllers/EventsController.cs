@@ -69,11 +69,13 @@ public class EventsController(IMediator mediator) : BaseApiController
     /// Accepts a CreateEventDto from the client — NOT the full Event entity —
     /// to ensure only permitted fields are provided.
     /// Delegates all business logic to the Application layer via MediatR.
+    /// [FromForm] because CreateEventDto now carries an optional Image file —
+    /// the request must be multipart/form-data, not JSON.
     /// </summary>
     /// <param name="newEventDto">The event data submitted by the client.</param>
     /// <returns>The Id of the newly created event.</returns>
     [HttpPost]
-    public async Task<ActionResult<string>> CreateEvent(CreateEventDto newEventDto)
+    public async Task<ActionResult<string>> CreateEvent([FromForm] CreateEventDto newEventDto)
     {
         // Wrap the DTO in a MediatR Command and dispatch it.
         // The handler in the Application layer takes care of mapping,

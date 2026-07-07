@@ -49,7 +49,7 @@ public class UpdateProfile
                 if (user.PublicId != null)
                     await photoService.DeletePhoto(user.PublicId);
 
-                var uploadResult = await photoService.UploadPhoto(request.Image);
+                var uploadResult = await photoService.UploadUserPhoto(request.Image);
                 if (uploadResult == null)
                     return Result<Unit>.Failure("Problem uploading photo", 400);
 

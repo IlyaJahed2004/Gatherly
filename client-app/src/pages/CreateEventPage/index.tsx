@@ -397,7 +397,7 @@ const CreateEventPage = observer(() => {
           </div>
 
           {/* Date row */}
-          <div ref={pickerRef} className="relative flex gap-4">
+          <div ref={pickerRef} className="relative flex flex-col sm:flex-row gap-4">
             {/* Start Date */}
             <div className="flex-1">
               <FieldBox label="Start of Date" error={errors.startDate}>
@@ -433,8 +433,8 @@ const CreateEventPage = observer(() => {
             {/* ── Date/Time Picker Dropdown ── */}
             {picker.open && (
               <div
-                className="absolute left-0 top-[calc(100%+8px)] z-[1100] flex bg-white rounded-[16px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
-                style={{ minWidth: 460 }}
+                className="absolute left-0 right-0 sm:right-auto top-[calc(100%+8px)] z-[1100] flex bg-white rounded-[16px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-gray-100 overflow-x-auto max-w-full"
+                style={{ width: 'min(460px, 90vw)' }}
               >
                 {/* Calendar */}
                 <div className="p-4 flex flex-col gap-3" style={{ minWidth: 300 }}>

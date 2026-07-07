@@ -38,11 +38,11 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <div
-      className="bg-[#FFFFFF] rounded-[16px] p-[32px] flex flex-col hover:-translate-y-1 transition-transform"
-      style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)', height: '680px' }}
+      className="bg-[#FFFFFF] rounded-[16px] p-5 md:p-[32px] flex flex-col hover:-translate-y-1 transition-transform h-auto md:h-[680px]"
+      style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <h3 dir="auto" className="text-[32px] font-medium text-[#1F2937] leading-tight truncate">
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <h3 dir="auto" className="text-[22px] md:text-[32px] font-medium text-[#1F2937] leading-tight truncate">
           {title}
         </h3>
         {isCancelled && (
@@ -63,7 +63,7 @@ const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       <div
-        className="w-full h-[260px] rounded-[16px] overflow-hidden mb-6 flex-shrink-0"
+        className="w-full h-[180px] md:h-[260px] rounded-[16px] overflow-hidden mb-6 flex-shrink-0"
         style={{ boxShadow: '0px 4px 4px 0 rgba(0,0,0,0.25)' }}
       >
         <img
@@ -77,7 +77,7 @@ const EventCard: React.FC<EventCardProps> = ({
         />
       </div>
 
-      <div className="flex flex-col gap-3 text-[20px] font-normal text-[#1F2937] mb-6 flex-shrink-0">
+      <div className="flex flex-col gap-3 text-[16px] md:text-[20px] font-normal text-[#1F2937] mb-6 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-[24px] h-[24px] flex items-center justify-center text-gray-500 flex-shrink-0">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,11 +100,11 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
 
-      <p dir="auto" className="text-[20px] font-normal text-[#1F2937] leading-snug break-words mb-8 flex-grow min-h-0 overflow-y-auto">
+      <p dir="auto" className="text-[16px] md:text-[20px] font-normal text-[#1F2937] leading-snug break-words mb-8 flex-grow min-h-0 overflow-y-auto">
         {description}
       </p>
 
-      <div className="flex justify-between items-center mt-auto flex-shrink-0">
+      <div className="flex flex-wrap justify-between items-center gap-3 mt-auto flex-shrink-0">
         <button
           onClick={() => navigate(`/profile/${hostId}`)}
           className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity"

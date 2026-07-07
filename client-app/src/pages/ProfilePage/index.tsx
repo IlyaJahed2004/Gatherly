@@ -130,17 +130,17 @@ const ProfilePage = observer(() => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-6">
+    <div className="max-w-[1200px] mx-auto flex flex-col gap-6 px-4 sm:px-0">
 
       {/* Header Card */}
-      <div className="bg-white rounded-[16px] p-8 flex items-center gap-8" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.1)' }}>
+      <div className="bg-white rounded-[16px] p-5 sm:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.1)' }}>
         <img
           src={profile.imageUrl || `https://placehold.co/200x200/e2e8f0/64748b?text=${profile.displayName?.charAt(0) ?? 'U'}`}
           alt={profile.displayName}
-          className="w-[160px] h-[160px] rounded-full object-cover flex-shrink-0"
+          className="w-[100px] h-[100px] md:w-[160px] md:h-[160px] rounded-full object-cover flex-shrink-0"
         />
-        <div className="flex-1">
-          <h1 dir="ltr" className="text-[36px] font-semibold text-[#1F2937] mb-2 text-left">
+        <div className="flex-1 text-center md:text-left">
+          <h1 dir="ltr" className="text-[26px] md:text-[36px] font-semibold text-[#1F2937] mb-2">
             {profile.displayName}
           </h1>
           {!isCurrentUser && (
@@ -149,7 +149,7 @@ const ProfilePage = observer(() => {
             </span>
           )}
         </div>
-        <div className="flex flex-col items-end gap-4">
+        <div className="flex flex-col items-center md:items-end gap-4">
           <div className="flex gap-10">
             <div className="flex flex-col items-center">
               <svg className="w-8 h-8 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,17 +183,17 @@ const ProfilePage = observer(() => {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-[16px] flex overflow-hidden" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.1)', minHeight: '400px' }}>
+      <div className="bg-white rounded-[16px] flex flex-col md:flex-row overflow-hidden" style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.1)', minHeight: '400px' }}>
 
         {/* Side Nav */}
-        <div className="w-[260px] flex-shrink-0 border-r border-gray-100 py-4">
+        <div className="w-full md:w-[260px] flex-shrink-0 border-b md:border-b-0 md:border-r border-gray-100 py-2 md:py-4 flex md:block overflow-x-auto">
           {sideNavItems.map((item) => (
             <button
               key={item.key}
               onClick={() => setSideTab(item.key)}
-              className={`w-full flex items-center gap-4 px-6 py-4 text-[18px] transition-colors ${
+              className={`flex-shrink-0 md:w-full flex items-center gap-2 md:gap-4 px-4 md:px-6 py-3 md:py-4 text-[15px] md:text-[18px] whitespace-nowrap transition-colors ${
                 sideTab === item.key
-                  ? 'bg-[#E6F7F6] text-[#078C80] border-l-4 border-[#078C80]'
+                  ? 'bg-[#E6F7F6] text-[#078C80] md:border-l-4 border-[#078C80]'
                   : 'text-[#6B7280] hover:bg-gray-50'
               }`}
             >
@@ -206,7 +206,7 @@ const ProfilePage = observer(() => {
         </div>
 
         {/* Content Panel */}
-        <div className="flex-1 min-w-0 p-8">
+        <div className="flex-1 min-w-0 p-5 sm:p-8">
 
           {/* ABOUT */}
           {sideTab === 'about' && (
@@ -313,7 +313,7 @@ const ProfilePage = observer(() => {
               {isLoadingEvents ? <p className="text-[#14B8A6]">Loading events...</p>
                 : events.length === 0 ? <p className="text-gray-400">No events found.</p>
                 : (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {events.map((ev) => (
                       <div key={ev.id} onClick={() => window.location.href = `/events/${ev.id}`}
                         className="rounded-[12px] overflow-hidden border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
@@ -344,7 +344,7 @@ const ProfilePage = observer(() => {
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
                 : followings.length === 0 ? <p className="text-gray-400 mt-4">No followers yet.</p>
                 : (
-                  <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                     {followings.map((f) => (
                       <div key={f.id} onClick={() => window.location.href = `/profile/${f.id}`}
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
@@ -373,7 +373,7 @@ const ProfilePage = observer(() => {
               {isLoadingFollowings ? <p className="text-[#14B8A6] mt-4">Loading...</p>
                 : followings.length === 0 ? <p className="text-gray-400 mt-4">Not following anyone yet.</p>
                 : (
-                  <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                     {followings.map((f) => (
                       <div key={f.id} onClick={() => window.location.href = `/profile/${f.id}`}
                         className="flex flex-col items-center gap-2 p-4 rounded-[12px] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">

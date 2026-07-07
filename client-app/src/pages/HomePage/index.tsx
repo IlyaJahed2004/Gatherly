@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import EventCard from '../../components/EventCard';
 import CalendarWidget from '../../components/CalendarWidget';
@@ -32,17 +32,17 @@ const HomePage = observer(() => {
     });
 
   return (
-    <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      <div className="grid grid-cols-3 gap-6 items-start">
+    <div className="bg-[#F3F4F6] py-6 md:py-10 px-4 sm:px-6 lg:px-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
         {/* ستون چپ: ایونت‌ها */}
-        <div className="col-span-2 grid grid-cols-2 gap-6">
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           {isLoading ? (
-            <div className="col-span-2 flex items-center justify-center py-20">
+            <div className="sm:col-span-2 flex items-center justify-center py-20">
               <span className="text-[#14B8A6] text-[20px]">Loading events...</span>
             </div>
           ) : events.length === 0 ? (
-            <div className="col-span-2 flex items-center justify-center py-20">
+            <div className="sm:col-span-2 flex items-center justify-center py-20">
               <span className="text-gray-400 text-[20px]">No events found.</span>
             </div>
           ) : (
@@ -73,8 +73,7 @@ const HomePage = observer(() => {
 
         {/* ستون راست: sticky sidebar */}
         <div
-          className="col-span-1 sticky top-[160px] self-start flex flex-col gap-6"
-          style={{ height: '680px' }}
+          className="lg:col-span-1 w-full lg:sticky lg:top-[160px] self-start flex flex-col gap-6 h-auto lg:h-[680px]"
         >
 
           {/* Event Type Widget */}

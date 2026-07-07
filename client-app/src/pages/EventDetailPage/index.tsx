@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import agent from '../../api/agent';
@@ -74,15 +74,15 @@ const EventDetailPage = observer(() => {
   }
 
   return (
-    <div className="bg-[#F3F4F6] py-10 px-6 lg:px-10">
-      <div className="grid grid-cols-3 gap-6 items-start">
+    <div className="bg-[#F3F4F6] py-6 md:py-10 px-4 sm:px-6 lg:px-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
         {/* ستون چپ */}
-        <div className="col-span-2 flex flex-col gap-6">
+        <div className="lg:col-span-2 flex flex-col gap-6">
 
           {/* تصویر Hero با اطلاعات روی آن */}
           <div
-            className="relative w-full h-[320px] rounded-[16px] overflow-hidden"
+            className="relative w-full h-[220px] sm:h-[320px] rounded-[16px] overflow-hidden"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             <img
@@ -118,14 +118,14 @@ const EventDetailPage = observer(() => {
             </div>
 
             {/* دکمه‌های action */}
-            <div className="absolute bottom-4 right-4 flex gap-3">
+            <div className="absolute bottom-4 right-4 flex flex-wrap justify-end gap-2 sm:gap-3">
               {isHost ? (
                 <>
                   {/* Host: Cancel یا Reactivate + Manage */}
                   <button
                     onClick={handleAttend}
                     disabled={isSubmitting}
-                    className={`px-5 py-2 rounded-full text-[15px] font-medium transition-colors ${
+                    className={`px-3 py-1.5 sm:px-5 sm:py-2 rounded-full text-[13px] sm:text-[15px] font-medium transition-colors ${
                       isCancelled
                         ? 'bg-[#14B8A6] text-white hover:bg-[#0d9488]'
                         : 'bg-[#F87171] text-white hover:bg-[#ef4444]'
@@ -135,7 +135,7 @@ const EventDetailPage = observer(() => {
                   </button>
                   <button
                     onClick={() => navigate(`/events/${id}/edit`)}
-                    className="px-5 py-2 rounded-full text-[15px] font-medium bg-white/20 border border-white text-white hover:bg-white/30 transition-colors"
+                    className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full text-[13px] sm:text-[15px] font-medium bg-white/20 border border-white text-white hover:bg-white/30 transition-colors"
                   >
                     Manage Event
                   </button>
@@ -145,7 +145,7 @@ const EventDetailPage = observer(() => {
                 <button
                   onClick={handleAttend}
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-full text-[15px] font-medium bg-[#14B8A6] text-white hover:bg-[#0d9488] transition-colors"
+                  className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full text-[13px] sm:text-[15px] font-medium bg-[#14B8A6] text-white hover:bg-[#0d9488] transition-colors"
                 >
                   Cancel Attendance
                 </button>
@@ -154,7 +154,7 @@ const EventDetailPage = observer(() => {
                 <button
                   onClick={handleAttend}
                   disabled={isSubmitting || isCancelled}
-                  className="px-5 py-2 rounded-full text-[15px] font-medium bg-[#14B8A6] text-white hover:bg-[#0d9488] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full text-[13px] sm:text-[15px] font-medium bg-[#14B8A6] text-white hover:bg-[#0d9488] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Join Event
                 </button>
@@ -164,7 +164,7 @@ const EventDetailPage = observer(() => {
 
           {/* جزئیات ایونت */}
           <div
-            className="bg-white rounded-[16px] p-8 flex flex-col gap-6"
+            className="bg-white rounded-[16px] p-5 md:p-8 flex flex-col gap-6"
             style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
           >
             {/* عنوان */}
@@ -237,7 +237,7 @@ const EventDetailPage = observer(() => {
 
         {/* ستون راست: Attendees */}
         <div
-          className="col-span-1 sticky top-[160px] self-start bg-white rounded-[16px] overflow-hidden"
+          className="lg:col-span-1 w-full lg:sticky lg:top-[160px] self-start bg-white rounded-[16px] overflow-hidden"
           style={{ boxShadow: '4px 4px 8px 0 rgba(0,0,0,0.25)' }}
         >
           {/* هدر */}

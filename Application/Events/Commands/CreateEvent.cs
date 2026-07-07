@@ -63,7 +63,7 @@ public class CreateEvent
             // so this is simpler than the UpdateEvent version (no delete-first branch).
             if (request.EventDto.Image != null)
             {
-                var uploadResult = await photoService.UploadPhoto(request.EventDto.Image);
+                var uploadResult = await photoService.UploadEventPhoto(request.EventDto.Image);
                 if (uploadResult == null)
                     return Result<string>.Failure("Problem uploading photo", 400);
 

@@ -45,7 +45,7 @@ public class UpdateEvent
                 if (existingEvent.PublicId != null)
                     await photoService.DeletePhoto(existingEvent.PublicId);
 
-                var uploadResult = await photoService.UploadPhoto(command.EventDto.Image);
+                var uploadResult = await photoService.UploadEventPhoto(command.EventDto.Image);
                 if (uploadResult == null)
                     return Result<Unit>.Failure("Problem uploading photo", 400);
 

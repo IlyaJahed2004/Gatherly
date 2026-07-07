@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.Profiles.DTOs;
 using CloudinaryDotNet;
@@ -25,7 +21,7 @@ namespace Infrastructure.Photos
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<PhotoUploadResult?> UploadPhoto(IFormFile file)
+        public async Task<PhotoUploadResult?> UploadUserPhoto(IFormFile file)
         {
             if (file.Length > 0)
             {
@@ -34,19 +30,50 @@ namespace Infrastructure.Photos
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, stream),
-                    Transformation = new CloudinaryDotNet.Transformation()
-                        .Height(500)
+                    Transformation = new Transformation()
                         .Width(500)
+                        .Height(500)
                         .Crop("fill")
-                        .Gravity("face"),
+                        .Gravity("face")
+                        .FetchFormat("auto"),
+
                     Folder = "UsersPhotos",
                 };
 
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 if (uploadResult.Error != null)
-                {
                     throw new Exception(uploadResult.Error.Message);
-                }
+
+                return new PhotoUploadResult
+                {
+                    PublicId = uploadResult.PublicId,
+                    Url = uploadResult.SecureUrl.AbsoluteUri,
+                };
+            }
+            return null;
+        }
+
+        public async Task<PhotoUploadResult?> UploadEventPhoto(IFormFile file)
+        {
+            if (file.Length > 0)
+            {
+                await using var stream = file.OpenReadStream();
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation()
+                        .Width(1200)
+                        .Height(1200)
+                        .Crop("limit")
+                        .FetchFormat("auto"), // preserves aspect ratio, never upscales
+                    Folder = "EventsPhotos",
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                if (uploadResult.Error != null)
+                    throw new Exception(uploadResult.Error.Message);
+
                 return new PhotoUploadResult
                 {
                     PublicId = uploadResult.PublicId,
@@ -61,9 +88,8 @@ namespace Infrastructure.Photos
             var deletionParams = new DeletionParams(publicId);
             var deletionResult = await _cloudinary.DestroyAsync(deletionParams);
             if (deletionResult.Error != null)
-            {
                 throw new Exception(deletionResult.Error.Message);
-            }
+
             return deletionResult.Result;
         }
     }

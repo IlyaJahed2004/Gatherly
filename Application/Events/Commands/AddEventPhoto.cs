@@ -36,7 +36,7 @@ public class AddEventPhoto
                     return Result<PhotoUploadResult>.Failure("Problem deleting old photo", 400);
             }
 
-            var uploadResult = await photoService.UploadPhoto(request.File);
+            var uploadResult = await photoService.UploadEventPhoto(request.File);
             if (uploadResult == null)
                 return Result<PhotoUploadResult>.Failure("Problem uploading photo", 400);
 

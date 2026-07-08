@@ -1,0 +1,571 @@
+{
+  "info": {
+    "_postman_id": "6b9f53cd-ef8a-4567-b2a3-f140eb78df3c",
+    "name": "Gatherly",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "GetEvents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events?PageNumber=1&PageSize=8&StartDate=&Category=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "PageNumber",
+                  "value": "1"
+                },
+                {
+                  "key": "PageSize",
+                  "value": "8"
+                },
+                {
+                  "key": "StartDate",
+                  "value": ""
+                },
+                {
+                  "key": "Category",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GetSpecificEvent",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CreateEvent",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "Title",
+                  "value": "Tehran Tech Startup Hackathon 2026",
+                  "type": "text"
+                },
+                {
+                  "key": "StartDate",
+                  "value": "2026-09-15T08:00:00Z",
+                  "type": "text"
+                },
+                {
+                  "key": "EndDate",
+                  "value": "2026-09-17T18:00:00Z",
+                  "type": "text"
+                },
+                {
+                  "key": "Description",
+                  "value": "Join us for a 48-hour intensive hacking session where developers, designers, and product managers collaborate to build innovative solutions for urban mobility. Mentorship and free food provided!",
+                  "type": "text"
+                },
+                {
+                  "key": "Category",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "City",
+                  "value": "Tehran",
+                  "type": "text"
+                },
+                {
+                  "key": "Venue",
+                  "value": "Tehran Book Garden, Block C",
+                  "type": "text"
+                },
+                {
+                  "key": "Latitude",
+                  "value": "35.7512",
+                  "type": "text"
+                },
+                {
+                  "key": "Longitude",
+                  "value": "51.4325",
+                  "type": "text"
+                },
+                {
+                  "key": "Image",
+                  "type": "file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events"
+              ]
+            }
+          }
+        },
+        {
+          "name": "UpdateEvent",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "Title",
+                  "value": "Tehran Tech Startup Hackathon 2026 (Updated)",
+                  "type": "text"
+                },
+                {
+                  "key": "Description",
+                  "value": "This is our updated description for the hackathon event, detailing new rules and guidelines.",
+                  "type": "text"
+                },
+                {
+                  "key": "Category",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "City",
+                  "value": "Tehran",
+                  "type": "text"
+                },
+                {
+                  "key": "Venue",
+                  "value": "Tehran Book Garden, Block C",
+                  "type": "text"
+                },
+                {
+                  "key": "Latitude",
+                  "value": "35.7512",
+                  "type": "text"
+                },
+                {
+                  "key": "Longitude",
+                  "value": "51.4325",
+                  "type": "text"
+                },
+                {
+                  "key": "StartDate",
+                  "value": "2026-09-15T08:00:00Z",
+                  "type": "text"
+                },
+                {
+                  "key": "EndDate",
+                  "value": "2026-09-17T18:00:00Z",
+                  "type": "text"
+                },
+                {
+                  "key": "IsCancelled",
+                  "value": "false",
+                  "type": "text"
+                },
+                {
+                  "key": "Image",
+                  "type": "file"
+                },
+                {
+                  "key": "DeleteImage",
+                  "value": "false",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DeleteEvent",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Attend",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1/attend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1",
+                "attend"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AddEventPhoto",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1/photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1",
+                "photo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DeleteEventPhoto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/events/a17b6d12-c188-4781-9c9e-975030d33dc1/photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "events",
+                "a17b6d12-c188-4781-9c9e-975030d33dc1",
+                "photo"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"sara@test.com\",\n  \"email\": \"sara@test.com\",\n  \"password\": \"Pa$$w0rd\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GetUserInfo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/account/user-info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "user-info"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/account/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bob@test.com\",\n  \"password\": \"Pa$$w0rd\",\n  \"twoFactorCode\": \"\",\n  \"twoFactorRecoveryCode\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login?useCookies=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "useCookies",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "GetProfile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/tom_id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "tom_id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "UpdateProfile",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "DisplayName",
+                  "value": "Mohammad Hosseini",
+                  "type": "text"
+                },
+                {
+                  "key": "Bio",
+                  "value": "Senior .NET & React Developer | Passionate about Clean Architecture, Domain-Driven Design (DDD), and building high-performance web applications.",
+                  "type": "text"
+                },
+                {
+                  "key": "Image",
+                  "type": "file"
+                },
+                {
+                  "key": "DeleteImage",
+                  "value": "false",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AddPhoto",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/add-photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "add-photo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DeletePhoto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/delete-photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "delete-photo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "FollowToggle",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/tom_id/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "tom_id",
+                "follow"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GetFollowings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/tom_id/follow-list?predicate=followers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "tom_id",
+                "follow-list"
+              ],
+              "query": [
+                {
+                  "key": "predicate",
+                  "value": "followers"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GetProfileEvents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/profiles/tom_id/events?eventType=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profiles",
+                "tom_id",
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "eventType",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
+    }
+  ]
+}

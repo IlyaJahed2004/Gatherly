@@ -87,6 +87,12 @@ builder.Services.AddAuthorization(opt =>
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirmentHandler>();
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+
+// Liara (and most container platforms) inject the port via PORT env var.
+// Fallback to 8080 for local Docker testing if PORT isn't set.
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -114,9 +120,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// --- STATIC FILES (React build output) ---
+// UseDefaultFiles must come BEFORE UseStaticFiles: it looks for index.html
+// in wwwroot and rewrites the request to it, then UseStaticFiles actually
+// serves that file (and any other static assets: JS, CSS, images).
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<User>(); //api/login
+
+// Fallback route: any request that didn't match an API controller or a
+// real static file (e.g. a client-side React Router path like /events/5)
+// gets served index.html instead of a 404, so React Router can take over
+// and render the correct page on the client side.
+// This MUST be registered after MapControllers so API routes are matched first.
+app.MapFallbackToFile("index.html");
 
 // --- DATABASE INITIALIZATION & SEEDING PHASE ---
 

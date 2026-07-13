@@ -1,0 +1,8 @@
+**/bin
+**/obj
+**/.vs
+.git
+.env
+appsettings.Development.json
+client-app/node_modules
+client-app/dist

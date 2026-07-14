@@ -58,8 +58,14 @@ namespace Infrastructure.Photos
             if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 throw new Exception("Failed to upload photo to storage.");
 
-            // Public URL pattern for Liara Object Storage (path-style)
-            var url = $"{_settings.Endpoint}/{_settings.BucketName}/{key}";
+            // NOTE: We deliberately do NOT return the direct Liara storage URL here
+            // (e.g. https://storage.c2.liara.site/bucket/key). Liara's default
+            // storage domain does not support public/shareable direct access
+            // without a custom domain attached to the bucket, which this project
+            // does not have. Instead, we return a relative URL pointing to our own
+            // PhotosController, which proxies the file through the backend using
+            // our S3 access keys (which always work, regardless of domain setup).
+            var url = $"/api/photos/{key}";
 
             return new PhotoUploadResult
             {

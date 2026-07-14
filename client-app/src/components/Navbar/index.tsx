@@ -42,7 +42,7 @@ const Navbar = observer(() => {
   return (
     <nav
       id="main-navbar"
-      className="bg-[#F3F4F6] py-4 md:py-8 px-4 sm:px-8 md:px-16 border-b border-gray-200 sticky top-0 z-50"
+      className="bg-[#F3F4F6] py-4 md:py-8 px-4 sm:px-8 md:px-16 border-b border-gray-200 sticky top-0 z-[9999]"
     >
       <div className="flex items-center justify-between">
         {/* Logo */}

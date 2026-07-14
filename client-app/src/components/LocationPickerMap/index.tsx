@@ -40,12 +40,16 @@ const LocationPickerMap = ({ latitude, longitude, onChange }: LocationPickerMapP
     <MapContainer
       center={center}
       zoom={hasPosition ? 14 : 11}
+      minZoom={2}
+      maxBounds={[[-90, -180], [90, 180]]}
+      maxBoundsViscosity={1.0}
       scrollWheelZoom={false}
       style={{ height: '260px', width: '100%', borderRadius: '16px' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        noWrap={true}
       />
       <ClickHandler onChange={onChange} />
       {hasPosition && <Marker position={[latitude, longitude]} icon={defaultIcon} />}

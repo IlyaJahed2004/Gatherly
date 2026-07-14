@@ -97,13 +97,10 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
 builder.Services.AddHttpClient(
-    "Neshan",
+    "GeocodingService", 
     client =>
     {
-        client.BaseAddress = new Uri("https://api.neshan.org/");
-        client.DefaultRequestHeaders.Add(
-            "Api-Key",
-            "service.3264ec577bf54573bae79baf8ee1a67f");
+        client.BaseAddress = new Uri("https://api.opencagedata.com/");
     });
 
 var app = builder.Build();

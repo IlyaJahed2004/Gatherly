@@ -1,8 +1,8 @@
 ﻿using Application.Core;
 using Application.Locations.DTOs;
 using MediatR;
-using System.Globalization;
 using System.Text.Json;
+using System.Web;
 
 namespace Application.Locations.Queries;
 
@@ -16,18 +16,17 @@ public class GetGeocode
     public class Handler(IHttpClientFactory httpClientFactory)
         : IRequestHandler<Query, Result<GeocodeResultDto>>
     {
+        private const string ApiKey = "b46f8baf26ed4cd5a41db5b119ffcddd";
+
         public async Task<Result<GeocodeResultDto>> Handle(
             Query request,
             CancellationToken cancellationToken)
         {
-            var client = httpClientFactory.CreateClient("Neshan");
+            var client = httpClientFactory.CreateClient("GeocodingService");
 
-            var payload = JsonSerializer.Serialize(new
-            {
-                address = request.City
-            });
+            var encodedCity = HttpUtility.UrlEncode(request.City);
 
-            var url = $"geocoding/v1?json={Uri.EscapeDataString(payload)}";
+            var url = $"geocode/v1/json?q={encodedCity}&key={ApiKey}&limit=1";
 
             var response = await client.GetAsync(url, cancellationToken);
 
@@ -35,33 +34,31 @@ public class GetGeocode
             {
                 return Result<GeocodeResultDto>.Failure(
                     "Failed to reach geocoding service.",
-                    400);
+                    (int)response.StatusCode);
             }
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
             using var document = JsonDocument.Parse(content);
 
-            if (!document.RootElement.TryGetProperty("items", out var items) ||
-                items.GetArrayLength() == 0)
+            if (!document.RootElement.TryGetProperty("results", out var results) ||
+                results.GetArrayLength() == 0)
             {
                 return Result<GeocodeResultDto>.Failure(
                     "City not found.",
                     404);
             }
 
-            var item = items[0];
+            var firstResult = results[0];
+            var geometry = firstResult.GetProperty("geometry");
 
-            var location = item.GetProperty("location");
-
-            var result = new GeocodeResultDto
+            var resultDto = new GeocodeResultDto
             {
-                Lat = location.GetProperty("latitude").GetDouble(),
-                Lng = location.GetProperty("longitude").GetDouble()
+                Lat = geometry.GetProperty("lat").GetDouble(),
+                Lng = geometry.GetProperty("lng").GetDouble()
             };
 
-            return Result<GeocodeResultDto>.Success(result);
+            return Result<GeocodeResultDto>.Success(resultDto);
         }
     }
 }
-

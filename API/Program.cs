@@ -86,7 +86,10 @@ builder.Services.AddAuthorization(opt =>
 
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirmentHandler>();
 
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+// builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+
+builder.Services.Configure<LiaraStorageSettings>(builder.Configuration.GetSection("LiaraStorage"));
+builder.Services.AddScoped<IPhotoService, S3PhotoService>();
 
 // Liara (and most container platforms) inject the port via PORT env var.
 // Fallback to 8080 for local Docker testing if PORT isn't set.

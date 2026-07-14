@@ -96,6 +96,16 @@ builder.Services.AddScoped<IPhotoService, S3PhotoService>();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
+builder.Services.AddHttpClient(
+    "Neshan",
+    client =>
+    {
+        client.BaseAddress = new Uri("https://api.neshan.org/");
+        client.DefaultRequestHeaders.Add(
+            "Api-Key",
+            "service.3264ec577bf54573bae79baf8ee1a67f");
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

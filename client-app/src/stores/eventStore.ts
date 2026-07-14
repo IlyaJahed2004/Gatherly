@@ -23,7 +23,7 @@ export class EventStore {
     try {
       const result: GetEventsResult = await agent.Events.list({
         pageNumber: this.currentPage,
-        pageSize: 10,
+        pageSize: 8,
         category: this.selectedCategory,
         startDate: this.selectedDate ?? '2020-01-01',
         ...params,

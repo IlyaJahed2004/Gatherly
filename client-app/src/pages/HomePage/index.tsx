@@ -18,7 +18,7 @@ const AUTH_CATEGORIES = [
 
 const HomePage = observer(() => {
   const { eventStore, authStore } = useStore();
-  const { events, isLoading, selectedCategory, setCategory, loadEvents } = eventStore;
+  const { events, isLoading, selectedCategory, setCategory, loadEvents, currentPage, totalPages, setPage, totalCount } = eventStore;
   const categories = authStore.isLoggedIn ? [...AUTH_CATEGORIES, ...CATEGORIES] : CATEGORIES;
 
   useEffect(() => {
@@ -68,6 +68,49 @@ const HomePage = observer(() => {
                 />
               );
             })
+          )}
+          {totalPages > 1 && (
+            <div className="sm:col-span-2 flex flex-col items-center mt-6 mb-4 gap-3 w-full">
+              <div className="flex justify-between items-center w-full">
+                <button
+                  onClick={() => setPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-white text-[#1F2937] shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:bg-gray-50"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  Previous
+                </button>
+
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setPage(page)}
+                      className={`w-10 h-10 rounded-[10px] font-medium flex items-center justify-center transition-all ${
+                        currentPage === page
+                          ? 'bg-[#14B8A6] text-white shadow-[0_2px_8px_rgba(20,184,166,0.3)]'
+                          : 'bg-white text-[#1F2937] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:bg-gray-50'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-[#14B8A6] text-white shadow-[0_2px_8px_rgba(20,184,166,0.3)] hover:bg-[#0f9788]"
+                >
+                  Next
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              </div>
+
+              <span className="text-[#1F2937] font-medium text-[13px] mt-1">
+                Showing {(currentPage - 1) * 8 + 1}-{Math.min(currentPage * 8, totalCount)} of {totalCount} events
+              </span>
+            </div>
           )}
         </div>
 

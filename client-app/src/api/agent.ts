@@ -109,6 +109,15 @@ const Events = {
   },
 };
 
+interface GeocodeResult {
+  lat: number;
+  lng: number;
+}
+
+const Locations = {
+  geocode: (city: string) => requests.get<GeocodeResult>('/locations/geocode', { city }),
+};
+
 const Profiles = {
   get: (id: string) => requests.get<Profile>(`/profiles/${id}`),
   update: (data: { displayName: string; bio?: string; image?: File; deleteImage?: boolean }) => {
@@ -124,6 +133,6 @@ const Profiles = {
   getFollowings: (id: string, predicate: string) => requests.get<Follower[]>(`/profiles/${id}/follow-list`, { predicate }),
 };
 
-const agent = { Account, Events, Profiles };
+const agent = { Account, Events, Profiles, Locations };
 
 export default agent;

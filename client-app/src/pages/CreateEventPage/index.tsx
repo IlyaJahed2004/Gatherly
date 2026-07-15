@@ -139,6 +139,35 @@ const CreateEventPage = observer(() => {
   const endHourRef   = useRef<HTMLDivElement>(null);
   const endMinRef    = useRef<HTMLDivElement>(null);
 
+  // ── City → map sync (debounced) ──
+  // Waits for a pause in typing before calling the geocoding API, instead of
+  // firing on every keystroke or requiring a separate button/Enter press.
+  const geocodeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (geocodeTimeoutRef.current) clearTimeout(geocodeTimeoutRef.current);
+
+    const city = form.city.trim();
+    if (!city) return;
+
+    geocodeTimeoutRef.current = setTimeout(() => {
+      agent.Locations.geocode(city)
+        .then(({ lat, lng }) => {
+          // Only apply the result if the user hasn't kept typing a different
+          // city while this request was in flight.
+          setForm(f => (f.city.trim() === city ? { ...f, latitude: lat, longitude: lng } : f));
+        })
+        .catch(() => {
+          // City not found / geocoding service unavailable — leave the map
+          // as-is, the user can still place the pin manually.
+        });
+    }, 1200);
+
+    return () => {
+      if (geocodeTimeoutRef.current) clearTimeout(geocodeTimeoutRef.current);
+    };
+  }, [form.city]);
+
   // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -633,6 +662,9 @@ const CreateEventPage = observer(() => {
               />
             </div>
           </FieldBox>
+          <p className="text-[13px] text-gray-400 -mt-4">
+            Enter a city to move the map there automatically, then fine-tune by clicking on it.
+          </p>
 
           {/* Map: click to set the event's coordinates */}
           <div className="flex flex-col gap-2">

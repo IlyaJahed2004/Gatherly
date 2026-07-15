@@ -469,7 +469,7 @@ const EditEventPage = observer(() => {
           <div ref={pickerRef} className="relative flex flex-col sm:flex-row gap-4">
             {/* Start Date */}
             <div className="flex-1">
-              <FieldBox label="Start of Date" error={errors.startDate}>
+              <FieldBox label="Start Date" error={errors.startDate}>
                 <button
                   type="button"
                   onClick={() => openPicker('start')}
@@ -485,7 +485,7 @@ const EditEventPage = observer(() => {
 
             {/* End Date */}
             <div className="flex-1">
-              <FieldBox label="End of Date" error={errors.endDate}>
+              <FieldBox label="End Date" error={errors.endDate}>
                 <button
                   type="button"
                   onClick={() => openPicker('end')}

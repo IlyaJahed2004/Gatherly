@@ -1,16 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// Shape kept close to what a real "event comments" API would return, so wiring the
-// backend in later is a matter of replacing loadComments/postComment below.
-export interface EventComment {
-  id: string;
-  authorId: string;
-  authorName: string;
-  authorImageUrl?: string | null;
-  message: string;
-  createdAt: string; // ISO string
-}
+import agent from '../../api/agent';
+import type { EventComment } from '../../types/event';
 
 interface EventChatProps {
   eventId: string;
@@ -18,26 +9,6 @@ interface EventChatProps {
   currentUserName?: string;
   currentUserImageUrl?: string | null;
 }
-
-// TODO(backend wiring): replace with GET /events/{eventId}/comments
-const MOCK_COMMENTS: EventComment[] = [
-  {
-    id: '1',
-    authorId: 'bob',
-    authorName: 'Bob',
-    authorImageUrl: 'https://placehold.co/100x100/38bdf8/ffffff?text=B',
-    message: 'hello',
-    createdAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
-  },
-  {
-    id: '2',
-    authorId: 'jo',
-    authorName: 'Jo',
-    authorImageUrl: 'https://placehold.co/100x100/94a3b8/ffffff?text=J',
-    message: 'hi',
-    createdAt: new Date(Date.now() - 13 * 60 * 1000).toISOString(),
-  },
-];
 
 function formatRelativeTime(iso: string): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -50,35 +21,41 @@ function formatRelativeTime(iso: string): string {
   return `${days} day${days === 1 ? '' : 's'} ago`;
 }
 
-const EventChat: React.FC<EventChatProps> = ({
-  eventId,
-  currentUserId = 'me',
-  currentUserName = 'You',
-  currentUserImageUrl,
-}) => {
+const EventChat: React.FC<EventChatProps> = ({ eventId }) => {
   const navigate = useNavigate();
-  const [comments, setComments] = useState<EventComment[]>(MOCK_COMMENTS);
+  const [comments, setComments] = useState<EventComment[]>([]);
   const [draft, setDraft] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // TODO(backend wiring): replace with POST /events/{eventId}/comments
-  const postComment = (message: string) => {
-    const comment: EventComment = {
-      id: crypto.randomUUID(),
-      authorId: currentUserId,
-      authorName: currentUserName,
-      authorImageUrl: currentUserImageUrl,
-      message,
-      createdAt: new Date().toISOString(),
+  useEffect(() => {
+    let ignore = false;
+    agent.Events.listComments(eventId)
+      .then(data => {
+        if (!ignore) setComments(data);
+      })
+      .catch(error => console.error('Failed to load comments:', error));
+    return () => {
+      ignore = true;
     };
-    setComments(prev => [comment, ...prev]);
-    void eventId; // will be used once the real request is wired in
+  }, [eventId]);
+
+  const postComment = async (message: string) => {
+    setIsSubmitting(true);
+    try {
+      const comment = await agent.Events.addComment(eventId, message);
+      setComments(prev => [comment, ...prev]);
+    } catch (error) {
+      console.error('Failed to post comment:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSubmit = () => {
     const trimmed = draft.trim();
-    if (!trimmed) return;
-    postComment(trimmed);
+    if (!trimmed || isSubmitting) return;
     setDraft('');
+    void postComment(trimmed);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

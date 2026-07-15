@@ -177,4 +177,44 @@ public class EventsController(IMediator mediator) : BaseApiController
 
         return BadRequest(result.Error);
     }
+    /// <summary>
+    /// Fetches every comment posted under an event, newest first.
+    /// Public — anyone can read the chat for an event, same as the event itself.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("{id}/comments")]
+    public async Task<ActionResult<List<EventCommentDto>>> GetComments(string id)
+    {
+        var result = await mediator.Send(new GetEventComments.Query { EventId = id });
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
+    }
+
+    /// <summary>
+    /// Posts a new comment under an event as the logged-in user.
+    /// </summary>
+    [HttpPost("{id}/comments")]
+    public async Task<ActionResult<EventCommentDto>> AddComment(string id, AddCommentDto commentDto)
+    {
+        var result = await mediator.Send(
+            new AddEventComment.Command { EventId = id, Message = commentDto.Message }
+        );
+
+        if (!result.IsSuccess && result.Code == 404)
+            return NotFound();
+
+        if (!result.IsSuccess && result.Code == 400)
+            return BadRequest(new { message = result.Error, errors = result.Errors });
+
+        if (result.IsSuccess && result.Value != null)
+            return Ok(result.Value);
+
+        return BadRequest(result.Error);
+    }
 }

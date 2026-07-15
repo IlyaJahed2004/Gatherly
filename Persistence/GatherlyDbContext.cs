@@ -23,6 +23,7 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
     public required DbSet<Domain.Event> Events { get; set; }
     public required DbSet<EventAttendee> EventAttendees { get; set; }
     public required DbSet<UserFollowing> UserFollowings { get; set; }
+    public required DbSet<EventComment> EventComments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -44,6 +45,19 @@ public class GatherlyDbContext(DbContextOptions<GatherlyDbContext> options)
             .WithMany(x => x.Attendees) // one Event can have many EventAttendee rows
             .HasForeignKey(x => x.EventId); // the FK column is EventId
 
+        // 4. Event → EventComment relationship (mirrors the EventAttendee setup above)
+        builder
+            .Entity<EventComment>()
+            .HasOne(x => x.Event)
+            .WithMany(x => x.Comments)
+            .HasForeignKey(x => x.EventId);
+
+        builder
+            .Entity<EventComment>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.Comments)
+            .HasForeignKey(x => x.UserId);
+            
         builder.Entity<UserFollowing>(x =>
         {
             x.HasKey(k => new { k.ObserverId, k.TargetId });

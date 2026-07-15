@@ -26,6 +26,16 @@ export interface Event {
 
 export type EventDetails = Event;
 
+export interface EventComment {
+  id: string;
+  eventId: string;
+  authorId: string;
+  authorName: string;
+  authorImageUrl?: string | null;
+  message: string;
+  createdAt: string; // ISO string
+}
+
 export interface PagedList<T> {
   items: T[];
   pageNumber: number;

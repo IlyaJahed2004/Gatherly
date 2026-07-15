@@ -13,4 +13,5 @@ public class User : IdentityUser
     public ICollection<EventAttendee> Events { get; set; } = [];
     public ICollection<UserFollowing> Followings { get; set; } = [];
     public ICollection<UserFollowing> Followers { get; set; } = [];
+    public ICollection<EventComment> Comments { get; set; } = [];
 }

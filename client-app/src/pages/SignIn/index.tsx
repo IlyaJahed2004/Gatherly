@@ -99,12 +99,6 @@ function SignIn() {
 
           <div className="flex flex-col items-center gap-3 w-full">
             <div className="text-[#1F2937] text-[20px] font-inter font-normal">
-              Forgot password?{' '}
-              <a href="#" className="text-[#4F46E5] hover:underline">
-                Click here
-              </a>
-            </div>
-            <div className="text-[#1F2937] text-[20px] font-inter font-normal">
               Don't have an account?{' '}
               <Link to="/signup" className="text-[#4F46E5] hover:underline">
                 Sign up

@@ -25,7 +25,7 @@ export class EventStore {
         pageNumber: this.currentPage,
         pageSize: 10,
         category: this.selectedCategory,
-        startDate: this.selectedDate ?? '2020-01-01',
+        ...(this.selectedDate ? { startDate: this.selectedDate } : {}),
         ...params,
       });
       runInAction(() => {

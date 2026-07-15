@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse, type AxiosError } from 'axios';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
-import type { Event, GetEventsResult, EventParams, EventDetails } from '../types/event';
+import type { Event, GetEventsResult, EventParams, EventDetails, EventComment } from '../types/event';
 import type { Profile, Follower, ProfileEventFilter } from '../types/profile';
 
 axios.defaults.baseURL = '/api';
@@ -74,6 +74,8 @@ const Events = {
   list:    (params: EventParams) => requests.get<GetEventsResult>('/events', params),
   details: (id: string)          => requests.get<EventDetails>(`/events/${id}`),
   attend:  (id: string)          => requests.post<void>(`/events/${id}/attend`, {}),
+  listComments: (id: string)                => requests.get<EventComment[]>(`/events/${id}/comments`),
+  addComment:   (id: string, message: string) => requests.post<EventComment>(`/events/${id}/comments`, { message }),
   create:  (data: CreateEventData) => {
     const form = new FormData();
     form.append('Title', data.title);

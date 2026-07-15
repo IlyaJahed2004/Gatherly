@@ -23,4 +23,5 @@ public class Event
     //navigation properties
 
     public ICollection<EventAttendee> Attendees { get; set; } = [];
+    public ICollection<EventComment> Comments { get; set; } = [];
 }

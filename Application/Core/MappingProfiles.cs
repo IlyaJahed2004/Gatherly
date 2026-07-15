@@ -69,6 +69,17 @@ public class MappingProfiles : Profile
                 o => o.MapFrom(s => s.User.Followers.Any(x => x.ObserverId == currentUserId))
             );
 
+        CreateMap<EventComment, EventCommentDto>()
+            .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(
+                dest => dest.AuthorName,
+                opt => opt.MapFrom(src => src.User.DisplayName)
+            )
+            .ForMember(
+                dest => dest.AuthorImageUrl,
+                opt => opt.MapFrom(src => src.User.ImageUrl)
+            );
+
         CreateMap<User, UserProfile>()
             .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
             .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.Followings.Count))

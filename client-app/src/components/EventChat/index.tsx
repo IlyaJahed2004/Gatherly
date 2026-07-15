@@ -11,7 +11,8 @@ interface EventChatProps {
 }
 
 function formatRelativeTime(iso: string): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
+  const utcIso = iso.endsWith('Z') ? iso : `${iso}Z`;
+  const diffMs = Date.now() - new Date(utcIso).getTime();
   const minutes = Math.floor(diffMs / 60000);
   if (minutes < 1) return 'just now';
   if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Mail, Code2, Server, Palette, Compass, ShieldCheck } from 'lucide-react';
+import { Mail, Code2, Server, Palette, Compass, ShieldCheck, Cloud } from 'lucide-react';
 
 type TeamRole = 'frontend' | 'backend' | 'lead';
 
@@ -18,11 +18,11 @@ const roleStyles: Record<TeamRole, { bg: string; text: string; ring: string }> =
 };
 
 const members: TeamMember[] = [
-  { name: 'Ramin Buzarpur',            role: 'Frontend Team',            email: 'raminbuzarpur@gmail.com',                team: 'frontend', icon: <Code2 className="w-6 h-6" /> },
+  { name: 'Ramin Buzarpur',             role: 'Frontend Team',            email: 'raminbuzarpur@gmail.com',                team: 'frontend', icon: <Code2 className="w-6 h-6" /> },
   { name: 'Mohammadhosein Fathali',     role: 'Frontend Team',            email: 'mhfathali2003@gmail.com',                team: 'frontend', icon: <Code2 className="w-6 h-6" /> },
   { name: 'Mohammadreza Yousefi',       role: 'Frontend Team · Figma',    email: 'mryousefi123456@gmail.com',              team: 'frontend', icon: <Palette className="w-6 h-6" /> },
-  { name: 'Mohammadreza Farahbakhsh',   role: 'Backend Team',             email: 'Moreza.farahbakhsh@gmail.com',   team: 'backend',  icon: <Server className="w-6 h-6" /> },
-  { name: 'Ilya Jahed',                 role: 'Backend Team',             email: 'ilyajahed.w2004@gmail.com',              team: 'backend',  icon: <Server className="w-6 h-6" /> },
+  { name: 'Mohammadreza Farahbakhsh',   role: 'Backend Team',             email: 'Moreza.farahbakhsh@gmail.com',           team: 'backend',  icon: <Server className="w-6 h-6" /> },
+  { name: 'Ilya Jahed',                 role: 'Backend Team · DevOps',    email: 'ilyajahed.w2004@gmail.com',              team: 'backend',  icon: <Cloud className="w-6 h-6" /> },
 ];
 
 const leadership: TeamMember[] = [
